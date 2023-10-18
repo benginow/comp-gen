@@ -1,0 +1,39 @@
+[
+  {
+    "num_rules": 6,
+    "time generated": "2023-10-18 11:47:03.542069 -05:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": [
+      {
+        "lhs": "(Vec (sgn ?a))",
+        "rhs": "(VecSgn (Vec ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSgn (Vec ?a))",
+        "rhs": "(Vec (sgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (Vec ?a))",
+        "rhs": "(Vec (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (neg ?a))",
+        "rhs": "(VecNeg (Vec ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSqrt (Vec ?a))",
+        "rhs": "(Vec (sqrt ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (sqrt ?a))",
+        "rhs": "(VecSqrt (Vec ?a))",
+        "bidirectional": false
+      }
+    ]
+  }
+]
