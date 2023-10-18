@@ -668,7 +668,7 @@ pub fn vecs_eq(lvec: &CVec<lang::VecLang>, rvec: &CVec<lang::VecLang>) -> bool {
 
 // JB: theoretically loop based off of argnum btu lazy so not rn
 fn iter_dios(_argnum: usize, depth: usize, values: Vec<&str>, variable_names: Vec<&str>, operations: Vec<Vec<String>>) -> Workload {
-    recipe_utils::iter_metric(recipe_utils::base_lang(3), "EXPR", Metric::Atoms, depth)
+    recipe_utils::iter_metric(recipe_utils::base_lang(3), "EXPR", Metric::Depth, depth)
     .filter(Filter::Contains("VAR".parse().unwrap()))
     .plug("VAL", &Workload::new(values))
     .plug("VAR", &Workload::new(variable_names))
@@ -692,7 +692,7 @@ fn explore_ruleset_at_depth(current_ruleset: Ruleset<lang::VecLang>,
 {
     let start = std::time::Instant::now();
     let mut workload: ruler::enumo::Workload = iter_dios(3, depth, vals.clone(), vars.clone(), ops.clone())
-            .filter(Filter::MetricEq(Metric::Atoms, depth));
+            .filter(Filter::MetricEq(Metric::Depth, depth));
     println!(
         "WORKLOAD IS {:?}", workload
     );
@@ -731,7 +731,7 @@ pub fn run(
     _chkpt_path: Option<PathBuf>,
 ) -> Res<ruler::enumo::Ruleset<lang::VecLang>>
 {
-    let run_name = "slow cvec match, up to depth 5";
+    let run_name = "slow cvec match, up to depth 5, using depth instead of atoms";
     log::info!("running with config: {dios_config:#?}");
 
     // add all seed rules
@@ -759,11 +759,11 @@ pub fn run(
     let ops = [dios_config.unops, dios_config.binops, dios_config.triops].to_vec();
 
     let mut rules = seed_rules.clone();
-    for idx in 3..=4 {
-        rules = explore_ruleset_at_depth(rules, idx, false, &run_name, vals.clone(), vars.clone(), ops.clone());
+    for idx in 4..=5 {
+        rules = explore_ruleset_at_depth(rules, idx-2, false, &run_name, vals.clone(), vars.clone(), ops.clone());
     }
-    for idx in 5..=5 {
-        rules = explore_ruleset_at_depth(rules, idx, true, &run_name, vals.clone(), vars.clone(), ops.clone());
+    for idx in 6..=7 {
+        rules = explore_ruleset_at_depth(rules, idx-2, true, &run_name, vals.clone(), vars.clone(), ops.clone());
     }
 
     ruler::logger::log_rules(&rules, Some("rulesets/ruleset.json"), run_name);
