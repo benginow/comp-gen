@@ -63,6 +63,17 @@ impl lang::Value {
         }
     }
 
+    fn int3<F>(x: &Self, y: &Self, z: &Self, f: F) -> Option<lang::Value>
+    where
+        F: Fn(i64, i64, i64) -> lang::Value,
+    {
+        if let (lang::Value::Int(xv), lang::Value::Int(yv), lang::Value::Int(zv)) = (x, y, z) {
+            Some(f(*xv, *yv, *zv))
+        } else {
+            None
+        }
+    }
+
     fn bool2<F>(lhs: &Self, rhs: &Self, f: F) -> Option<lang::Value>
     where
         F: Fn(bool, bool) -> lang::Value,
@@ -503,6 +514,24 @@ impl SynthLanguage for lang::VecLang {
                     }
                 })
             }),
+            // JB: i feel iffy about this, but I don't know why.
+            lang::VecLang::VecSum([x,y,z]) => { map!(get,x,y,z => {
+                lang::Value::int3(x, y, z, |x,y,z| lang::Value::Int(x+y+z)) } )
+                // JB: previous iteration, one-laners
+                // map!(get, l => {
+                //     lang::Value::vec1(l, |l| {
+                //         if l.iter().all(|x| matches!(x, lang::Value::Int(_))) {
+                //         Some(lang::Value::Int(l.iter().map(|element| match element {
+                //             lang::Value::Int(a) => a,
+                //             x => panic!("VecSum ill-formed {}", x)
+                //         }).sum()
+                //     )) }
+                //     else {
+                //         None
+                //     }
+                //     })
+                // })
+            },
             #[rustfmt::skip]
             lang::VecLang::VecSgn([l]) => map!(get, l => {
                 lang::Value::vec1(l, |l| {
@@ -528,7 +557,7 @@ impl SynthLanguage for lang::VecLang {
                         .zip(acc.iter())
                         .map(|tup| match tup {
                             ((lang::Value::Int(v1), lang::Value::Int(v2)), lang::Value::Int(acc))
-				=> Some(lang::Value::Int((v1 * v2) + acc)),
+                => Some(lang::Value::Int((v1 * v2) + acc)),
                             _ => None,
                         })
                         .collect::<Option<Vec<lang::Value>>>()
@@ -543,7 +572,7 @@ impl SynthLanguage for lang::VecLang {
                         .zip(acc.iter())
                         .map(|tup| match tup {
                             ((lang::Value::Int(v1), lang::Value::Int(v2)), lang::Value::Int(acc))
-				=> Some(lang::Value::Int(acc - (v1 * v2))),
+                => Some(lang::Value::Int(acc - (v1 * v2))),
                             _ => None,
                         })
                         .collect::<Option<Vec<lang::Value>>>()
@@ -556,7 +585,7 @@ impl SynthLanguage for lang::VecLang {
 
     fn initialize_vars(egraph: &mut EGraph<Self, SynthAnalysis>, vars: &[String]) {
         *egraph = egraph.clone().with_explanations_enabled();
-        debug!("initializing variables");
+        debug!("initializing variables {vars:?}");
 
         // TODO: consts are set upon creating DiosLang config, for now I've hard coded the constants but can clean it up later
         let consts = vec![0,1];
@@ -668,7 +697,7 @@ pub fn vecs_eq(lvec: &CVec<lang::VecLang>, rvec: &CVec<lang::VecLang>) -> bool {
 
 // JB: theoretically loop based off of argnum btu lazy so not rn
 fn iter_dios(_argnum: usize, depth: usize, values: Vec<&str>, variable_names: Vec<&str>, operations: Vec<Vec<String>>) -> Workload {
-    recipe_utils::iter_metric(recipe_utils::base_lang(3), "EXPR", Metric::Depth, depth)
+    recipe_utils::iter_metric(recipe_utils::base_lang(3), "EXPR", Metric::Atoms, depth)
     .filter(Filter::Contains("VAR".parse().unwrap()))
     .plug("VAL", &Workload::new(values))
     .plug("VAR", &Workload::new(variable_names))
@@ -691,24 +720,34 @@ fn explore_ruleset_at_depth(current_ruleset: Ruleset<lang::VecLang>,
                  -> Ruleset<lang::VecLang>
 {
     let start = std::time::Instant::now();
-    let mut workload: ruler::enumo::Workload = iter_dios(3, depth, vals.clone(), vars.clone(), ops.clone())
-            .filter(Filter::MetricEq(Metric::Depth, depth));
+    let mut workload = iter_dios(3, depth, vals.clone(), vars.clone(), ops.clone());
+    if depth > 3 {
+        workload = 
+            workload.filter(Filter::MetricEq(Metric::Atoms, depth)).filter(Filter::Canon(vars.iter().map(|x| x.to_string()).collect()));
+    }
+    else {
+        workload = 
+            workload.filter(Filter::MetricLt(Metric::Atoms, depth)).filter(Filter::Canon(vars.iter().map(|x| x.to_string()).collect()));
+    }
+    
     println!(
         "WORKLOAD IS {:?}", workload
     );
     if filter {
         workload = workload.filter(Filter::Contains("Vec".parse().unwrap()));
     }
+    println!("adding {current_ruleset:?} to the scheduler");
     let scheduler = Scheduler::Compress(ruler::Limits::synthesis());
     println!(
         "=============Scheduler has been run================"
     );
+    // let vars2 = vars.iter().map(|&s| s.to_string()).collect();
     let egraph: EGraph<lang::VecLang, SynthAnalysis> = scheduler.run(&workload.to_egraph(), &current_ruleset);
     println!(
         "=============Workload converted to egraph================"
     );
     
-    let mut candidates =  Ruleset::fast_cvec_match(&egraph);
+    let mut candidates =  Ruleset::cvec_match(&egraph);
     println!(
         "=============Generated {} candidates for depth {}================", candidates.len(), depth
     );
@@ -731,7 +770,7 @@ pub fn run(
     _chkpt_path: Option<PathBuf>,
 ) -> Res<ruler::enumo::Ruleset<lang::VecLang>>
 {
-    let run_name = "slow cvec match, up to depth 5, using depth instead of atoms";
+    let run_name = "fast cvec match, up to atoms 6, atoms";
     log::info!("running with config: {dios_config:#?}");
 
     // add all seed rules
@@ -759,14 +798,49 @@ pub fn run(
     let ops = [dios_config.unops, dios_config.binops, dios_config.triops].to_vec();
 
     let mut rules = seed_rules.clone();
-    for idx in 4..=5 {
-        rules = explore_ruleset_at_depth(rules, idx-2, false, &run_name, vals.clone(), vars.clone(), ops.clone());
+    for idx in 3..=4 {
+        rules = explore_ruleset_at_depth(rules, idx, false, &run_name, vals.clone(), vars.clone(), ops.clone());
     }
-    for idx in 6..=7 {
-        rules = explore_ruleset_at_depth(rules, idx-2, true, &run_name, vals.clone(), vars.clone(), ops.clone());
+    for idx in 5..=5 {
+        rules = explore_ruleset_at_depth(rules, idx, true, &run_name, vals.clone(), vars.clone(), ops.clone());
     }
 
     ruler::logger::log_rules(&rules, Some("rulesets/ruleset.json"), run_name);
 
     Ok(rules)
 }
+
+mod test {
+    // use crate::synthesis::Ruleset;
+    use crate::lang::VecLang;
+    use egg::EGraph;
+    use crate::synthesis::*;
+
+    #[test]
+    fn broken_rules() {
+        let rules: Ruleset<VecLang> = Ruleset::from_file("broken.rules");
+        let scheduler = Scheduler::Simple(ruler::Limits::synthesis());
+        let vals = ["0", "1"].to_vec();
+        let vars = ["a", "b", "c", "d", "e", "f"].to_vec();
+        let ops: Vec<Vec<String>> = [["sqrt",
+        "sgn",
+        "neg",
+        "VecSgn",
+        "VecSqrt",
+        "VecNeg",
+        "Vec"
+  ].to_vec(), [ "/",
+  "+",
+  "*",
+  "-",
+  "VecAdd",
+  "VecMinus",
+  "VecMul",
+  "VecDiv"].to_vec(), ["VecMAC",
+  "VecMULS"].to_vec()].to_vec().iter().map(|x| x.iter().map(|y| y.to_string()).collect()).collect();
+        let mut workload = iter_dios(3, 6, vals.clone(), vars.clone(), ops.clone()).filter(Filter::MetricEq(Metric::Atoms, 6)).filter(Filter::Canon(vars.iter().map(|x| x.to_string()).collect()));;
+        let egraph: EGraph<lang::VecLang, SynthAnalysis> = scheduler.run(&workload.to_egraph(), &rules);
+
+    }
+}
+
