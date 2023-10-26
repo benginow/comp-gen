@@ -179,6 +179,8 @@ impl egg::CostFunction<VecLang> for VecCostFn {
             VecLang::VecNeg(..) => self.vec_op,
             VecLang::VecSqrt(..) => self.vec_op,
             VecLang::VecSgn(..) => self.vec_op,
+            // JB: I think VecSum should have vec op cost, or even less given that I think less memory may be used.
+            VecLang::VecSum(..) => self.vec_op,
             VecLang::Or(_) => self.vec_op,
             VecLang::And(_) => self.vec_op,
             VecLang::Ite(_) => self.vec_op,
@@ -232,3 +234,4 @@ impl comp_gen::CostMetrics<VecLang, ()> for VecCostFn {
         }
     }
 }
+

@@ -90,6 +90,12 @@ egg::define_language! {
         "VecNeg" = VecNeg([Id; 1]),
         "VecSqrt" = VecSqrt([Id; 1]),
         "VecSgn" = VecSgn([Id; 1]),
+
+        // JB: instead (was [Id;1]), now vecsum will have THREE children that are exprs.
+        // all elements of a vecsum must be a mix of either vars or lits, but NOT vectors. 
+        // add this to the type check.
+        "VecSum" = VecSum([Id;3]),
+
         // "VecRAdd" = VecRAdd([Id; 1]),
 
         // MAC takes 3 lists: acc, v1, v2
@@ -138,6 +144,8 @@ pub enum VecAst {
     VecNeg(Box<VecAst>),
     VecSqrt(Box<VecAst>),
     VecSgn(Box<VecAst>),
+
+    VecSum(Box<VecAst>, Box<VecAst>, Box<VecAst>),
 
     VecMAC(Box<VecAst>, Box<VecAst>, Box<VecAst>),
     VecMULS(Box<VecAst>, Box<VecAst>, Box<VecAst>),
@@ -243,6 +251,12 @@ impl VecAst {
             VecAst::VecSgn(inner) => {
                 let id = inner.to_recexpr(expr);
                 expr.add(VecLang::VecSgn([id]))
+            }
+            VecAst::VecSum(a,b,c) => {
+                let a_id = a.to_recexpr(expr);
+                let b_id = b.to_recexpr(expr);
+                let c_id = c.to_recexpr(expr);
+                expr.add(VecLang::VecSum([a_id, b_id, c_id]))
             }
             VecAst::VecMAC(a, b, c) => {
                 let a_id = a.to_recexpr(expr);
@@ -381,6 +395,11 @@ impl From<egg::RecExpr<VecLang>> for VecAst {
             VecLang::VecSgn([inner]) => {
                 VecAst::VecSgn(Box::new(subtree(&expr, *inner).into()))
             }
+            VecLang::VecSum([a,b,c]) => VecAst::VecSum(
+                Box::new(subtree(&expr, *a).into()),
+                Box::new(subtree(&expr, *b).into()),
+                Box::new(subtree(&expr, *c).into()),
+            ),
             VecLang::VecMAC([a, b, c]) => VecAst::VecMAC(
                 Box::new(subtree(&expr, *a).into()),
                 Box::new(subtree(&expr, *b).into()),
@@ -419,10 +438,3 @@ impl comp_gen::FromPattern for VecLang {
             .into()
     }
 }
-
-// impl egg::FromOp for VecLang {
-//     fn from_op(op: &str, children: Vec<Id>) -> Result<Self, Self::Error>
-//     {
-
-//     }
-// }
