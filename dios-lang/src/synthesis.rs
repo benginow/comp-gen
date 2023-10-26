@@ -801,7 +801,7 @@ pub fn run(
     for idx in 3..=4 {
         rules = explore_ruleset_at_depth(rules, idx, false, &run_name, vals.clone(), vars.clone(), ops.clone());
     }
-    for idx in 5..=5 {
+    for idx in 5..=7 {
         rules = explore_ruleset_at_depth(rules, idx, true, &run_name, vals.clone(), vars.clone(), ops.clone());
     }
 
