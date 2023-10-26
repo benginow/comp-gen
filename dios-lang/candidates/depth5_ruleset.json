@@ -1,0 +1,76 @@
+[
+  {
+    "num_rules": 6,
+    "time generated": "2023-10-26 09:55:04.020169 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(Vec (+ 1 ?a))",
+        "rhs": "(VecMinus ?a (Vec (neg 1)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?a (Vec (neg 1)))",
+        "rhs": "(Vec (+ 1 ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (- 1 ?a))",
+        "rhs": "(VecNeg (Vec (- ?a 1)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (Vec (- ?a 1)))",
+        "rhs": "(Vec (- 1 ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec ?a)",
+        "rhs": "(Vec (VecAdd ?a (Vec 0)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecAdd ?a (Vec 0)))",
+        "rhs": "(Vec ?a)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 6,
+    "time generated": "2023-10-26 09:58:01.783737 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(Vec (+ 1 ?a))",
+        "rhs": "(VecMinus ?a (Vec (neg 1)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?a (Vec (neg 1)))",
+        "rhs": "(Vec (+ 1 ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (- 1 ?a))",
+        "rhs": "(VecNeg (Vec (- ?a 1)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (Vec (- ?a 1)))",
+        "rhs": "(Vec (- 1 ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec ?a)",
+        "rhs": "(Vec (VecAdd ?a (Vec 0)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecAdd ?a (Vec 0)))",
+        "rhs": "(Vec ?a)",
+        "bidirectional": false
+      }
+    ]
+  }
+]

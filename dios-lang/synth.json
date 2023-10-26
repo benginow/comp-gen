@@ -11,27 +11,18 @@
     ],
     "seed_rules": [],
     "unops": [
-      "sqrt",
-      "sgn",
+      "Vec",
       "neg",
-      "VecSgn",
-      "VecSqrt",
-      "VecNeg",
-      "Vec"
+      "VecNeg"
     ],
     "binops": [
-      "/",
       "+",
-      "*",
       "-",
       "VecAdd",
-      "VecMinus",
-      "VecMul",
-      "VecDiv"
+      "VecMinus"
     ],
     "triops": [
-      "VecMAC",
-      "VecMULS"
+      "VecSum"
     ],
     "use_scalar": true,
     "use_vector": true,

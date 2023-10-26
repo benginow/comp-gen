@@ -35,5 +35,140 @@
         "bidirectional": false
       }
     ]
+  },
+  {
+    "num_rules": 12,
+    "time generated": "2023-10-26 00:00:15.362782 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(sgn ?a)",
+        "rhs": "(VecSqrt ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSqrt ?a)",
+        "rhs": "(sgn ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn ?a)",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(sgn ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn ?a)",
+        "rhs": "(VecSgn ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSgn ?a)",
+        "rhs": "(sgn ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(VecSqrt ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSqrt ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(VecSgn ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSgn ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 2,
+    "time generated": "2023-10-26 00:24:05.124789 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 2,
+    "time generated": "2023-10-26 09:43:04.484501 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 2,
+    "time generated": "2023-10-26 09:54:12.685449 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 2,
+    "time generated": "2023-10-26 09:57:09.393337 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      }
+    ]
   }
 ]

@@ -1,0 +1,1652 @@
+[
+  {
+    "num_rules": 143,
+    "time generated": "2023-10-26 00:21:47.671480 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(Vec (/ 0 ?a))",
+        "rhs": "(VecDiv (Vec 0) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecDiv (Vec 0) ?a)",
+        "rhs": "(Vec (/ 0 ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?b ?a)",
+        "rhs": "(+ ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b (neg ?a))",
+        "rhs": "(- ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?b ?a)",
+        "rhs": "(Vec (* ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (* ?b ?a))",
+        "rhs": "(VecMul ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(- ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?b (neg ?a))",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecDiv ?b ?a)",
+        "rhs": "(Vec (/ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (/ ?b ?a))",
+        "rhs": "(VecDiv ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b ?a)",
+        "rhs": "(Vec (- ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (- ?b ?a))",
+        "rhs": "(VecMinus ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b (VecNeg ?a))",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(VecMinus ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b (VecNeg ?a))",
+        "rhs": "(VecMinus ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b ?a)",
+        "rhs": "(VecAdd ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMULS ?a ?a ?b)",
+        "rhs": "(VecMULS ?a ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMULS ?a ?b ?a)",
+        "rhs": "(VecMULS ?a ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMAC ?a ?a ?b)",
+        "rhs": "(VecMAC ?a ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMAC ?a ?b ?a)",
+        "rhs": "(VecMAC ?a ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (* ?b ?a))",
+        "rhs": "(* (neg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* (neg ?b) ?a)",
+        "rhs": "(neg (* ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (* ?b ?a))",
+        "rhs": "(* ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?b (neg ?a))",
+        "rhs": "(neg (* ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMul ?b ?a))",
+        "rhs": "(VecMul (VecNeg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul (VecNeg ?b) ?a)",
+        "rhs": "(VecNeg (VecMul ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMul ?b ?a))",
+        "rhs": "(VecMul ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?b (VecNeg ?a))",
+        "rhs": "(VecNeg (VecMul ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecMul ?b ?a))",
+        "rhs": "(Vec (* ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (* ?b ?a))",
+        "rhs": "(Vec (VecMul ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecAdd ?b ?a))",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(Vec (VecAdd ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecDiv ?b ?a))",
+        "rhs": "(Vec (/ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (/ ?b ?a))",
+        "rhs": "(Vec (VecDiv ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- (neg ?b) ?a)",
+        "rhs": "(neg (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (+ ?b ?a))",
+        "rhs": "(- (neg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd (VecNeg ?b) ?a)",
+        "rhs": "(VecNeg (VecMinus ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMinus ?b ?a))",
+        "rhs": "(VecAdd (VecNeg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(neg (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (neg ?a))",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn ?a)",
+        "rhs": "(sgn (sgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn (sgn ?a))",
+        "rhs": "(sgn ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(VecNeg (Vec ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (Vec ?a))",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSgn ?a)",
+        "rhs": "(VecSgn (Vec ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSgn (Vec ?a))",
+        "rhs": "(VecSgn ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSqrt (Vec ?a))",
+        "rhs": "(VecSqrt ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSqrt ?a)",
+        "rhs": "(VecSqrt (Vec ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(Vec (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (neg ?a))",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (sqrt ?a))",
+        "rhs": "(VecSqrt ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSqrt ?a)",
+        "rhs": "(Vec (sqrt ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecSgn ?a))",
+        "rhs": "(VecSgn (Vec ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSgn (Vec ?a))",
+        "rhs": "(Vec (VecSgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn (neg ?a))",
+        "rhs": "(neg (sgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (sgn ?a))",
+        "rhs": "(sgn (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSgn (VecNeg ?a))",
+        "rhs": "(VecNeg (VecSgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecSgn ?a))",
+        "rhs": "(VecSgn (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSgn (VecSgn ?a))",
+        "rhs": "(Vec (sgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (sgn ?a))",
+        "rhs": "(VecSgn (VecSgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSgn (VecNeg ?a))",
+        "rhs": "(Vec (sgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (sgn ?a))",
+        "rhs": "(VecSgn (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn (+ ?a ?a))",
+        "rhs": "(sgn ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn ?a)",
+        "rhs": "(sgn (+ ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?a ?a)",
+        "rhs": "(VecNeg (VecMinus ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMinus ?a ?a))",
+        "rhs": "(VecMinus ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?a ?a)",
+        "rhs": "(VecSgn (VecMinus ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSgn (VecMinus ?a ?a))",
+        "rhs": "(VecMinus ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn (- ?a ?a))",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(sgn (- ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(neg (- ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (- ?a ?a))",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ (sgn ?a) ?a)",
+        "rhs": "(+ ?a (sgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a (sgn ?a))",
+        "rhs": "(+ (sgn ?a) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* (sgn ?a) ?a)",
+        "rhs": "(* ?a (sgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a (sgn ?a))",
+        "rhs": "(* (sgn ?a) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ (neg ?a) ?a)",
+        "rhs": "(/ ?a (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a (neg ?a))",
+        "rhs": "(/ (neg ?a) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSqrt (VecSqrt (Vec ?a)))",
+        "rhs": "(Vec (VecSqrt (VecSqrt ?a)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecSqrt (VecSqrt ?a)))",
+        "rhs": "(VecSqrt (VecSqrt (Vec ?a)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ (sqrt ?a) ?a)",
+        "rhs": "(+ ?a (sqrt ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a (sqrt ?a))",
+        "rhs": "(+ (sqrt ?a) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul (VecSqrt ?a) ?a)",
+        "rhs": "(VecMul ?a (VecSqrt ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?a (VecSqrt ?a))",
+        "rhs": "(VecMul (VecSqrt ?a) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecDiv (VecNeg ?a) ?a)",
+        "rhs": "(VecDiv ?a (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecDiv ?a (VecNeg ?a))",
+        "rhs": "(VecDiv (VecNeg ?a) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd (VecSgn ?a) ?a)",
+        "rhs": "(VecAdd ?a (VecSgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?a (VecSgn ?a))",
+        "rhs": "(VecAdd (VecSgn ?a) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a (sqrt ?a))",
+        "rhs": "(* (sqrt ?a) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* (sqrt ?a) ?a)",
+        "rhs": "(* ?a (sqrt ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?a (VecSqrt ?a))",
+        "rhs": "(VecAdd (VecSqrt ?a) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd (VecSqrt ?a) ?a)",
+        "rhs": "(VecAdd ?a (VecSqrt ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul (VecSgn ?a) ?a)",
+        "rhs": "(VecMul ?a (VecSgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?a (VecSgn ?a))",
+        "rhs": "(VecMul (VecSgn ?a) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecSqrt (VecNeg ?a)))",
+        "rhs": "(VecSqrt (VecNeg (Vec ?a)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSqrt (VecNeg (Vec ?a)))",
+        "rhs": "(Vec (VecSqrt (VecNeg ?a)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecSqrt (Vec ?a)))",
+        "rhs": "(Vec (VecNeg (VecSqrt ?a)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecNeg (VecSqrt ?a)))",
+        "rhs": "(VecNeg (VecSqrt (Vec ?a)))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 ?a)",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(* 1 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 ?a)",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(+ 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 0 ?a)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a (sgn 1))",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(* ?a (sgn 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(/ ?a (neg 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a (neg 1))",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?a (Vec 1))",
+        "rhs": "(VecNeg (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecNeg ?a))",
+        "rhs": "(VecMul ?a (Vec 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecNeg ?a))",
+        "rhs": "(VecMul (Vec 1) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul (Vec 1) ?a)",
+        "rhs": "(VecNeg (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecNeg ?a))",
+        "rhs": "(VecDiv ?a (Vec 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecDiv ?a (Vec 1))",
+        "rhs": "(VecNeg (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 1 ?a)",
+        "rhs": "(+ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 1)",
+        "rhs": "(+ 1 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ 0 (sgn ?a))",
+        "rhs": "(/ 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ 0 ?a)",
+        "rhs": "(/ 0 (sgn ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ 0 (neg ?a))",
+        "rhs": "(/ 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ 0 ?a)",
+        "rhs": "(/ 0 (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a (sqrt 0))",
+        "rhs": "(+ (sqrt 0) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ (sqrt 0) ?a)",
+        "rhs": "(+ ?a (sqrt 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* (sqrt 1) ?a)",
+        "rhs": "(* ?a (sqrt 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a (sqrt 1))",
+        "rhs": "(* (sqrt 1) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a (sqrt 1))",
+        "rhs": "(+ (sqrt 1) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ (sqrt 1) ?a)",
+        "rhs": "(+ ?a (sqrt 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd (Vec 1) ?a)",
+        "rhs": "(VecAdd ?a (Vec 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?a (Vec 1))",
+        "rhs": "(VecAdd (Vec 1) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a (sqrt 0))",
+        "rhs": "(* (sqrt 0) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* (sqrt 0) ?a)",
+        "rhs": "(* ?a (sqrt 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecDiv (Vec 1) ?a)",
+        "rhs": "(Vec (/ 1 ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (/ 1 ?a))",
+        "rhs": "(VecDiv (Vec 1) ?a)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 45,
+    "time generated": "2023-10-26 00:24:53.230177 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(VecAdd (Vec 1) ?a)",
+        "rhs": "(VecAdd ?a (Vec 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?a (Vec 1))",
+        "rhs": "(VecAdd (Vec 1) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b ?a)",
+        "rhs": "(Vec (- ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (- ?b ?a))",
+        "rhs": "(VecMinus ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b (neg ?a))",
+        "rhs": "(- ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?b ?a)",
+        "rhs": "(+ ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(- ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?b (neg ?a))",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(VecMinus ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b (VecNeg ?a))",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b ?a)",
+        "rhs": "(VecAdd ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b (VecNeg ?a))",
+        "rhs": "(VecMinus ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a ?b)",
+        "rhs": "(VecSum ?b ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?b ?a)",
+        "rhs": "(VecSum ?b ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecAdd ?b ?a))",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(Vec (VecAdd ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (+ ?b ?a))",
+        "rhs": "(- (neg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- (neg ?b) ?a)",
+        "rhs": "(neg (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMinus ?b ?a))",
+        "rhs": "(VecAdd (VecNeg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd (VecNeg ?b) ?a)",
+        "rhs": "(VecNeg (VecMinus ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum 0 ?b ?a)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum 0 ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum ?b 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 0 ?a)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum ?b ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a 0)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 1 ?a)",
+        "rhs": "(VecSum ?b ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a 1)",
+        "rhs": "(VecSum ?b 1 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 1 ?a)",
+        "rhs": "(VecSum 1 ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum 1 ?b ?a)",
+        "rhs": "(VecSum ?b 1 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (neg ?a))",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(neg (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(VecNeg (Vec ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (Vec ?a))",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(Vec (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (neg ?a))",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?a ?a)",
+        "rhs": "(VecNeg (VecMinus ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMinus ?a ?a))",
+        "rhs": "(VecMinus ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (- ?a ?a))",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(neg (- ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "0",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 45,
+    "time generated": "2023-10-26 09:43:50.540720 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(VecAdd (Vec 1) ?a)",
+        "rhs": "(VecAdd ?a (Vec 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?a (Vec 1))",
+        "rhs": "(VecAdd (Vec 1) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b ?a)",
+        "rhs": "(Vec (- ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (- ?b ?a))",
+        "rhs": "(VecMinus ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b (neg ?a))",
+        "rhs": "(- ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?b ?a)",
+        "rhs": "(+ ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(- ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?b (neg ?a))",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(VecMinus ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b (VecNeg ?a))",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b ?a)",
+        "rhs": "(VecAdd ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b (VecNeg ?a))",
+        "rhs": "(VecMinus ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a ?b)",
+        "rhs": "(VecSum ?b ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?b ?a)",
+        "rhs": "(VecSum ?b ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecAdd ?b ?a))",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(Vec (VecAdd ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (+ ?b ?a))",
+        "rhs": "(- (neg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- (neg ?b) ?a)",
+        "rhs": "(neg (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMinus ?b ?a))",
+        "rhs": "(VecAdd (VecNeg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd (VecNeg ?b) ?a)",
+        "rhs": "(VecNeg (VecMinus ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum 0 ?b ?a)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum 0 ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum ?b 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 0 ?a)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum ?b ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a 0)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 1 ?a)",
+        "rhs": "(VecSum ?b ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a 1)",
+        "rhs": "(VecSum ?b 1 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 1 ?a)",
+        "rhs": "(VecSum 1 ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum 1 ?b ?a)",
+        "rhs": "(VecSum ?b 1 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (neg ?a))",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(neg (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(VecNeg (Vec ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (Vec ?a))",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(Vec (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (neg ?a))",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?a ?a)",
+        "rhs": "(VecNeg (VecMinus ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMinus ?a ?a))",
+        "rhs": "(VecMinus ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (- ?a ?a))",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(neg (- ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "0",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 45,
+    "time generated": "2023-10-26 09:54:58.705096 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(VecAdd (Vec 1) ?a)",
+        "rhs": "(VecAdd ?a (Vec 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?a (Vec 1))",
+        "rhs": "(VecAdd (Vec 1) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b ?a)",
+        "rhs": "(Vec (- ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (- ?b ?a))",
+        "rhs": "(VecMinus ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b (neg ?a))",
+        "rhs": "(- ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?b ?a)",
+        "rhs": "(+ ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(- ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?b (neg ?a))",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(VecMinus ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b (VecNeg ?a))",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b ?a)",
+        "rhs": "(VecAdd ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b (VecNeg ?a))",
+        "rhs": "(VecMinus ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a ?b)",
+        "rhs": "(VecSum ?b ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?b ?a)",
+        "rhs": "(VecSum ?b ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecAdd ?b ?a))",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(Vec (VecAdd ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (+ ?b ?a))",
+        "rhs": "(- (neg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- (neg ?b) ?a)",
+        "rhs": "(neg (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMinus ?b ?a))",
+        "rhs": "(VecAdd (VecNeg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd (VecNeg ?b) ?a)",
+        "rhs": "(VecNeg (VecMinus ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum 0 ?b ?a)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum 0 ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum ?b 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 0 ?a)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum ?b ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a 0)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 1 ?a)",
+        "rhs": "(VecSum ?b ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a 1)",
+        "rhs": "(VecSum ?b 1 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 1 ?a)",
+        "rhs": "(VecSum 1 ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum 1 ?b ?a)",
+        "rhs": "(VecSum ?b 1 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (neg ?a))",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(neg (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(VecNeg (Vec ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (Vec ?a))",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(Vec (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (neg ?a))",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?a ?a)",
+        "rhs": "(VecNeg (VecMinus ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMinus ?a ?a))",
+        "rhs": "(VecMinus ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (- ?a ?a))",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(neg (- ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "0",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 45,
+    "time generated": "2023-10-26 09:57:56.375984 -05:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": [
+      {
+        "lhs": "(VecAdd (Vec 1) ?a)",
+        "rhs": "(VecAdd ?a (Vec 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?a (Vec 1))",
+        "rhs": "(VecAdd (Vec 1) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b ?a)",
+        "rhs": "(Vec (- ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (- ?b ?a))",
+        "rhs": "(VecMinus ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b (neg ?a))",
+        "rhs": "(- ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?b ?a)",
+        "rhs": "(+ ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(- ?b (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?b (neg ?a))",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(VecMinus ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b (VecNeg ?a))",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?b ?a)",
+        "rhs": "(VecAdd ?b (VecNeg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b (VecNeg ?a))",
+        "rhs": "(VecMinus ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a ?b)",
+        "rhs": "(VecSum ?b ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?b ?a)",
+        "rhs": "(VecSum ?b ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (VecAdd ?b ?a))",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(Vec (VecAdd ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (+ ?b ?a))",
+        "rhs": "(- (neg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- (neg ?b) ?a)",
+        "rhs": "(neg (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMinus ?b ?a))",
+        "rhs": "(VecAdd (VecNeg ?b) ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd (VecNeg ?b) ?a)",
+        "rhs": "(VecNeg (VecMinus ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum 0 ?b ?a)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum 0 ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum ?b 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 0 ?a)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(VecSum ?b ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a 0)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 1 ?a)",
+        "rhs": "(VecSum ?b ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b ?a 1)",
+        "rhs": "(VecSum ?b 1 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum ?b 1 ?a)",
+        "rhs": "(VecSum 1 ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecSum 1 ?b ?a)",
+        "rhs": "(VecSum ?b 1 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (neg ?a))",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(neg (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(VecNeg (Vec ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (Vec ?a))",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg ?a)",
+        "rhs": "(Vec (neg ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec (neg ?a))",
+        "rhs": "(VecNeg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMinus ?a ?a)",
+        "rhs": "(VecNeg (VecMinus ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecNeg (VecMinus ?a ?a))",
+        "rhs": "(VecMinus ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg (- ?a ?a))",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(neg (- ?a ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "?a",
+        "bidirectional": false
+      },
+      {
+        "lhs": "?a",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "0",
+        "bidirectional": false
+      }
+    ]
+  }
+]
