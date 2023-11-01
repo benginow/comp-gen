@@ -79,15 +79,16 @@ egg::define_language! {
         "Concat" = Concat([Id; 2]),
 
         // Vector operations that take 2 vectors of inputs
-        "VecAdd" = VecAdd([Id; 2]),
-        "VecMinus" = VecMinus([Id; 2]),
+        // vector is now represented by 3 exprs
+        "VecAdd" = VecAdd([Id; 6]),
+        "VecMinus" = VecMinus([Id; 6]),
         "VecMul" = VecMul([Id; 2]),
         "VecDiv" = VecDiv([Id; 2]),
         "VecMulSgn" = VecMulSgn([Id; 2]),
         "VecSqrtSgn" = VecSqrtSgn([Id; 2]),
 
         // Vector operations that take 1 vector of inputs
-        "VecNeg" = VecNeg([Id; 1]),
+        "VecNeg" = VecNeg([Id; 3]),
         "VecSqrt" = VecSqrt([Id; 1]),
         "VecSgn" = VecSgn([Id; 1]),
 
@@ -134,14 +135,14 @@ pub enum VecAst {
     Vec(Vec<VecAst>),
     LitVec(Vec<VecAst>),
 
-    VecAdd(Box<VecAst>, Box<VecAst>),
+    VecAdd(Box<VecAst>, Box<VecAst>, Box<VecAst>, Box<VecAst>, Box<VecAst>, Box<VecAst>),
     VecMul(Box<VecAst>, Box<VecAst>),
-    VecMinus(Box<VecAst>, Box<VecAst>),
+    VecMinus(Box<VecAst>, Box<VecAst>, Box<VecAst>, Box<VecAst>, Box<VecAst>, Box<VecAst>),
     VecDiv(Box<VecAst>, Box<VecAst>),
     VecMulSgn(Box<VecAst>, Box<VecAst>),
     VecSqrtSgn(Box<VecAst>, Box<VecAst>),
 
-    VecNeg(Box<VecAst>),
+    VecNeg(Box<VecAst>, Box<VecAst>, Box<VecAst>),
     VecSqrt(Box<VecAst>),
     VecSgn(Box<VecAst>),
 
@@ -197,20 +198,28 @@ impl VecAst {
                 let right_id = right.to_recexpr(expr);
                 expr.add(VecLang::SqrtSgn([left_id, right_id]))
             }
-            VecAst::VecAdd(left, right) => {
-                let left_id = left.to_recexpr(expr);
-                let right_id = right.to_recexpr(expr);
-                expr.add(VecLang::VecAdd([left_id, right_id]))
+            VecAst::VecAdd(a, b, c, x, y, z) => {
+                let a_id: Id = a.to_recexpr(expr);
+                let b_id = b.to_recexpr(expr);
+                let c_id = c.to_recexpr(expr);
+                let x_id = x.to_recexpr(expr);
+                let y_id = y.to_recexpr(expr);
+                let z_id = z.to_recexpr(expr);
+                expr.add(VecLang::VecAdd([a_id, b_id, c_id, x_id, y_id, z_id]))
             }
             VecAst::VecMul(left, right) => {
                 let left_id = left.to_recexpr(expr);
                 let right_id = right.to_recexpr(expr);
                 expr.add(VecLang::VecMul([left_id, right_id]))
             }
-            VecAst::VecMinus(left, right) => {
-                let left_id = left.to_recexpr(expr);
-                let right_id = right.to_recexpr(expr);
-                expr.add(VecLang::VecMinus([left_id, right_id]))
+            VecAst::VecMinus(a, b, c, x, y, z) => {
+                let a_id: Id = a.to_recexpr(expr);
+                let b_id = b.to_recexpr(expr);
+                let c_id = c.to_recexpr(expr);
+                let x_id = x.to_recexpr(expr);
+                let y_id = y.to_recexpr(expr);
+                let z_id = z.to_recexpr(expr);
+                expr.add(VecLang::VecMinus([a_id, b_id, c_id, x_id, y_id, z_id]))
             }
             VecAst::VecDiv(left, right) => {
                 let left_id = left.to_recexpr(expr);
@@ -240,9 +249,11 @@ impl VecAst {
                 let id = inner.to_recexpr(expr);
                 expr.add(VecLang::Neg([id]))
             }
-            VecAst::VecNeg(inner) => {
-                let id = inner.to_recexpr(expr);
-                expr.add(VecLang::VecNeg([id]))
+            VecAst::VecNeg(a,b,c) => {
+                let a_id = a.to_recexpr(expr);
+                let b_id = b.to_recexpr(expr);
+                let c_id = c.to_recexpr(expr);
+                expr.add(VecLang::VecNeg([a_id, b_id, c_id]))
             }
             VecAst::VecSqrt(inner) => {
                 let id = inner.to_recexpr(expr);
@@ -362,13 +373,21 @@ impl From<egg::RecExpr<VecLang>> for VecAst {
                 Box::new(subtree(&expr, *right).into()),
             ),
             VecLang::Concat(_) => todo!(),
-            VecLang::VecAdd([left, right]) => VecAst::VecAdd(
-                Box::new(subtree(&expr, *left).into()),
-                Box::new(subtree(&expr, *right).into()),
+            VecLang::VecAdd([a,b,c,x,y,z]) => VecAst::VecAdd(
+                Box::new(subtree(&expr, *a).into()),
+                Box::new(subtree(&expr, *b).into()),
+                Box::new(subtree(&expr, *c).into()),
+                Box::new(subtree(&expr, *x).into()),
+                Box::new(subtree(&expr, *y).into()),
+                Box::new(subtree(&expr, *z).into()),
             ),
-            VecLang::VecMinus([left, right]) => VecAst::VecMinus(
-                Box::new(subtree(&expr, *left).into()),
-                Box::new(subtree(&expr, *right).into()),
+            VecLang::VecMinus([a,b,c,x,y,z]) => VecAst::VecMinus(
+                Box::new(subtree(&expr, *a).into()),
+                Box::new(subtree(&expr, *b).into()),
+                Box::new(subtree(&expr, *c).into()),
+                Box::new(subtree(&expr, *x).into()),
+                Box::new(subtree(&expr, *y).into()),
+                Box::new(subtree(&expr, *z).into()),
             ),
             VecLang::VecMul([left, right]) => VecAst::VecMul(
                 Box::new(subtree(&expr, *left).into()),
@@ -386,8 +405,10 @@ impl From<egg::RecExpr<VecLang>> for VecAst {
                 Box::new(subtree(&expr, *left).into()),
                 Box::new(subtree(&expr, *right).into()),
             ),
-            VecLang::VecNeg([inner]) => {
-                VecAst::VecNeg(Box::new(subtree(&expr, *inner).into()))
+            VecLang::VecNeg([a,b,c]) => {
+                VecAst::VecNeg(Box::new(subtree(&expr, *a).into()),
+                Box::new(subtree(&expr, *b).into()),
+                Box::new(subtree(&expr, *c).into()))
             }
             VecLang::VecSqrt([inner]) => {
                 VecAst::VecSqrt(Box::new(subtree(&expr, *inner).into()))

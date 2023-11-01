@@ -74,6 +74,17 @@ impl lang::Value {
         }
     }
 
+    fn int6<F>(x: &Self, y: &Self, z: &Self, a: &Self, b: &Self, c: &Self, f: F) -> Option<lang::Value>
+    where
+        F: Fn(i64, i64, i64, i64, i64, i64) -> lang::Value,
+    {
+        if let (lang::Value::Int(xv), lang::Value::Int(yv), lang::Value::Int(zv), lang::Value::Int(av), lang::Value::Int(bv), lang::Value::Int(cv)) = (x, y, z, a , b, c) {
+            Some(f(*xv, *yv, *zv, *av, *bv, *cv))
+        } else {
+            None
+        }
+    }
+
     fn bool2<F>(lhs: &Self, rhs: &Self, f: F) -> Option<lang::Value>
     where
         F: Fn(bool, bool) -> lang::Value,
@@ -432,13 +443,13 @@ impl SynthLanguage for lang::VecLang {
                 })
             }),
             #[rustfmt::skip]
-            lang::VecLang::VecAdd([l, r]) => map!(get, l, r => {
+            lang::VecLang::VecAdd([a,b,c,x,y,z]) => map!(get, a, b, c, x , y, z => {
                 lang::Value::vec2_op(l, r, |l, r| {
                     lang::Value::int2(l, r, |l, r| lang::Value::Int(l + r))
                 })
             }),
             #[rustfmt::skip]
-            lang::VecLang::VecMinus([l, r]) => map!(get, l, r => {
+            lang::VecLang::VecMinus([a,b,c,x,y,z]) => map!(get, l, r => {
                 lang::Value::vec2_op(l, r, |l, r| {
                     lang::Value::int2(l, r, |l, r| lang::Value::Int(l - r))
                 })
@@ -475,7 +486,7 @@ impl SynthLanguage for lang::VecLang {
                 })
             }),
             #[rustfmt::skip]
-            lang::VecLang::VecNeg([l]) => map!(get, l => {
+            lang::VecLang::VecNeg([x,y,z]) => map!(get, l => {
                 lang::Value::vec1(l, |l| {
                     if l.iter().all(|x| matches!(x, lang::Value::Int(_))) {
                         Some(lang::Value::Vec(

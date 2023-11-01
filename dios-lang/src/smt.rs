@@ -96,8 +96,8 @@ impl TypeEquals for lang::VecLang {
                         VecLangType::Variable => Some(VecLangType::Scalar),
                     }))
                 }
-                lang::VecLang::VecNeg([x])
-                | lang::VecLang::VecSqrt([x])
+                
+                lang::VecLang::VecSqrt([x])
                 | lang::VecLang::VecSgn([x]) => {
                     types.push(types[usize::from(*x)].and_then(|t| match t {
                         VecLangType::Vector => Some(t),
@@ -124,8 +124,6 @@ impl TypeEquals for lang::VecLang {
                 }
 
                 lang::VecLang::Concat([x, y])
-                | lang::VecLang::VecAdd([x, y])
-                | lang::VecLang::VecMinus([x, y])
                 | lang::VecLang::VecMul([x, y])
                 | lang::VecLang::VecDiv([x, y])
                 | lang::VecLang::VecSqrtSgn([x, y])
@@ -161,7 +159,7 @@ impl TypeEquals for lang::VecLang {
                 }
 
                 // converts types to scalar, triop
-                lang::VecLang::VecSum([x,y,z]) => {
+                lang::VecLang::VecNeg([x,y,z]) | lang::VecLang::VecSum([x,y,z]) => {
                     let type_x = &types[usize::from(*x)];
                     let type_y = &types[usize::from(*y)];
                     let type_z = &types[usize::from(*z)];
@@ -170,7 +168,7 @@ impl TypeEquals for lang::VecLang {
                             type_z.and_then(|zt| {
                                 match (xt, yt, zt) {
                                     (VecLangType::Vector, _, _) | (_, VecLangType::Vector, _) | (_, _, VecLangType::Vector) => None,
-                                    (VecLangType::Scalar, VecLangType::Scalar, VecLangType::Scalar) => Some(VecLangType::Scalar),
+                                    (VecLangType::Scalar, VecLangType::Scalar, VecLangType::Scalar) => Some(VecLangType::Vector),
                                     _ => Some(VecLangType::Variable),
                                 }
                             })
@@ -182,6 +180,41 @@ impl TypeEquals for lang::VecLang {
                     //     VecLangType::Scalar => None,
                     //     VecLangType::Variable => Some(VecLangType::Scalar),
                 }
+
+                lang::VecLang::VecAdd([x, y, z,a,b,c])
+                | lang::VecLang::VecMinus([x, y,z,a,b,c]) => {
+                    let type_x = &types[usize::from(*x)];
+                    let type_y = &types[usize::from(*y)];
+                    let type_z = &types[usize::from(*z)];
+                    let vec1 = type_x.and_then(|xt| {
+                        type_y.and_then(|yt| {
+                            type_z.and_then(|zt| {
+                                match (xt, yt, zt) {
+                                    (VecLangType::Vector, _, _) | (_, VecLangType::Vector, _) | (_, _, VecLangType::Vector) => None,
+                                    (VecLangType::Scalar, VecLangType::Scalar, VecLangType::Scalar) => Some(VecLangType::Vector),
+                                    _ => Some(VecLangType::Vector),
+                                }
+                            })
+                        })
+                    });
+
+                    let type_a = &types[usize::from(*a)];
+                    let type_b = &types[usize::from(*b)];
+                    let type_c= &types[usize::from(*c)];
+                    let vec2 = type_a.and_then(|at| {
+                        type_b.and_then(|bt| {
+                            type_c.and_then(|ct| {
+                                match (at, bt, ct) {
+                                    (VecLangType::Vector, _, _) | (_, VecLangType::Vector, _) | (_, _, VecLangType::Vector) => None,
+                                    (VecLangType::Scalar, VecLangType::Scalar, VecLangType::Scalar) => Some(VecLangType::Vector),
+                                    _ => Some(VecLangType::Vector),
+                                }
+                            })
+                        })
+                    });
+                }
+
+
 
                 // constants
                 lang::VecLang::List(_) | lang::VecLang::Vec(_) | lang::VecLang::LitVec(_) => {
@@ -237,32 +270,67 @@ impl SmtEquals for lang::VecLang {
             &z3::Sort::int(&ctx),
         );
 
+        let lhs_type = Self::get_type(lhs);
+        let rhs_type = Self::get_type(rhs);
         let left =
-            egg_to_z3(&ctx, &mut solver, &Self::instantiate(lhs), &sqrt_fun);
+            egg_to_z3(&ctx, &mut solver, &Self::instantiate(lhs), lhs_type.unwrap(), &sqrt_fun);
         let right =
-            egg_to_z3(&ctx, &mut solver, &Self::instantiate(rhs), &sqrt_fun);
+            egg_to_z3(&ctx, &mut solver, &Self::instantiate(rhs), rhs_type.unwrap(), &sqrt_fun);
 
         // if we can translate egg to z3 for both lhs, and rhs, then
         // run the z3 solver. otherwise fallback to fuzz_equals
-        if let (Some(lexpr), Some(rexpr)) = (&left, &right) {
 
-            // check to see if lexpr is NOT equal to rexpr.
-            // if we can't find a counter example to this
-            // then we know that they are equal.
-            solver.assert(&lexpr._eq(rexpr).not());
-
-            let smt = match solver.check() {
-                z3::SatResult::Unsat => {debug!("z3 check {} != {}", lexpr, rexpr);
-                debug!("z3 result: {}", true);true},
-                z3::SatResult::Unknown | z3::SatResult::Sat => false,
-            };
+        // JB: rewrite this to be cleaner later
+        match (left, right) {
+            (Z3CheckType::VecEq(x), Z3CheckType::VecEq(y)) => {
+                let mut final_smt = true;
+                for i in 0..3 {
+                    if let (Some(lexpr), Some(rexpr)) = (&(x[i]), &(y[i])) {
+                        // check to see if lexpr is NOT equal to rexpr.
+                        // if we can't find a counter example to this
+                        // then we know that they are equal.
+                        solver.assert(&lexpr._eq(rexpr).not());
             
-            smt
-        } else {
-            warn!("Couldn't translate {lhs} or {rhs} to smt");
-            Self::fuzz_equals(lhs, rhs, true)
+                        let smt = match solver.check() {
+                            z3::SatResult::Unsat => {debug!("z3 check {} != {}", lexpr, rexpr);
+                            debug!("z3 result: {}", true);true},
+                            z3::SatResult::Unknown | z3::SatResult::Sat => false,
+                        };
+                        final_smt &= smt;
+                    } else {
+                        warn!("Couldn't translate {lhs} or {rhs} to smt");
+                        final_smt &= Self::fuzz_equals(lhs, rhs, true);
+                    }
+                }
+                final_smt
+            }
+            (Z3CheckType::ScalarEq(left), Z3CheckType::ScalarEq(right))  => {
+                if let (Some(lexpr), Some(rexpr)) = (&left, &right) {
+                    // check to see if lexpr is NOT equal to rexpr.
+                    // if we can't find a counter example to this
+                    // then we know that they are equal.
+                    solver.assert(&lexpr._eq(rexpr).not());
+        
+                    let smt = match solver.check() {
+                        z3::SatResult::Unsat => {debug!("z3 check {} != {}", lexpr, rexpr);
+                        debug!("z3 result: {}", true);true},
+                        z3::SatResult::Unknown | z3::SatResult::Sat => false,
+                    };
+                    
+                    smt
+                } else {
+                    warn!("Couldn't translate {lhs} or {rhs} to smt");
+                    Self::fuzz_equals(lhs, rhs, true)
+                }
+            }
+            (_, _) => {debug!("type check failed"); return false;}
         }
     }
+}
+
+pub enum Z3CheckType<'a> {
+    ScalarEq(Option<z3::ast::Int<'a>>),
+    VecEq([Option<z3::ast::Int<'a>>; 3])   
 }
 
 /// Translate an egg::RecExpr into an equivalent z3 expression.
@@ -271,8 +339,9 @@ pub fn egg_to_z3<'a>(
     ctx: &'a z3::Context,
     _solver: &mut z3::Solver,
     expr: &egg::RecExpr<lang::VecLang>,
+    expr_type: VecLangType,
     sqrt_fun: &'a z3::FuncDecl,
-) -> Option<z3::ast::Int<'a>> {
+) -> Z3CheckType<'a> {
     // This translate works by walking through the RecExpr vector
     // in order, and translating just that node. We push this
     // translation into a buffer as we go. Any time we need to
@@ -364,15 +433,27 @@ pub fn egg_to_z3<'a>(
             //     let y_int = &buf[usize::from(*y)];
             //     buf.push(x_int + y_int);
             // }
-            lang::VecLang::VecAdd([x, y]) => {
+            lang::VecLang::VecAdd([x, y,z,a,b,c]) => {
                 let x_int = &buf[usize::from(*x)];
                 let y_int = &buf[usize::from(*y)];
-                buf.push(x_int + y_int);
+                let z_int = &buf[usize::from(*z)];
+                let a_int = &buf[usize::from(*a)];
+                let b_int = &buf[usize::from(*b)];
+                let c_int = &buf[usize::from(*c)];
+                buf.push(x_int+a_int);
+                buf.push(y_int+b_int);
+                buf.push(z_int+c_int);
             }
-            lang::VecLang::VecMinus([x, y]) => {
+            lang::VecLang::VecMinus([x,y,z,a,b,c]) => {
                 let x_int = &buf[usize::from(*x)];
                 let y_int = &buf[usize::from(*y)];
-                buf.push(x_int - y_int);
+                let z_int = &buf[usize::from(*z)];
+                let a_int = &buf[usize::from(*a)];
+                let b_int = &buf[usize::from(*b)];
+                let c_int = &buf[usize::from(*c)];
+                buf.push(x_int-a_int);
+                buf.push(y_int-b_int);
+                buf.push(z_int-c_int);
             }
             lang::VecLang::VecMul([x, y]) => {
                 let x_int = &buf[usize::from(*x)];
@@ -399,9 +480,13 @@ pub fn egg_to_z3<'a>(
 
                 buf.push(sgn);
             }
-            lang::VecLang::VecNeg([x]) => {
+            lang::VecLang::VecNeg([x,y,z]) => {
                 let x_int = &buf[usize::from(*x)];
+                let y_int = &buf[usize::from(*y)];
+                let z_int = &buf[usize::from(*z)];
                 buf.push(-x_int);
+                buf.push(-y_int);
+                buf.push(-z_int);
             }
             lang::VecLang::VecSum([x, y, z]) => {
                 let x_int = &buf[usize::from(*x)];
@@ -481,11 +566,15 @@ pub fn egg_to_z3<'a>(
             | lang::VecLang::Get(_)
             | lang::VecLang::Vec(_)
             | lang::VecLang::LitVec(_)
-            | lang::VecLang::Concat(_) => return None,
+            | lang::VecLang::Concat(_) => return Z3CheckType::ScalarEq(None),
         }
     }
     // return the last element
-    buf.pop()
+    if expr_type == VecLangType::Vector {
+        return Z3CheckType::VecEq([buf.pop(), buf.pop(), buf.pop()])
+    } else {
+        return Z3CheckType::ScalarEq(buf.pop())
+    }
 }
 
 mod test 
