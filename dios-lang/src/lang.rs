@@ -16,6 +16,8 @@ pub enum Value {
     Vec(Vec<Value>),
     // starts with b
     Bool(bool),
+    // vec of integers in order to simulate 3 vector lanes
+    Vec3(i64, i64, i64)
 }
 
 impl FromStr for Value {
@@ -40,6 +42,7 @@ impl Display for Value {
                     v.iter().map(|x| format!("{}", x)).collect_vec().join(" ")
                 )
             }
+            Value::Vec3(x,y,z) => write!(f, "{:?} {:?} {:?}", x, y, z)
         }
     }
 }

@@ -244,6 +244,13 @@ pub trait SmtEquals: ruler::SynthLanguage {
     ) -> bool;
 }
 
+#[derive(Clone, Debug)]
+pub enum Z3CheckType<'a> {
+    ScalarEq(Option<z3::ast::Int<'a>>),
+    VecEq([Option<z3::ast::Int<'a>>; 3])   
+}
+
+
 impl SmtEquals for lang::VecLang {
     fn smt_equals(
         // synth: &mut ruler::Synthesizer<Self, ruler::Init>,
@@ -260,6 +267,7 @@ impl SmtEquals for lang::VecLang {
 
         let mut cfg = z3::Config::new();
         cfg.set_timeout_msec(10000);
+        
         let ctx = z3::Context::new(&cfg);
         let mut solver = z3::Solver::new(&ctx);
 
@@ -281,10 +289,11 @@ impl SmtEquals for lang::VecLang {
         // run the z3 solver. otherwise fallback to fuzz_equals
 
         // JB: rewrite this to be cleaner later
-        match (left, right) {
+        let val = match (left.clone(), right.clone()) {
             (Z3CheckType::VecEq(x), Z3CheckType::VecEq(y)) => {
                 let mut final_smt = true;
                 for i in 0..3 {
+
                     if let (Some(lexpr), Some(rexpr)) = (&(x[i]), &(y[i])) {
                         // check to see if lexpr is NOT equal to rexpr.
                         // if we can't find a counter example to this
@@ -296,6 +305,9 @@ impl SmtEquals for lang::VecLang {
                             debug!("z3 result: {}", true);true},
                             z3::SatResult::Unknown | z3::SatResult::Sat => false,
                         };
+
+                        solver.reset();
+                        
                         final_smt &= smt;
                     } else {
                         warn!("Couldn't translate {lhs} or {rhs} to smt");
@@ -305,6 +317,7 @@ impl SmtEquals for lang::VecLang {
                 final_smt
             }
             (Z3CheckType::ScalarEq(left), Z3CheckType::ScalarEq(right))  => {
+
                 if let (Some(lexpr), Some(rexpr)) = (&left, &right) {
                     // check to see if lexpr is NOT equal to rexpr.
                     // if we can't find a counter example to this
@@ -316,7 +329,6 @@ impl SmtEquals for lang::VecLang {
                         debug!("z3 result: {}", true);true},
                         z3::SatResult::Unknown | z3::SatResult::Sat => false,
                     };
-                    
                     smt
                 } else {
                     warn!("Couldn't translate {lhs} or {rhs} to smt");
@@ -324,13 +336,9 @@ impl SmtEquals for lang::VecLang {
                 }
             }
             (_, _) => {debug!("type check failed"); return false;}
-        }
-    }
-}
-
-pub enum Z3CheckType<'a> {
-    ScalarEq(Option<z3::ast::Int<'a>>),
-    VecEq([Option<z3::ast::Int<'a>>; 3])   
+        };
+        val
+     }
 }
 
 /// Translate an egg::RecExpr into an equivalent z3 expression.
@@ -440,9 +448,9 @@ pub fn egg_to_z3<'a>(
                 let a_int = &buf[usize::from(*a)];
                 let b_int = &buf[usize::from(*b)];
                 let c_int = &buf[usize::from(*c)];
-                buf.push(x_int+a_int);
-                buf.push(y_int+b_int);
-                buf.push(z_int+c_int);
+                buf.append(&mut [x_int+a_int, y_int+b_int, z_int+c_int].to_vec());
+                // &buf.push();
+                // buf.push();
             }
             lang::VecLang::VecMinus([x,y,z,a,b,c]) => {
                 let x_int = &buf[usize::from(*x)];
@@ -451,9 +459,7 @@ pub fn egg_to_z3<'a>(
                 let a_int = &buf[usize::from(*a)];
                 let b_int = &buf[usize::from(*b)];
                 let c_int = &buf[usize::from(*c)];
-                buf.push(x_int-a_int);
-                buf.push(y_int-b_int);
-                buf.push(z_int-c_int);
+                buf.append(&mut [x_int-a_int, y_int-b_int, z_int-c_int].to_vec());
             }
             lang::VecLang::VecMul([x, y]) => {
                 let x_int = &buf[usize::from(*x)];
@@ -484,9 +490,7 @@ pub fn egg_to_z3<'a>(
                 let x_int = &buf[usize::from(*x)];
                 let y_int = &buf[usize::from(*y)];
                 let z_int = &buf[usize::from(*z)];
-                buf.push(-x_int);
-                buf.push(-y_int);
-                buf.push(-z_int);
+                buf.append(&mut [-x_int, -y_int, -z_int].to_vec());
             }
             lang::VecLang::VecSum([x, y, z]) => {
                 let x_int = &buf[usize::from(*x)];

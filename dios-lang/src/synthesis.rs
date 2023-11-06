@@ -74,17 +74,6 @@ impl lang::Value {
         }
     }
 
-    fn int6<F>(x: &Self, y: &Self, z: &Self, a: &Self, b: &Self, c: &Self, f: F) -> Option<lang::Value>
-    where
-        F: Fn(i64, i64, i64, i64, i64, i64) -> lang::Value,
-    {
-        if let (lang::Value::Int(xv), lang::Value::Int(yv), lang::Value::Int(zv), lang::Value::Int(av), lang::Value::Int(bv), lang::Value::Int(cv)) = (x, y, z, a , b, c) {
-            Some(f(*xv, *yv, *zv, *av, *bv, *cv))
-        } else {
-            None
-        }
-    }
-
     fn bool2<F>(lhs: &Self, rhs: &Self, f: F) -> Option<lang::Value>
     where
         F: Fn(bool, bool) -> lang::Value,
@@ -443,17 +432,46 @@ impl SynthLanguage for lang::VecLang {
                 })
             }),
             #[rustfmt::skip]
-            lang::VecLang::VecAdd([a,b,c,x,y,z]) => map!(get, a, b, c, x , y, z => {
-                lang::Value::vec2_op(l, r, |l, r| {
-                    lang::Value::int2(l, r, |l, r| lang::Value::Int(l + r))
-                })
-            }),
+            lang::VecLang::VecAdd([a,b,c,x,y,z]) => {
+                let cvec1 = map!(get, a, x => {
+                    lang::Value::int2(a, x, |a, x| lang::Value::Int(a + x))});
+                let cvec2 = map!(get, b, y => {
+                        lang::Value::int2(b, y, |b, y| lang::Value::Int(b + y))});
+                let cvec3 = map!(get, c, z => {
+                        lang::Value::int2(c, z, |c, z| lang::Value::Int(c + z))});
+                use itertools::izip;
+                // I'm not sure that this assertion holds true given that I don't know much about cvecs
+                assert_eq!(cvec1.len(), cvec2.len());
+                assert_eq!(cvec1.len(), cvec3.len());
+                let mut cvec = vec![];
+                for (el1, el2, el3) in izip!(cvec1, cvec2, cvec3) {
+                    if let (Some(lang::Value::Int(e1)), Some(lang::Value::Int(e2)), Some(lang::Value::Int(e3))) = (el1, el2, el3) {
+                        cvec.push(Some(lang::Value::Vec3(e1, e2, e3)))
+                    }
+                }
+                cvec
+            }
             #[rustfmt::skip]
-            lang::VecLang::VecMinus([a,b,c,x,y,z]) => map!(get, l, r => {
-                lang::Value::vec2_op(l, r, |l, r| {
-                    lang::Value::int2(l, r, |l, r| lang::Value::Int(l - r))
-                })
-            }),
+            lang::VecLang::VecMinus([a,b,c,x,y,z]) => {
+                let cvec1 = map!(get, a, x => {
+                    lang::Value::int2(a, x, |a, x| lang::Value::Int(a - x))});
+                let cvec2 = map!(get, b, y => {
+                        lang::Value::int2(b, y, |b, y| lang::Value::Int(b - y))});
+                let cvec3 = map!(get, c, z => {
+                        lang::Value::int2(c, z, |c, z| lang::Value::Int(c - z))});
+                use itertools::izip;
+                // I'm not sure that this assertion holds true given that I don't know much about cvecs
+                assert_eq!(cvec1.len(), cvec2.len());
+                assert_eq!(cvec1.len(), cvec3.len());
+                let mut cvec = vec![];
+                // for now just add up all 3 cvecs? not sure if this is a valid abstraction but i'm making it work with what i've got
+                for (el1, el2, el3) in izip!(cvec1, cvec2, cvec3) {
+                    if let (Some(lang::Value::Int(e1)), Some(lang::Value::Int(e2)), Some(lang::Value::Int(e3))) = (el1, el2, el3) {
+                        cvec.push(Some(lang::Value::Vec3(e1, e2, e3)))
+                    }
+                }
+                cvec
+            }
             #[rustfmt::skip]
             lang::VecLang::VecMul([l, r]) => map!(get, l, r => {
                 lang::Value::vec2_op(l, r, |l, r| {
@@ -486,21 +504,12 @@ impl SynthLanguage for lang::VecLang {
                 })
             }),
             #[rustfmt::skip]
-            lang::VecLang::VecNeg([x,y,z]) => map!(get, l => {
-                lang::Value::vec1(l, |l| {
-                    if l.iter().all(|x| matches!(x, lang::Value::Int(_))) {
-                        Some(lang::Value::Vec(
-                            l.iter()
-                                .map(|tup| match tup {
-                                    lang::Value::Int(a) => lang::Value::Int(-a),
-                                    x => panic!("NEG: Ill-formed: {}", x),
-                                })
-                                .collect::<Vec<_>>(),
-                        ))
-                    } else {
-                        None
-                    }
-                })
+            lang::VecLang::VecNeg([x,y,z]) => map!(get, x, y, z => {
+                if let (lang::Value::Int(xv), lang::Value::Int(yv), lang::Value::Int(zv)) = (x, y, z) {
+                    Some(lang::Value::Vec3(-1 * xv, -1 * yv, -1 * zv))
+                } else {
+                    panic!("NEG: Ill-formed: x:{} y:{} z:{}", x, y, z)
+                }
             }),
             #[rustfmt::skip]
             lang::VecLang::VecSqrt([l]) => map!(get, l => {
