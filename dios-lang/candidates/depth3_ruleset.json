@@ -55,5 +55,143 @@
     "time generated": "2023-10-26 09:57:09.394290 -05:00",
     "run name": "fast cvec match, up to atoms 6, atoms",
     "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:12:20.455058 -06:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:13:14.072538 -06:00",
+    "run name": "fast cvec match, up to atoms 6, atoms",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:14:48.254579 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:20:57.914844 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:30:46.967102 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:35:59.029069 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:38:35.551107 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:39:19.560833 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:44:28.633240 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:49:59.950585 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:51:50.473481 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-06 15:53:50.093221 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 20:40:00.082653 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 21:36:33.035623 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 21:40:46.415083 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 22:13:42.136150 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 22:22:14.112354 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 23:15:26.661971 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 23:20:23.910154 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 23:21:11.045763 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 23:21:30.744868 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 23:24:56.170701 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-08 23:27:41.924762 -06:00",
+    "run name": "widened vector lanes to 3",
+    "eqs": []
   }
 ]

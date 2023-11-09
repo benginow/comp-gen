@@ -63,6 +63,17 @@ impl lang::Value {
         }
     }
 
+    fn vec3_2<F>(lhs: &Self, rhs: &Self, f: F) -> Option<lang::Value>
+    where
+        F: Fn(i64, i64, i64, i64, i64, i64) -> lang::Value,
+    {
+        if let (lang::Value::Vec3(a,b,c), lang::Value::Vec3(x,y,z)) = (lhs, rhs) {
+            Some(f(*a, *b, *c, *x, *y, *z))
+        } else {
+            None
+        }
+    }
+
     fn int3<F>(x: &Self, y: &Self, z: &Self, f: F) -> Option<lang::Value>
     where
         F: Fn(i64, i64, i64) -> lang::Value,
@@ -314,9 +325,11 @@ impl SynthLanguage for lang::VecLang {
         match self {
             lang::VecLang::Const(i) => vec![Some(i.clone()); cvec_len],
             lang::VecLang::Add([l, r]) => map!(get, l, r => {
+                debug!("adding {l:?} {r:?}");
                 lang::Value::int2(l, r, |l, r| lang::Value::Int(l + r))
             }),
             lang::VecLang::Mul([l, r]) => map!(get, l, r => {
+                debug!("multiplying {l:?} {r:?}");
                 lang::Value::int2(l, r, |l, r| lang::Value::Int(l * r))
             }),
             lang::VecLang::Minus([l, r]) => map!(get, l, r => {
@@ -434,21 +447,27 @@ impl SynthLanguage for lang::VecLang {
             #[rustfmt::skip]
             lang::VecLang::VecAdd([a,b,c,x,y,z]) => {
                 let cvec1 = map!(get, a, x => {
-                    lang::Value::int2(a, x, |a, x| lang::Value::Int(a + x))});
+                    lang::Value::int2(a, x, |a, x| lang::Value::Int(a - x))});
                 let cvec2 = map!(get, b, y => {
-                        lang::Value::int2(b, y, |b, y| lang::Value::Int(b + y))});
+                        lang::Value::int2(b, y, |b, y| lang::Value::Int(b - y))});
                 let cvec3 = map!(get, c, z => {
-                        lang::Value::int2(c, z, |c, z| lang::Value::Int(c + z))});
+                        lang::Value::int2(c, z, |c, z| lang::Value::Int(c - z))});
                 use itertools::izip;
                 // I'm not sure that this assertion holds true given that I don't know much about cvecs
                 assert_eq!(cvec1.len(), cvec2.len());
                 assert_eq!(cvec1.len(), cvec3.len());
                 let mut cvec = vec![];
+                // for now just add up all 3 cvecs? not sure if this is a valid abstraction but i'm making it work with what i've got
                 for (el1, el2, el3) in izip!(cvec1, cvec2, cvec3) {
                     if let (Some(lang::Value::Int(e1)), Some(lang::Value::Int(e2)), Some(lang::Value::Int(e3))) = (el1, el2, el3) {
                         cvec.push(Some(lang::Value::Vec3(e1, e2, e3)))
                     }
                 }
+                cvec
+                // map!(get, x, y => {
+                //     lang::Value::vec3_2(x, y, |a,b,c,x,y,z| {Some(lang::Value::Vec3(a+x, b+y, c+z))})
+                // })
+
                 cvec
             }
             #[rustfmt::skip]
@@ -508,7 +527,7 @@ impl SynthLanguage for lang::VecLang {
                 if let (lang::Value::Int(xv), lang::Value::Int(yv), lang::Value::Int(zv)) = (x, y, z) {
                     Some(lang::Value::Vec3(-1 * xv, -1 * yv, -1 * zv))
                 } else {
-                    panic!("NEG: Ill-formed: x:{} y:{} z:{}", x, y, z)
+                    None
                 }
             }),
             #[rustfmt::skip]
@@ -543,7 +562,6 @@ impl SynthLanguage for lang::VecLang {
                 //         if l.iter().all(|x| matches!(x, lang::Value::Int(_))) {
                 //         Some(lang::Value::Int(l.iter().map(|element| match element {
                 //             lang::Value::Int(a) => a,
-                //             x => panic!("VecSum ill-formed {}", x)
                 //         }).sum()
                 //     )) }
                 //     else {
@@ -652,6 +670,7 @@ impl SynthLanguage for lang::VecLang {
         // add variables
         // set the initial cvecs of variables. this represents all the possible
         // values that this variable can have
+        debug!("vars are {vars:?}");
         for i in vars {
             let var = egg::Symbol::from(i);
             let id = egraph.add(lang::VecLang::Symbol(var));
@@ -717,20 +736,27 @@ pub fn vecs_eq(lvec: &CVec<lang::VecLang>, rvec: &CVec<lang::VecLang>) -> bool {
 
 // JB: theoretically loop based off of argnum btu lazy so not rn
 fn iter_dios(_argnum: usize, depth: usize, values: Vec<&str>, variable_names: Vec<&str>, operations: Vec<Vec<String>>) -> Workload {
-    recipe_utils::iter_metric(recipe_utils::base_lang(3), "EXPR", Metric::Atoms, depth)
+
+    let op6 = format!("(OP{}{})", 6, " EXPR".repeat(6));
+    let ops_six = Workload::new([op6]);
+    let workload = recipe_utils::iter_metric(recipe_utils::base_lang(3), "EXPR", Metric::Atoms, depth).append(ops_six)
     .filter(Filter::Contains("VAR".parse().unwrap()))
     .plug("VAL", &Workload::new(values))
     .plug("VAR", &Workload::new(variable_names))
     .plug("OP1", &Workload::new(operations[0].clone()))
     .plug("OP2", &Workload::new(operations[1].clone()))
     .plug("OP3", &Workload::new(operations[2].clone()))
-
+    .plug("OP6", &Workload::new(["VecAdd", "VecMinus"]));
+    debug!("Workload is {workload:?}");
+    workload
 }
 
 fn extend_rules() -> ruler::enumo::Ruleset<lang::VecLang>{
     Ruleset::new([
-        "(VecAdd (Vec ?b) (Vec ?a)) ==> (Vec (+ ?b ?a))", 
-        "(VecDiv (Vec ?b) (Vec ?a)) ==> (Vec (/ ?b ?a))"]
+        // "(VecAdd (Vec ?b) (Vec ?a)) ==> (Vec (+ ?b ?a))", 
+        // "(VecDiv (Vec ?b) (Vec ?a)) ==> (Vec (/ ?b ?a))"
+        "(+ ?a ?a) ==> (* 2 a)"
+        ]
     )
 }
 
@@ -774,7 +800,7 @@ fn explore_ruleset_at_depth(current_ruleset: Ruleset<lang::VecLang>,
     ruler::logger::log_rules(&candidates, Some((format!("candidates/depth{}_post_cvec_match.json", depth)).as_str()), run_name);
     let mut rules = candidates.minimize(current_ruleset.clone(), scheduler).0;
     println!(
-        "Done with generating rules of depth {} after {} secs, {} eclasses, {} rules",
+        "\n=============Done with generating rules of depth {} after {} secs, {} eclasses, {} rules=============",
         depth,
         start.elapsed().as_secs(),
         egraph.number_of_classes(),
@@ -790,7 +816,7 @@ pub fn run(
     _chkpt_path: Option<PathBuf>,
 ) -> Res<ruler::enumo::Ruleset<lang::VecLang>>
 {
-    let run_name = "fast cvec match, up to atoms 6, atoms";
+    let run_name = "widened vector lanes to 3";
     log::info!("running with config: {dios_config:#?}");
 
     // add all seed rules
