@@ -63,17 +63,6 @@ impl lang::Value {
         }
     }
 
-    fn vec3_2<F>(lhs: &Self, rhs: &Self, f: F) -> Option<lang::Value>
-    where
-        F: Fn(i64, i64, i64, i64, i64, i64) -> lang::Value,
-    {
-        if let (lang::Value::Vec3(a,b,c), lang::Value::Vec3(x,y,z)) = (lhs, rhs) {
-            Some(f(*a, *b, *c, *x, *y, *z))
-        } else {
-            None
-        }
-    }
-
     fn int3<F>(x: &Self, y: &Self, z: &Self, f: F) -> Option<lang::Value>
     where
         F: Fn(i64, i64, i64) -> lang::Value,
@@ -106,6 +95,18 @@ impl lang::Value {
             None
         }
     }
+
+    // fn vec3_2<F>(lhs: &Self, rhs: &Self, f: F) -> Option<lang::Value>
+    // where
+    // // should be two arrays but im too lazy to change it
+    //     F: Fn(lang::Value, lang::Value, lang::Value, lang::Value, lang::Value, lang::Value) -> Option<lang::Value>,
+    // {
+    //     if let (lang::Value::Vec3(a,b,c), lang::Value::Vec3(x,y,z)) = (lhs,rhs) {
+    //         f(**a,**b,**c,**x,**y,**z)
+    //     } else {
+    //         None
+    //     }
+    // }
 
     fn vec2<F>(lhs: &Self, rhs: &Self, f: F) -> Option<lang::Value>
     where
@@ -446,49 +447,45 @@ impl SynthLanguage for lang::VecLang {
             }),
             #[rustfmt::skip]
             lang::VecLang::VecAdd([a,b,c,x,y,z]) => {
-                let cvec1 = map!(get, a, x => {
+                let mut cvec1 = map!(get, a, x => {
                     lang::Value::int2(a, x, |a, x| lang::Value::Int(a - x))});
-                let cvec2 = map!(get, b, y => {
+                let mut cvec2 = map!(get, b, y => {
                         lang::Value::int2(b, y, |b, y| lang::Value::Int(b - y))});
-                let cvec3 = map!(get, c, z => {
+                let mut cvec3 = map!(get, c, z => {
                         lang::Value::int2(c, z, |c, z| lang::Value::Int(c - z))});
-                use itertools::izip;
                 // I'm not sure that this assertion holds true given that I don't know much about cvecs
                 assert_eq!(cvec1.len(), cvec2.len());
                 assert_eq!(cvec1.len(), cvec3.len());
                 let mut cvec = vec![];
-                // for now just add up all 3 cvecs? not sure if this is a valid abstraction but i'm making it work with what i've got
-                for (el1, el2, el3) in izip!(cvec1, cvec2, cvec3) {
-                    if let (Some(lang::Value::Int(e1)), Some(lang::Value::Int(e2)), Some(lang::Value::Int(e3))) = (el1, el2, el3) {
-                        cvec.push(Some(lang::Value::Vec3(e1, e2, e3)))
-                    }
-                }
+                cvec.append(&mut cvec1);
+                cvec.append(&mut cvec2);
+                cvec.append(&mut cvec3);
                 cvec
+                // for now just add up all 3 cvecs? not sure if this is a valid abstraction but i'm making it work with what i've got
+                // for (el1, el2, el3) in izip!(cvec1, cvec2, cvec3) {
+                //     if let (Some(lang::Value::Int(e1)), Some(lang::Value::Int(e2)), Some(lang::Value::Int(e3))) = (el1, el2, el3) {
+                //         cvec.push(Some(lang::Value::Vec3(e1, e2, e3)))
+                //     }
+                // }
                 // map!(get, x, y => {
                 //     lang::Value::vec3_2(x, y, |a,b,c,x,y,z| {Some(lang::Value::Vec3(a+x, b+y, c+z))})
                 // })
-
-                cvec
             }
             #[rustfmt::skip]
             lang::VecLang::VecMinus([a,b,c,x,y,z]) => {
-                let cvec1 = map!(get, a, x => {
+                let mut cvec1 = map!(get, a, x => {
                     lang::Value::int2(a, x, |a, x| lang::Value::Int(a - x))});
-                let cvec2 = map!(get, b, y => {
+                let mut cvec2 = map!(get, b, y => {
                         lang::Value::int2(b, y, |b, y| lang::Value::Int(b - y))});
-                let cvec3 = map!(get, c, z => {
+                let mut cvec3 = map!(get, c, z => {
                         lang::Value::int2(c, z, |c, z| lang::Value::Int(c - z))});
-                use itertools::izip;
                 // I'm not sure that this assertion holds true given that I don't know much about cvecs
                 assert_eq!(cvec1.len(), cvec2.len());
                 assert_eq!(cvec1.len(), cvec3.len());
                 let mut cvec = vec![];
-                // for now just add up all 3 cvecs? not sure if this is a valid abstraction but i'm making it work with what i've got
-                for (el1, el2, el3) in izip!(cvec1, cvec2, cvec3) {
-                    if let (Some(lang::Value::Int(e1)), Some(lang::Value::Int(e2)), Some(lang::Value::Int(e3))) = (el1, el2, el3) {
-                        cvec.push(Some(lang::Value::Vec3(e1, e2, e3)))
-                    }
-                }
+                cvec.append(&mut cvec1);
+                cvec.append(&mut cvec2);
+                cvec.append(&mut cvec3);
                 cvec
             }
             #[rustfmt::skip]
@@ -523,13 +520,27 @@ impl SynthLanguage for lang::VecLang {
                 })
             }),
             #[rustfmt::skip]
-            lang::VecLang::VecNeg([x,y,z]) => map!(get, x, y, z => {
-                if let (lang::Value::Int(xv), lang::Value::Int(yv), lang::Value::Int(zv)) = (x, y, z) {
-                    Some(lang::Value::Vec3(-1 * xv, -1 * yv, -1 * zv))
-                } else {
-                    None
-                }
-            }),
+            lang::VecLang::VecNeg([x,y,z]) => {
+                let mut cvec1 = map!(get, x => {
+                    lang::Value::int1(x, |x| lang::Value::Int(-x))});
+                let mut cvec2 = map!(get, y => {
+                        lang::Value::int1(y, |y| lang::Value::Int(-y))});
+                let mut cvec3 = map!(get, z => {
+                        lang::Value::int1(z, |z| lang::Value::Int(-z))});
+                // let cvec = map!(get, x, y, z => {
+                // if let (lang::Value::Int(xv), lang::Value::Int(yv), lang::Value::Int(zv)) = (x, y, z) {
+                //     Some(lang::Value::Vec3(-1 * xv, -1 * yv, -1 * zv))
+                // } else {
+                //     None
+                // }
+                assert_eq!(cvec1.len(), cvec2.len());
+                assert_eq!(cvec1.len(), cvec3.len());
+                let mut cvec = vec![];
+                cvec.append(&mut cvec1);
+                cvec.append(&mut cvec2);
+                cvec.append(&mut cvec3);
+                cvec
+            }
             #[rustfmt::skip]
             lang::VecLang::VecSqrt([l]) => map!(get, l => {
                 lang::Value::vec1(l, |l| {

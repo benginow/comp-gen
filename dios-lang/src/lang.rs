@@ -17,7 +17,8 @@ pub enum Value {
     // starts with b
     Bool(bool),
     // vec of integers in order to simulate 3 vector lanes
-    Vec3(i64, i64, i64)
+    // three integers, don't worry about bools
+    Vec3(Box<Value>, Box<Value>, Box<Value>)
 }
 
 impl FromStr for Value {
