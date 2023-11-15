@@ -145,8 +145,8 @@ mod test {
         ];
 
         for (i, pat) in patterns.iter().enumerate() {
-            for (j, expr) in exprs.iter().enumerate() {
-                assert_eq!(pat.matches(expr), expected[i][j]);
+            for (j, expr) in exprs.clone().enumerate() {
+                assert_eq!(pat.matches(&expr), expected[i][j]);
             }
         }
     }

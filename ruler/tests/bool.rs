@@ -147,7 +147,7 @@ mod test {
         let mut all_rules: Ruleset<Bool> = Ruleset::default();
         let atoms3 = iter_bool(3);
         println!("VARS: {:?}", atoms3);
-        assert_eq!(atoms3.force().len(), 93);
+        assert_eq!(atoms3.force().collect::<Vec<_>>().len(), 93);
 
         let scheduler = Scheduler::Compress(Limits::synthesis());
 
@@ -157,7 +157,7 @@ mod test {
         all_rules.extend(rules3);
 
         let atoms4 = iter_bool(4);
-        assert_eq!(atoms4.force().len(), 348);
+        assert_eq!(atoms4.force().collect::<Vec<_>>().len(), 348);
 
         let egraph = scheduler.run(&atoms4.to_egraph(), &all_rules);
         candidates = Ruleset::cvec_match(&egraph);
@@ -165,7 +165,7 @@ mod test {
         all_rules.extend(rules4);
 
         let atoms5 = iter_bool(5);
-        assert_eq!(atoms5.force().len(), 4599);
+        assert_eq!(atoms5.force().collect::<Vec<_>>().len(), 4599);
 
         let egraph = scheduler.run(&atoms5.to_egraph(), &all_rules);
         candidates = Ruleset::cvec_match(&egraph);
@@ -213,7 +213,7 @@ mod test {
     fn simple() {
         let mut all_rules = Ruleset::default();
         let atoms3 = iter_bool(3);
-        assert_eq!(atoms3.force().len(), 93);
+        assert_eq!(atoms3.force().collect::<Vec<_>>().len(), 93);
 
         let rules3 = run_workload(
             atoms3,
@@ -225,7 +225,7 @@ mod test {
         all_rules.extend(rules3);
 
         let atoms4 = iter_bool(4);
-        assert_eq!(atoms4.force().len(), 348);
+        assert_eq!(atoms4.force().collect::<Vec<_>>().len(), 348);
 
         let rules4 = run_workload(
             atoms4,
@@ -237,7 +237,7 @@ mod test {
         all_rules.extend(rules4);
 
         let atoms5 = iter_bool(5);
-        assert_eq!(atoms5.force().len(), 4599);
+        assert_eq!(atoms5.force().collect::<Vec<_>>().len(), 4599);
 
         let rules5 = run_workload(
             atoms5,

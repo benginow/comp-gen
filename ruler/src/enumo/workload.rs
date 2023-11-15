@@ -38,7 +38,7 @@ impl Workload {
     pub fn to_file(&self, filename: &str) {
         let mut file = std::fs::File::create(filename)
             .unwrap_or_else(|_| panic!("Failed to open '{}'", filename));
-        for name in &self.force() {
+        for name in self.force() {
             writeln!(file, "{}", name).expect("Unable to write");
         }
     }
@@ -67,7 +67,7 @@ impl Workload {
         // can matter, so make sure we preserve the order in the workload.
         // TODO: why does this order matter?
         let mut vars: Vec<String> = vec![];
-        for sexp in sexps.iter() {
+        for sexp in sexps.clone() {
             let expr: RecExpr<L> = sexp.to_string().parse().unwrap();
             for node in expr.as_ref() {
                 if let ENodeOrVar::Var(v) = node.clone().to_enode_or_var() {
@@ -81,25 +81,29 @@ impl Workload {
         }
         L::initialize_vars(&mut egraph, &vars);
 
-        for sexp in sexps.iter() {
+        for sexp in sexps {
             egraph.add_expr(&sexp.to_string().parse::<RecExpr<L>>().unwrap());
         }
         egraph
     }
 
-    pub fn force(&self) -> Vec<Sexp> {
+    // make force return an iterator instead
+    // iterator over sexps to add to egraph
+    pub fn force_original(&self) -> Vec<Sexp> {
         match self {
             Workload::Set(set) => set.clone(),
             Workload::Plug(wkld, name, pegs) => {
+                // iterate over each peg and apply in that manner
                 let mut res = vec![];
-                let pegs = pegs.force();
+                let pegs = pegs.force_original();
+                
                 for sexp in wkld.force() {
-                    res.extend(sexp.plug(name, &pegs));
+                    res.extend(sexp.plug_original(name, &pegs));
                 }
                 res
             }
             Workload::Filter(f, workload) => {
-                let mut set = workload.force();
+                let mut set = workload.force_original();
                 set.retain(|sexp| f.test(sexp));
                 set
             }
@@ -113,6 +117,36 @@ impl Workload {
         }
     }
 
+    // make force return an iterator instead
+    // iterator over sexps to add to egraph
+    pub fn force<'a>(&self) -> impl Iterator<Item = Sexp> + Clone {
+        match self {
+            Workload::Set(set) => set.clone().into_iter(),
+            Workload::Plug(wkld, name, pegs) => {
+                // iterate over each peg and apply in that manner
+                // let mut res = vec![];
+                let pegs = pegs.force();
+                
+                // JB: should this be flat map or map?
+                wkld.force().flat_map(move |sexp| sexp.plug(name, pegs.clone())).collect::<Vec<_>>().into_iter()
+
+            }
+            Workload::Filter(f, workload) => {
+                let mut set = workload.force();
+                let set = set.filter(|sexp| f.test(sexp)).collect::<Vec<_>>().into_iter();
+                set
+            }
+            Workload::Append(workloads) => {
+                
+                let set= workloads.iter().flat_map(|thing| {thing.force()}).collect::<Vec<_>>().into_iter();
+                // for w in workloads {
+                //     set = set.chain(w.force());
+                // }
+                set
+            }
+        }
+    }
+
     pub fn pretty_print(&self) {
         for t in self.force() {
             println!("{}", t);
@@ -120,6 +154,16 @@ impl Workload {
     }
 
     pub fn plug(self, name: impl Into<String>, workload: &Workload) -> Self {
+        match workload {
+            // Empty plug is the same as filter excludes
+            Workload::Set(xs) if xs.is_empty() => {
+                self.filter(Filter::Excludes(name.into().parse().unwrap()))
+            }
+            _ => Workload::Plug(Box::new(self), name.into(), Box::new(workload.clone())),
+        }
+    }
+
+    pub fn plug_iterator(self, name: impl Into<String>, workload: &Workload) -> Self {
         match workload {
             // Empty plug is the same as filter excludes
             Workload::Set(xs) if xs.is_empty() => {
@@ -191,7 +235,7 @@ mod test {
         let plugged = wkld
             .plug("x", &pegs)
             .filter(Filter::MetricLt(Metric::Atoms, 2));
-        assert_eq!(plugged.force().len(), 3);
+        assert_eq!(plugged.force().collect::<Vec<_>>().len(), 3);
     }
 
     #[test]
@@ -210,7 +254,7 @@ mod test {
         ])
         .force();
 
-        assert_eq!(actual3, expected3);
+        assert_eq!(actual3.collect::<Vec<_>>(), expected3.collect::<Vec<_>>());
 
         let actual4 = iter_metric(base_lang(3), "EXPR", Metric::Atoms, 4)
             .filter(Filter::Contains("VAR".parse().unwrap()))
@@ -243,7 +287,7 @@ mod test {
         ])
         .force();
 
-        assert_eq!(actual4, expected4);
+        assert_eq!(actual4.collect::<Vec<_>>(), expected4.collect::<Vec<_>>());
     }
 
     #[test]
@@ -255,7 +299,7 @@ mod test {
             "1", "2", "(1 1)", "(1 2)", "(2 1)", "(2 2)", "(1 1 1)", "(1 1 2)", "(1 2 1)",
             "(1 2 2)", "(2 1 1)", "(2 1 2)", "(2 2 1)", "(2 2 2)",
         ]);
-        let actual = w1.plug("x", &w2).force();
+        let actual = w1.plug("x", &w2).force().collect::<Vec<_>>();
         for t in expected.force() {
             assert!(actual.contains(&t));
         }
@@ -271,7 +315,7 @@ mod test {
 
         let wkld = w1.clone().append(w2.clone());
         let wkld = wkld.append(w3.clone());
-        assert_eq!(wkld.force().len(), 6);
+        assert_eq!(wkld.force().collect::<Vec<_>>().len(), 6);
         assert!(matches!(wkld, Workload::Set(_)));
 
         let wkld = w3.clone().append(w4.clone());

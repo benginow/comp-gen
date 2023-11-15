@@ -104,7 +104,7 @@ mod test {
         ]);
         let actual = wkld.filter(Filter::MetricLt(Metric::Atoms, 5)).force();
         let expected = Workload::new(["(+ a a)", "(+ a b)", "(~ (+ a b))"]).force();
-        assert_eq!(actual, expected)
+        assert_eq!(actual.collect::<Vec<_>>(), expected.collect::<Vec<_>>())
     }
 
     #[test]
@@ -121,7 +121,7 @@ mod test {
             .filter(Filter::Contains("(+ ?x ?x)".parse().unwrap()))
             .force();
         let expected = Workload::new(["(+ a a)", "(+ a (+ b b))", "(+ (+ a b) (+ a b))"]).force();
-        assert_eq!(actual, expected);
+        assert_eq!(actual.collect::<Vec<_>>(), expected.collect::<Vec<_>>())
     }
 
     #[test]
@@ -134,7 +134,7 @@ mod test {
             ]))
             .force();
         let expected = Workload::new(["(x y)", "(y x)", "(x y z)"]).force();
-        assert_eq!(actual, expected);
+        assert_eq!(actual.collect::<Vec<_>>(), expected.collect::<Vec<_>>()) 
     }
 
     #[test]
@@ -153,7 +153,7 @@ mod test {
             ))))
             .force();
         let expected = Workload::new(["(+ a b)", "(+ a (+ a b))", "(+ (+ a b) (+ b a))"]).force();
-        assert_eq!(actual, expected);
+        assert_eq!(actual.collect::<Vec<_>>(), expected.collect::<Vec<_>>())
     }
 
     #[test]
@@ -163,6 +163,6 @@ mod test {
             .plug("X", &pegs)
             .filter(Filter::Excludes("c".parse().unwrap()));
 
-        assert_eq!(wkld.force().len(), 9)
+        assert_eq!(wkld.force().collect::<Vec<_>>().len(), 9)
     }
 }

@@ -193,76 +193,76 @@ mod test {
     fn iter_metric_test() {
         let lang = base_lang(2);
         let atoms1 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 1).force();
-        assert_eq!(atoms1.len(), 2);
+        assert_eq!(atoms1.collect::<Vec<_>>().len(), 2);
 
         let atoms2 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 2).force();
-        assert_eq!(atoms2.len(), 4);
+        assert_eq!(atoms2.collect::<Vec<_>>().len(), 4);
 
         let atoms3 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 3).force();
-        assert_eq!(atoms3.len(), 10);
+        assert_eq!(atoms3.collect::<Vec<_>>().len(), 10);
 
         let atoms4 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 4).force();
-        assert_eq!(atoms4.len(), 24);
+        assert_eq!(atoms4.collect::<Vec<_>>().len(), 24);
 
         let atoms5 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 5).force();
-        assert_eq!(atoms5.len(), 66);
+        assert_eq!(atoms5.collect::<Vec<_>>().len(), 66);
 
         let atoms6 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 6).force();
-        assert_eq!(atoms6.len(), 188);
+        assert_eq!(atoms6.collect::<Vec<_>>().len(), 188);
 
         let atoms6 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 7).force();
-        assert_eq!(atoms6.len(), 570);
+        assert_eq!(atoms6.collect::<Vec<_>>().len(), 570);
 
         let depth1 = iter_metric(lang.clone(), "EXPR", Metric::Depth, 1).force();
-        assert_eq!(depth1.len(), 2);
+        assert_eq!(depth1.collect::<Vec<_>>().len(), 2);
 
         let depth2 = iter_metric(lang.clone(), "EXPR", Metric::Depth, 2).force();
-        assert_eq!(depth2.len(), 8);
+        assert_eq!(depth2.collect::<Vec<_>>().len(), 8);
 
         let depth3 = iter_metric(lang.clone(), "EXPR", Metric::Depth, 3).force();
-        assert_eq!(depth3.len(), 74);
+        assert_eq!(depth3.collect::<Vec<_>>().len(), 74);
 
         let depth4 = iter_metric(lang.clone(), "EXPR", Metric::Depth, 4).force();
-        assert_eq!(depth4.len(), 5552);
+        assert_eq!(depth4.collect::<Vec<_>>().len(), 5552);
 
         let lists1 = iter_metric(lang.clone(), "EXPR", Metric::Lists, 1).force();
-        assert_eq!(lists1.len(), 8);
+        assert_eq!(lists1.collect::<Vec<_>>().len(), 8);
 
         let lists2 = iter_metric(lang.clone(), "EXPR", Metric::Lists, 2).force();
-        assert_eq!(lists2.len(), 38);
+        assert_eq!(lists2.collect::<Vec<_>>().len(), 38);
 
         let lists3 = iter_metric(lang.clone(), "EXPR", Metric::Lists, 3).force();
-        assert_eq!(lists3.len(), 224);
+        assert_eq!(lists3.collect::<Vec<_>>().len(), 224);
     }
 
     #[test]
     fn iter_metric_fast() {
         // This test will not finish if the pushing monotonic filters through plugs optimization is not working.
         let three = iter_metric(base_lang(3), "EXPR", Metric::Atoms, 3);
-        assert_eq!(three.force().len(), 10);
+        assert_eq!(three.force().collect::<Vec<_>>().len(), 10);
 
         let four = iter_metric(base_lang(3), "EXPR", Metric::Atoms, 4);
-        assert_eq!(four.force().len(), 32);
+        assert_eq!(four.force().collect::<Vec<_>>().len(), 32);
 
         let five = iter_metric(base_lang(3), "EXPR", Metric::Atoms, 5);
-        assert_eq!(five.force().len(), 106);
+        assert_eq!(five.force().collect::<Vec<_>>().len(), 106);
 
         let six = iter_metric(base_lang(3), "EXPR", Metric::Atoms, 6);
-        assert_eq!(six.force().len(), 388);
+        assert_eq!(six.force().collect::<Vec<_>>().len(), 388);
     }
 
     #[test]
     fn base_lang_test() {
-        assert_eq!(base_lang(0).force().len(), 2);
-        assert_eq!(base_lang(1).force().len(), 3);
-        assert_eq!(base_lang(2).force().len(), 4);
-        assert_eq!(base_lang(3).force().len(), 5);
+        assert_eq!(base_lang(0).force().collect::<Vec<_>>().len(), 2);
+        assert_eq!(base_lang(1).force().collect::<Vec<_>>().len(), 3);
+        assert_eq!(base_lang(2).force().collect::<Vec<_>>().len(), 4);
+        assert_eq!(base_lang(3).force().collect::<Vec<_>>().len(), 5);
     }
 
     #[test]
     fn empty_plug() {
         let wkld =
             iter_metric(base_lang(3), "EXPR", Metric::Atoms, 6).plug("OP3", &Workload::empty());
-        assert_eq!(wkld.force().len(), 188);
+        assert_eq!(wkld.force().collect::<Vec<_>>().len(), 188);
     }
 }

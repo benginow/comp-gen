@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{str::FromStr, iter::FromIterator};
 
 use super::*;
 
@@ -85,18 +85,75 @@ impl Sexp {
         self.apply_subst(&subst)
     }
 
-    pub(crate) fn plug(&self, name: &str, pegs: &[Self]) -> Vec<Sexp> {
+    pub(crate) fn plug_original(&self, name: &str, pegs: &[Self]) -> Vec<Sexp> {
         use itertools::Itertools;
         match self {
             Sexp::Atom(s) if s == name => pegs.to_vec(),
             Sexp::Atom(_) => vec![self.clone()],
             Sexp::List(sexps) => sexps
                 .iter()
-                .map(|x| x.plug(name, pegs))
+                .map(|x| x.plug_original(name, pegs))
                 .multi_cartesian_product()
                 .map(Sexp::List)
                 .collect(),
         }
+    }
+
+
+    // fn cartesian_product(iterators: &[impl Iterator<Item = T>]) -> Box<dyn Iterator<Item = Vec<T>>> {
+    //     match iterators.split_first() {
+    //         Some((first, rest)) => {
+    //             let cloned_rest = rest.to_vec();
+    //             Box::new(first.flat_map(move |x| cartesian_product(&cloned_rest, x.clone()).map(move |mut v| { v.push(x.clone()); v })))
+    //         }
+    //         None => Box::new(std::iter::once(vec![])),
+    //     }
+    // }
+
+    // fn cartesian_product<'a>(iterators: Vec<Box<dyn Iterator<Item = Sexp>>>) -> Box<dyn Iterator<Item = Sexp>> {
+    //     let thing = match iterators.split_first() {
+    //         Some((first,rest)) => {
+    //             Box::new(first.flat_map(
+    //                 move |x| Self::cartesian_product(rest).map(
+    //                     |sexp| Sexp::List([x.clone(), sexp].to_vec()))
+    //             ).map(Sexp::List))
+    //         }
+    //         None => Box::new(std::iter::empty()),
+    //     };
+    //     return thing;
+    // }
+
+    pub(crate) fn plug<'a>(&self, name: &str, pegs: impl Iterator<Item = Sexp> + Clone) -> impl Iterator<Item = Sexp> + Clone {
+        use itertools::iproduct;
+        use itertools::cloned;
+        use itertools::Itertools;
+
+        let val = match self {
+            Sexp::Atom(s) if s == name => pegs.map(|s| s.clone()).collect::<Vec<_>>().into_iter(),
+            Sexp::Atom(_) => vec![self.clone()].into_iter().collect::<Vec<_>>().into_iter(),
+            Sexp::List(sexps) => 
+            {
+                // we have sexps. we want to go through every sexp and plug it, which will result in nested iterators.
+
+                // this is an iterator over sexps -> we want to take the cartesian product of all of these iterators
+
+                //: Vec<Box<dyn Iterator<Item = Sexp>>>
+                let iterators = sexps
+                .iter()
+                .map(|x| x.plug(name, pegs.clone()))
+                .multi_cartesian_product()
+                .map(|list|
+                    {
+                        // let new_list = list.into_iter().cloned().collect();
+                        Sexp::List(list)
+                })
+                .collect::<Vec<_>>()
+                .into_iter();
+
+                iterators
+            }
+        };
+        val
     }
 
     pub(crate) fn measure(&self, metric: Metric) -> usize {
@@ -188,12 +245,31 @@ mod test {
         let x = "x".parse::<Sexp>().unwrap();
         let pegs = Workload::new(["1", "2", "3"]).force();
         let expected = vec![x.clone()];
-        let actual = x.plug("a", &pegs);
-        assert_eq!(actual, expected);
+        let actual = x.plug("a", pegs.clone());
+        assert_eq!(actual.collect::<Vec<_>>(), expected);
 
-        let expected = pegs.clone();
-        let actual = x.plug("x", &pegs);
-        assert_eq!(actual, expected);
+        let expected = pegs.clone().collect::<Vec<_>>().clone();
+        let actual = x.plug("x", pegs);
+        assert_eq!(actual.collect::<Vec<_>>(), expected);
+    }
+
+    #[test]
+    fn play_with_iterators() {
+        let x = "(x x)".parse::<Sexp>().unwrap();
+        let pegs = Workload::new(["1", "2", "3"]).force();
+        let expected = Workload::new([
+            "(1 1)", "(1 2)", "(1 3)", "(2 1)", "(2 2)", "(2 3)", "(3 1)", "(3 2)", "(3 3)",
+        ]).force();
+
+
+        // now, lets do the peg thing but with iterators only
+         
+        let actual: Vec<Sexp> = x.plug("x", pegs).collect();
+        println!("x is {x:?}");
+        println!("actual is {actual:?}");
+        println!("expected is {:?}", expected.collect::<Vec<_>>());
+        // we have an iterator over the pegs, which will be an iterator over sexps
+        
     }
 
     #[test]
@@ -203,8 +279,9 @@ mod test {
         let expected = Workload::new([
             "(1 1)", "(1 2)", "(1 3)", "(2 1)", "(2 2)", "(2 3)", "(3 1)", "(3 2)", "(3 3)",
         ])
-        .force();
-        let actual = term.parse::<Sexp>().unwrap().plug("x", &pegs);
+        .force().collect::<Vec<_>>();
+        let actual = term.parse::<Sexp>().unwrap().plug("x", pegs).collect::<Vec<_>>();
+        println!("expected: {expected:?} \nactual: {actual:?}");
         assert_eq!(actual, expected);
     }
 
@@ -213,11 +290,12 @@ mod test {
         let wkld = Workload::new(["(a b)", "(a)", "(b)"]);
         let a_s = Workload::new(["1", "2", "3"]);
         let b_s = Workload::new(["x", "y"]);
-        let actual = wkld.plug("a", &a_s).plug("b", &b_s).force();
+        // let actual = wkld.clone().plug("a", &a_s).plug("b", &b_s).force();
+        let actual: Vec<Sexp> = wkld.plug("a", &a_s).plug("b", &b_s).force().collect::<Vec<_>>();
         let expected = Workload::new([
             "(1 x)", "(1 y)", "(2 x)", "(2 y)", "(3 x)", "(3 y)", "(1)", "(2)", "(3)", "(x)", "(y)",
         ])
-        .force();
+        .force().collect::<Vec<_>>();
         assert_eq!(actual, expected)
     }
 
@@ -259,9 +337,9 @@ mod test {
             "(+ a (+ b c))",
         ])
         .force();
-        for (test, expected) in inputs.iter().zip(expecteds.iter()) {
+        for (test, expected) in inputs.zip(expecteds) {
             assert_eq!(
-                &test.canon(vec!["a".into(), "b".into(), "c".into()].as_ref()),
+                test.canon(vec!["a".into(), "b".into(), "c".into()].as_ref()),
                 expected
             );
         }

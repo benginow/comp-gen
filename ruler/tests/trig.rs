@@ -385,7 +385,7 @@ mod test {
             "(sin PI)",
             "(sin (* PI 2))",
         ]);
-        assert_eq!(terms.force().len(), 7);
+        assert_eq!(terms.force().collect::<Vec<_>>().len(), 7);
 
         let mut all = complex;
         all.extend(prior_rules());

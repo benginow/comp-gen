@@ -147,7 +147,7 @@ mod tests {
         let prior = Ruleset::new(&nat_rules);
 
         let atoms3 = iter_pos(3);
-        assert_eq!(atoms3.force().len(), 51);
+        assert_eq!(atoms3.force().collect::<Vec<_>>().len(), 51);
 
         let limits = Limits {
             iter: 3,
@@ -203,19 +203,19 @@ mod tests {
         all_rules.extend(Ruleset::new(&nat_rules));
 
         let atoms3 = iter_pos(3);
-        assert_eq!(atoms3.force().len(), 51);
+        assert_eq!(atoms3.force().collect::<Vec<_>>().len(), 51);
 
         let rules3 = run_rule_lifting(atoms3, all_rules.clone(), limits, limits);
         all_rules.extend(rules3);
 
         let atoms4 = iter_pos(4);
-        assert_eq!(atoms4.force().len(), 255);
+        assert_eq!(atoms4.force().collect::<Vec<_>>().len(), 255);
 
         let rules4 = run_rule_lifting(atoms4, all_rules.clone(), limits, limits);
         all_rules.extend(rules4);
 
         let atoms5 = iter_pos(5);
-        assert_eq!(atoms5.force().len(), 1527);
+        assert_eq!(atoms5.force().collect::<Vec<_>>().len(), 1527);
 
         let rules4 = run_rule_lifting(atoms5, all_rules.clone(), limits, limits);
         all_rules.extend(rules4);
