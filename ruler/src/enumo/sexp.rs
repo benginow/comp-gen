@@ -197,15 +197,11 @@ impl Sexp {
         // this is a vector of iterators over sexps.
         // we want a mapping that will make a cartesian product over those iterators
         if let Some(iter) = iterators.pop() {
-            let papa = iter.map(|val| vec![val]);
-            // let babies = Self::cartesian_product(iterators);
-            let babies = Rc::new(RefCell::new(Self::cartesian_product(iterators)));
-            // let babies = Self::cartesian_product(iterators);
-            let family = papa.flat_map(move |vec| { 
+            let current_iterator = iter.map(|val| vec![val]);
+            let child_iterators = (Self::cartesian_product(iterators));
+            let combined_iterators = current_iterator.flat_map(move |vec| { 
                 
-                let babies_cloned = Rc::clone(&(babies.clone()));
-                let babies_borrowed = babies_cloned.borrow_mut();
-                let val = babies_borrowed.map(move |item| 
+                let val = child_iterators.map(move |item| 
                     {
                         let mut vec_cloned = vec.clone();
                         let mut item_cloned = item.clone();
@@ -214,7 +210,7 @@ impl Sexp {
                     });
                 val 
             });
-            Box::new(family)
+            Box::new(combined_iterators)
         }
         else {
             Box::new(std::iter::empty())
