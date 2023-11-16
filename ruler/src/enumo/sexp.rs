@@ -2,11 +2,69 @@ use std::{str::FromStr, iter::FromIterator};
 
 use super::*;
 
+
+// use std::iter::once;
+
+// pub(crate) struct MultiCartesianProduct<I>
+// where
+//     I: Iterator,
+// {
+//     iterators: Vec<I>,
+// }
+
+// impl<I> MultiCartesianProduct<I>
+// where
+//     I: Iterator,
+// {
+//     fn new(iterators: Vec<I>) -> Self {
+//         MultiCartesianProduct { iterators }
+//     }
+// }
+
+// impl<I> Iterator for MultiCartesianProduct<I>
+// where
+//     I: Iterator,
+//     I::Item: Clone,
+// {
+//     type Item = Vec<I::Item>;
+
+//     fn next(&mut self) -> Option<Self::Item> {
+//         if self.iterators.is_empty() {
+//             return None;
+//         }
+
+//         let mut result: Vec<I::Item> = Vec::with_capacity(self.iterators.len());
+
+//         if let Some(mut first_iter) = self.iterators.pop() {
+//             if let Some(first_elem) = first_iter.next() {
+//                 result.push(first_elem.clone());
+
+//                 let remaining_product = MultiCartesianProduct::new(self.iterators)
+//                     .map(|mut vec| {
+//                         vec.push(first_elem.clone());
+//                         vec
+//                     });
+
+//                 result.extend(remaining_product);
+
+//                 Some(result)
+//             } else {
+//                 MultiCartesianProduct::new(self.iterators).next()
+//             }
+//         } else {
+//             Some(vec![])
+//         }
+//     }
+// }
+
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub enum Sexp {
     Atom(String),
     List(Vec<Self>),
 }
+
+trait ClonableIterator: Iterator + Clone {}
+impl<I> ClonableIterator for I where I: Iterator + Clone {}
 
 impl FromStr for Sexp {
     type Err = String;
@@ -123,14 +181,57 @@ impl Sexp {
     //     return thing;
     // }
 
-    pub(crate) fn plug<'a>(&self, name: &str, pegs: impl Iterator<Item = Sexp> + Clone) -> impl Iterator<Item = Sexp> + Clone {
+
+    fn cartesian_product_sexps<'a>(iterators: &mut Vec<Box<dyn Iterator<Item = Sexp>>>) -> Box<dyn Iterator<Item = Sexp> + 'a> {
+        let val = Self::cartesian_product(iterators)
+        .map(|items| Sexp::List(items));
+        Box::new(val)
+    }
+
+    
+
+    fn cartesian_product<'a>(iterators: &'a mut Vec<Box<dyn Iterator<Item = Sexp> + 'a>>) -> Box<dyn Iterator<Item = Vec<Sexp>> + 'a> {
+        use std::rc::Rc;
+        use std::cell::RefCell;
+
+        // this is a vector of iterators over sexps.
+        // we want a mapping that will make a cartesian product over those iterators
+        if let Some(iter) = iterators.pop() {
+            let papa = iter.map(|val| vec![val]);
+            // let babies = Self::cartesian_product(iterators);
+            let babies = Rc::new(RefCell::new(Self::cartesian_product(iterators)));
+            // let babies = Self::cartesian_product(iterators);
+            let family = papa.flat_map(move |vec| { 
+                
+                let babies_cloned = Rc::clone(&(babies.clone()));
+                let babies_borrowed = babies_cloned.borrow_mut();
+                let val = babies_borrowed.map(move |item| 
+                    {
+                        let mut vec_cloned = vec.clone();
+                        let mut item_cloned = item.clone();
+                        item_cloned.append(&mut vec_cloned);
+                        item_cloned
+                    });
+                val 
+            });
+            Box::new(family)
+        }
+        else {
+            Box::new(std::iter::empty())
+        }
+    }
+
+        
+
+    // not sure why the lifetime specifier is needed
+    pub(crate) fn plug<'a>(&self, name: &str, pegs: Box<dyn Iterator<Item = Sexp> + 'a>) -> Box<dyn Iterator<Item = Sexp> + 'a> {
         use itertools::iproduct;
         use itertools::cloned;
         use itertools::Itertools;
 
-        let val = match self {
-            Sexp::Atom(s) if s == name => pegs.map(|s| s.clone()).collect::<Vec<_>>().into_iter(),
-            Sexp::Atom(_) => vec![self.clone()].into_iter().collect::<Vec<_>>().into_iter(),
+        match self {
+            Sexp::Atom(s) if s == name => {return Box::new(pegs.map(|s| s.clone()))},
+            Sexp::Atom(_) => {return Box::new(vec![self.clone()].into_iter())},
             Sexp::List(sexps) => 
             {
                 // we have sexps. we want to go through every sexp and plug it, which will result in nested iterators.
@@ -138,22 +239,18 @@ impl Sexp {
                 // this is an iterator over sexps -> we want to take the cartesian product of all of these iterators
 
                 //: Vec<Box<dyn Iterator<Item = Sexp>>>
-                let iterators = sexps
+                let mut iterators = sexps
                 .iter()
-                .map(|x| x.plug(name, pegs.clone()))
-                .multi_cartesian_product()
-                .map(|list|
-                    {
-                        // let new_list = list.into_iter().cloned().collect();
-                        Sexp::List(list)
-                })
-                .collect::<Vec<_>>()
-                .into_iter();
+                // this map is an iterator over 
+                .map(|x| x.plug(name, pegs))
+                .collect::<Vec<_>>();
 
-                iterators
+                let products = Self::cartesian_product_sexps(&mut iterators);
+
+                return Box::new(products);
             }
         };
-        val
+        
     }
 
     pub(crate) fn measure(&self, metric: Metric) -> usize {
@@ -245,10 +342,10 @@ mod test {
         let x = "x".parse::<Sexp>().unwrap();
         let pegs = Workload::new(["1", "2", "3"]).force();
         let expected = vec![x.clone()];
-        let actual = x.plug("a", pegs.clone());
+        let actual = x.plug("a", pegs);
         assert_eq!(actual.collect::<Vec<_>>(), expected);
 
-        let expected = pegs.clone().collect::<Vec<_>>().clone();
+        let expected = pegs.collect::<Vec<_>>().clone();
         let actual = x.plug("x", pegs);
         assert_eq!(actual.collect::<Vec<_>>(), expected);
     }

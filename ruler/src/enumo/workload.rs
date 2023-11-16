@@ -67,7 +67,7 @@ impl Workload {
         // can matter, so make sure we preserve the order in the workload.
         // TODO: why does this order matter?
         let mut vars: Vec<String> = vec![];
-        for sexp in sexps.clone() {
+        for sexp in sexps {
             let expr: RecExpr<L> = sexp.to_string().parse().unwrap();
             for node in expr.as_ref() {
                 if let ENodeOrVar::Var(v) = node.clone().to_enode_or_var() {
@@ -119,22 +119,22 @@ impl Workload {
 
     // make force return an iterator instead
     // iterator over sexps to add to egraph
-    pub fn force<'a>(&self) -> impl Iterator<Item = Sexp> + Clone {
+    pub fn force<'a>(&self) -> Box<dyn Iterator<Item = Sexp> + 'a> {
         match self {
-            Workload::Set(set) => set.clone().into_iter(),
+            Workload::Set(set) => Box::new(set.clone().into_iter()),
             Workload::Plug(wkld, name, pegs) => {
                 // iterate over each peg and apply in that manner
                 // let mut res = vec![];
                 let pegs = pegs.force();
                 
                 // JB: should this be flat map or map?
-                wkld.force().flat_map(move |sexp| sexp.plug(name, pegs.clone())).collect::<Vec<_>>().into_iter()
+                Box::new(wkld.force().flat_map(move |sexp| sexp.plug(name, pegs)).collect::<Vec<_>>().into_iter())
 
             }
             Workload::Filter(f, workload) => {
                 let mut set = workload.force();
                 let set = set.filter(|sexp| f.test(sexp)).collect::<Vec<_>>().into_iter();
-                set
+                Box::new(set)
             }
             Workload::Append(workloads) => {
                 
@@ -142,7 +142,7 @@ impl Workload {
                 // for w in workloads {
                 //     set = set.chain(w.force());
                 // }
-                set
+                Box::new(set)
             }
         }
     }

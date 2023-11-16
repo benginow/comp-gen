@@ -136,7 +136,7 @@ mod test {
             .map(|x| x.parse::<Pattern>().unwrap())
             .collect();
 
-        let exprs = Workload::new(["a", "x", "(+ x y)", "(+ y y)", "(+ (* a b) (* a b))"]).force();
+        
 
         let expected = vec![
             vec![true, true, true, true, true],
@@ -145,7 +145,8 @@ mod test {
         ];
 
         for (i, pat) in patterns.iter().enumerate() {
-            for (j, expr) in exprs.clone().enumerate() {
+            let exprs = Workload::new(["a", "x", "(+ x y)", "(+ y y)", "(+ (* a b) (* a b))"]).force();
+            for (j, expr) in exprs.enumerate() {
                 assert_eq!(pat.matches(&expr), expected[i][j]);
             }
         }
