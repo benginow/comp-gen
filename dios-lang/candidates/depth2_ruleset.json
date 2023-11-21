@@ -2350,5 +2350,439 @@
         "bidirectional": false
       }
     ]
+  },
+  {
+    "num_rules": 22,
+    "time generated": "2023-11-15 13:32:57.881060 -06:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": [
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMULS ?c ?a ?b)",
+        "rhs": "(VecMULS ?c ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMULS ?c ?b ?a)",
+        "rhs": "(VecMULS ?c ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMAC ?c ?a ?b)",
+        "rhs": "(VecMAC ?c ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMAC ?c ?b ?a)",
+        "rhs": "(VecMAC ?c ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?a ?b)",
+        "rhs": "(VecMul ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?b ?a)",
+        "rhs": "(VecMul ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a ?b)",
+        "rhs": "(* ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?b ?a)",
+        "rhs": "(* ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a ?b)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(+ ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?a ?b)",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(VecAdd ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 0 ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(- 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 22,
+    "time generated": "2023-11-15 13:53:35.639624 -06:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": [
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMULS ?c ?a ?b)",
+        "rhs": "(VecMULS ?c ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMULS ?c ?b ?a)",
+        "rhs": "(VecMULS ?c ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMAC ?c ?a ?b)",
+        "rhs": "(VecMAC ?c ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMAC ?c ?b ?a)",
+        "rhs": "(VecMAC ?c ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?a ?b)",
+        "rhs": "(VecMul ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?b ?a)",
+        "rhs": "(VecMul ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a ?b)",
+        "rhs": "(* ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?b ?a)",
+        "rhs": "(* ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a ?b)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(+ ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?a ?b)",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(VecAdd ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 0 ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(- 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-16 12:16:50.376517 -06:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": []
+  },
+  {
+    "num_rules": 22,
+    "time generated": "2023-11-21 13:38:10.761225 -06:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": [
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMULS ?c ?a ?b)",
+        "rhs": "(VecMULS ?c ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMULS ?c ?b ?a)",
+        "rhs": "(VecMULS ?c ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMAC ?c ?a ?b)",
+        "rhs": "(VecMAC ?c ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMAC ?c ?b ?a)",
+        "rhs": "(VecMAC ?c ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?a ?b)",
+        "rhs": "(VecMul ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecMul ?b ?a)",
+        "rhs": "(VecMul ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a ?b)",
+        "rhs": "(* ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?b ?a)",
+        "rhs": "(* ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a ?b)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(+ ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?a ?b)",
+        "rhs": "(VecAdd ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecAdd ?b ?a)",
+        "rhs": "(VecAdd ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 0 ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(- 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 14,
+    "time generated": "2023-11-21 13:58:39.093010 -06:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": [
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a ?b)",
+        "rhs": "(* ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?b ?a)",
+        "rhs": "(* ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a ?b)",
+        "rhs": "(+ ?b ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?b ?a)",
+        "rhs": "(+ ?a ?b)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg ?a)",
+        "rhs": "(- 0 ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 0 ?a)",
+        "rhs": "(neg ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      }
+    ]
   }
 ]

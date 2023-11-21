@@ -25,5 +25,11 @@
         "bidirectional": false
       }
     ]
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-16 12:16:53.454896 -06:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": []
   }
 ]

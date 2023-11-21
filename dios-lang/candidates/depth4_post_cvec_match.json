@@ -1,0 +1,19 @@
+[
+  {
+    "num_rules": 2,
+    "time generated": "2023-11-16 12:17:14.562901 -06:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": [
+      {
+        "lhs": "0",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "0",
+        "bidirectional": false
+      }
+    ]
+  }
+]

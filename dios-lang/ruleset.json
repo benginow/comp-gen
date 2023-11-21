@@ -1,24 +1,4 @@
 {
-  "(VecNeg (Vec ?a)) ==> (Vec (neg ?a))": {
-    "lhs": "(VecNeg (Vec ?a))",
-    "rhs": "(Vec (neg ?a))",
-    "bidirectional": false
-  },
-  "(Vec (neg ?a)) ==> (VecNeg (Vec ?a))": {
-    "lhs": "(Vec (neg ?a))",
-    "rhs": "(VecNeg (Vec ?a))",
-    "bidirectional": false
-  },
-  "(Vec (sqrt ?a)) ==> (VecSqrt (Vec ?a))": {
-    "lhs": "(Vec (sqrt ?a))",
-    "rhs": "(VecSqrt (Vec ?a))",
-    "bidirectional": false
-  },
-  "(VecSqrt (Vec ?a)) ==> (Vec (sqrt ?a))": {
-    "lhs": "(VecSqrt (Vec ?a))",
-    "rhs": "(Vec (sqrt ?a))",
-    "bidirectional": false
-  },
   "(VecAdd (Vec ?b) (Vec ?a)) ==> (Vec (+ ?b ?a))": {
     "lhs": "(VecAdd (Vec ?b) (Vec ?a))",
     "rhs": "(Vec (+ ?b ?a))",

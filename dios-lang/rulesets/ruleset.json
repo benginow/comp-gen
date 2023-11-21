@@ -7250,5 +7250,22 @@
         "bidirectional": false
       }
     ]
+  },
+  {
+    "num_rules": 2,
+    "time generated": "2023-11-16 12:17:14.654683 -06:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": [
+      {
+        "lhs": "(VecAdd (Vec ?b) (Vec ?a))",
+        "rhs": "(Vec (+ ?b ?a))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(VecDiv (Vec ?b) (Vec ?a))",
+        "rhs": "(Vec (/ ?b ?a))",
+        "bidirectional": false
+      }
+    ]
   }
 ]

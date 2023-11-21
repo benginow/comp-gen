@@ -675,7 +675,6 @@ fn iter_dios(_argnum: usize, depth: usize, values: Vec<&str>, variable_names: Ve
     .plug("OP1", &Workload::new(operations[0].clone()))
     .plug("OP2", &Workload::new(operations[1].clone()))
     .plug("OP3", &Workload::new(operations[2].clone()))
-
 }
 
 fn extend_rules() -> ruler::enumo::Ruleset<lang::VecLang>{
@@ -691,11 +690,13 @@ fn explore_ruleset_at_depth(current_ruleset: Ruleset<lang::VecLang>,
                  -> Ruleset<lang::VecLang>
 {
     let start = std::time::Instant::now();
-    let mut workload: ruler::enumo::Workload = iter_dios(3, depth, vals.clone(), vars.clone(), ops.clone())
-            .filter(Filter::MetricEq(Metric::Depth, depth));
+    let mut workload: ruler::enumo::Workload = iter_dios(3, depth, vals.clone(), vars.clone(), ops.clone());
+            // .filter(Filter::MetricEq(Metric::Depth, depth));
     println!(
-        "WORKLOAD IS {:?}", workload
+        "WORKLOAD IS {:#?}", workload.clone().force()
+        // .map(|s| s.to_string()).collect::<Vec<_>>()
     );
+    // std::process::exit(0);
     if filter {
         workload = workload.filter(Filter::Contains("Vec".parse().unwrap()));
     }
@@ -736,7 +737,7 @@ pub fn run(
 
     // add all seed rules
     let mut seed_rules : ruler::enumo::Ruleset<lang::VecLang> = ruler::enumo::Ruleset::default();
-
+    
     for rule in dios_config.seed_rules.into_iter() {
         match ruler::enumo::Rule::from_string(&rule) {
             Ok(r) => {
@@ -756,13 +757,24 @@ pub fn run(
     // run the synthesizer
     let vals = ["0", "1"].to_vec();
     let vars = ["a", "b", "c", "d", "e", "f"].to_vec();
-    let ops = [dios_config.unops, dios_config.binops, dios_config.triops].to_vec();
+    
+    let unops = vec!["sqrt", "sgn", "neg"].iter().map(|&x| String::from(x)).collect::<Vec<String>>();
+    let unops_vec = vec!["VecSgn", "VecSqrt", "VecNeg", "Vec"].iter().map(|&x| String::from(x)).collect::<Vec<String>>();
+    let binops = vec!["/", "+", "*", "-"].iter().map(|&x| String::from(x)).collect::<Vec<String>>();
+    let binops_vec = vec!["VecAdd", "VecMul", "VecMinus", "VecDiv"].iter().map(|&x| String::from(x)).collect::<Vec<String>>();
+    let triops = vec![];
+    let triops_vec = vec!["VecMAC", "VecMULS"].iter().map(|&x| String::from(x)).collect::<Vec<String>>();
+
+    // learn ops first, then learn ops_vec?
+    let ops = [unops, binops, triops].to_vec();
+    let ops_vec = [unops_vec, binops_vec, triops_vec];
+
 
     let mut rules = seed_rules.clone();
     for idx in 4..=5 {
         rules = explore_ruleset_at_depth(rules, idx-2, false, &run_name, vals.clone(), vars.clone(), ops.clone());
     }
-    for idx in 6..=7 {
+    for idx in 6..=6 {
         rules = explore_ruleset_at_depth(rules, idx-2, true, &run_name, vals.clone(), vars.clone(), ops.clone());
     }
 

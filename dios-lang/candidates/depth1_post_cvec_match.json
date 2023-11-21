@@ -136,5 +136,17 @@
     "time generated": "2023-10-18 14:00:38.187332 -05:00",
     "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
     "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-15 13:53:33.997416 -06:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": []
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2023-11-16 12:16:49.742081 -06:00",
+    "run name": "slow cvec match, up to depth 5, using depth instead of atoms",
+    "eqs": []
   }
 ]
