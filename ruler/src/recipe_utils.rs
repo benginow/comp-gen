@@ -16,6 +16,18 @@ pub fn iter_metric(wkld: Workload, atom: &str, met: Metric, n: usize) -> Workloa
     pegs
 }
 
+// I don't think this is the play?
+// pub fn iter_metric2(wkld: Workload, atom: Vec<String>, met: Metric, n: usize) -> Workload {
+//     let mut pegs = wkld.clone();
+//     for i in 1..(n + 1) {
+//         for a in &atom {
+//             pegs = pegs.clone().plug(a, &(pegs.clone()));
+//         }
+//         pegs = pegs.filter(Filter::MetricLt(met, i + 1));
+//     }
+//     pegs
+// }
+
 pub fn substitute(workload: Workload, sub: Workload, atom: &str) -> Workload {
     let mut pegs = Workload::Set(vec![]);
     let substitutions = sub.force();
@@ -173,6 +185,19 @@ pub fn recursive_rules<L: SynthLanguage>(
     }
 }
 
+// pub fn base_lang(n: usize) -> Workload {
+//     let mut vals = vec!["VAR".to_string(), "VAL".to_string()];
+//     for i in 1..(n + 1) {
+//         let mut str = "".to_string();
+//         for j in 0..i {
+//             let e = (format!(" EXPR{}", j));
+//             str = format!("{}{}", str, e);
+//         }
+//         let s = format!("(OP{}{})", i, str);
+//         vals.push(s);
+//     }
+//     Workload::new(vals)
+// }
 pub fn base_lang(n: usize) -> Workload {
     let mut vals = vec!["VAR".to_string(), "VAL".to_string()];
     for i in 1..(n + 1) {

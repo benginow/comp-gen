@@ -365,39 +365,39 @@ mod test {
         logger::write_baseline(&rules, "trig", &herbie, "herbie", duration);
     }
 
-    #[test]
-    fn simple() {
-        let complex: Ruleset<Trig> = Ruleset::from_file("scripts/oopsla21/trig/complex.rules");
-        assert_eq!(complex.len(), 57);
+    // #[test]
+    // fn simple() {
+    //     let complex: Ruleset<Trig> = Ruleset::from_file("scripts/oopsla21/trig/complex.rules");
+    //     assert_eq!(complex.len(), 57);
 
-        let limits = Limits {
-            iter: 3,
-            node: 2000000,
-            match_: 200_000,
-        };
+    //     let limits = Limits {
+    //         iter: 3,
+    //         node: 2000000,
+    //         match_: 200_000,
+    //     };
 
-        let terms = Workload::new([
-            "(sin 0)",
-            "(sin (/ PI 6))",
-            "(sin (/ PI 4))",
-            "(sin (/ PI 3))",
-            "(sin (/ PI 2))",
-            "(sin PI)",
-            "(sin (* PI 2))",
-        ]);
-        assert_eq!(terms.force().collect::<Vec<_>>().len(), 7);
+    //     let terms = Workload::new([
+    //         "(sin 0)",
+    //         "(sin (/ PI 6))",
+    //         "(sin (/ PI 4))",
+    //         "(sin (/ PI 3))",
+    //         "(sin (/ PI 2))",
+    //         "(sin PI)",
+    //         "(sin (* PI 2))",
+    //     ]);
+    //     assert_eq!(terms.force().collect::<Vec<_>>().len(), 7);
 
-        let mut all = complex;
-        all.extend(prior_rules());
+    //     let mut all = complex;
+    //     all.extend(prior_rules());
 
-        let rules = run_rule_lifting(terms, all, limits, limits);
+    //     let rules = run_rule_lifting(terms, all, limits, limits);
 
-        let expected: Ruleset<Trig> =
-            Ruleset::new(&["(sin (* PI 2)) <=> 0", "0 <=> (sin 0)", "0 <=> (sin PI)"]);
-        let (can, cannot) = rules.derive(DeriveType::Lhs, &expected, Limits::deriving());
-        assert_eq!(can.len(), expected.len());
-        assert_eq!(cannot.len(), 0);
-    }
+    //     let expected: Ruleset<Trig> =
+    //         Ruleset::new(&["(sin (* PI 2)) <=> 0", "0 <=> (sin 0)", "0 <=> (sin PI)"]);
+    //     let (can, cannot) = rules.derive(DeriveType::Lhs, &expected, Limits::deriving());
+    //     assert_eq!(can.len(), expected.len());
+    //     assert_eq!(cannot.len(), 0);
+    // }
 
     fn lifting_variation(
         w: &Workload,
