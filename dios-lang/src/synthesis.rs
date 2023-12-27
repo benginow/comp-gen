@@ -11,7 +11,7 @@ use ruler::{
     map, self_product, CVec, SynthAnalysis, SynthLanguage
 };
 use serde::{Deserialize, Serialize};
-use std::{path::PathBuf};
+use std::path::PathBuf;
 
 use crate::{lang, smt::SmtEquals, Res};
 
@@ -764,12 +764,12 @@ fn explore_ruleset_at_depth(current_ruleset: Ruleset<lang::VecLang>,
     let start = std::time::Instant::now();
     let mut workload: ruler::enumo::Workload = iter_dios(3, depth, vals.clone(), vars.clone(), ops.clone())
             .filter(Filter::MetricEq(Metric::Depth, depth))
-            .filter(Filter::Canon(vars.into_iter().map(|x| x.to_string()).collect()));
+            .filter(Filter::Canon(vars.clone().into_iter().map(|x| x.to_string()).collect()));
     if filter {
         workload = workload.filter(Filter::Contains("Vec".parse().unwrap()));
     }
     let scheduler = Scheduler::Compress(ruler::Limits::synthesis());
-    let egraph: EGraph<lang::VecLang, SynthAnalysis> = scheduler.run(&workload.to_egraph(), &current_ruleset);
+    let egraph: EGraph<lang::VecLang, SynthAnalysis> = scheduler.run(&workload.to_egraph_with_vars(vars.clone().into_iter().map(|s| s.to_string()).collect()), &current_ruleset);
 
     
     let mut candidates =  Ruleset::fast_cvec_match(&egraph);
@@ -788,7 +788,7 @@ fn explore_ruleset_at_depth(current_ruleset: Ruleset<lang::VecLang>,
 }
 
 
-fn extract_vector_operations(unops: Vec<String>, binops: Vec<String>, triops: Vec<String>) -> (Vec<Vec<_>>, Vec<Vec<_>>) {
+fn extract_vector_operations(unops: Vec<String>, binops: Vec<String>, triops: Vec<String>) -> (Vec<Vec<String>>, Vec<Vec<String>>) {
     let (vector_rules_unops, scalar_rules_unops): (Vec<_>, Vec<_>) =
         unops.into_iter().partition(|element| element.to_lowercase().contains("vec"));
     let (vector_rules_binops, scalar_rules_binops): (Vec<_>, Vec<_>) =
@@ -803,11 +803,13 @@ fn extract_vector_operations(unops: Vec<String>, binops: Vec<String>, triops: Ve
 }
 
 
-fn a_la_carte(rules: Ruleset<lang::VecLang>, scalar_ops: Vec<Vec<_>>, vector_ops: Vec<Vec<_>>) -> Ruleset<lang::VecLang> {
+fn a_la_carte(rules: Ruleset<lang::VecLang>, scalar_ops: Vec<Vec<String>>, vector_ops: Vec<Vec<String>>) -> Ruleset<lang::VecLang> {
     // make rules for depth 1, non-vec
+
     // make rules for depth 1, vec, possibly use rule liting
     // make rules for depth 2, non-vec, then use rule lifting again
     // repeat for depth 3
+
     
 
     rules
@@ -843,10 +845,10 @@ pub fn run(
     let vars = ["a", "b", "c", "d", "e", "f"].to_vec();
 
     let mut rules = seed_rules.clone();
-    let (vec_ops, scalar_ops) = extract_vector_operations(dios_config.unops, dios_config.binops, dios_config.triops);
+    let (vec_ops, scalar_ops) = extract_vector_operations(dios_config.unops.clone(), dios_config.binops.clone(), dios_config.triops.clone());
 
     // do the thing!
-    
+    explore_original_ruler1(vals, vars, [dios_config.unops, dios_config.binops, dios_config.triops].to_vec(), &mut rules);
 
     ruler::logger::log_rules(&rules, Some("rulesets/ruleset.json"), run_name);
 
