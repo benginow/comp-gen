@@ -4,6 +4,32 @@ use super::*;
 use crate::{SynthAnalysis, SynthLanguage};
 use std::io::Write;
 
+
+impl IntoIterator for Workload {
+    type Item = Sexp;
+    type IntoIter = Box<dyn Iterator<Item = Sexp>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        match self {
+            Workload::Set(v) => Box::new(v.into_iter()),
+            Workload::Plug(wkld, hole, pegs) => Box::new(
+                wkld.into_iter()
+                    .map(move |sexp| (sexp, hole.clone(), pegs.clone()))
+                    .map(|(sexp, hole, pegs)| {
+                        SexpSubstIter::new(sexp, hole, move || pegs.clone().into_iter())
+                    })
+                    .flatten(),
+            ),
+            Workload::Filter(filter, wkld) => {
+                Box::new(wkld.into_iter().filter(move |sexp| filter.test(sexp)))
+            }
+            Workload::Append(wklds) => {
+                Box::new(wklds.into_iter().map(|wkld| wkld.into_iter()).flatten())
+            }
+        }
+    }
+}
+
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub enum Workload {
     Set(Vec<Sexp>),
@@ -67,7 +93,8 @@ impl Workload {
         // can matter, so make sure we preserve the order in the workload.
         // TODO: why does this order matter?
         let mut vars: Vec<String> = vec![];
-        for sexp in sexps {
+        for sexp in sexps.clone() {
+            println!("adding {:?}", sexp);
             let expr: RecExpr<L> = sexp.to_string().parse().unwrap();
             for node in expr.as_ref() {
                 if let ENodeOrVar::Var(v) = node.clone().to_enode_or_var() {
@@ -81,7 +108,8 @@ impl Workload {
         }
         L::initialize_vars(&mut egraph, &vars);
 
-        for sexp in self.clone().force() {
+        for sexp in sexps {
+            println!("adding {:?}", sexp);
             egraph.add_expr(&sexp.to_string().parse::<RecExpr<L>>().unwrap());
         }
         egraph

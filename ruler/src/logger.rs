@@ -20,6 +20,7 @@ fn add_json_to_file(json: Value, path: Option<&str>) {
     };
     std::fs::create_dir_all("nightly/data").unwrap_or_else(|e| panic!("Error creating dir: {}", e));
 
+    println!("path {path} may not exist");
     OpenOptions::new()
         .read(true)
         .write(true)
