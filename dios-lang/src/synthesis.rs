@@ -528,7 +528,7 @@ impl SynthLanguage for lang::VecLang {
                         .zip(acc.iter())
                         .map(|tup| match tup {
                             ((lang::Value::Int(v1), lang::Value::Int(v2)), lang::Value::Int(acc))
-				=> Some(lang::Value::Int((v1 * v2) + acc)),
+                => Some(lang::Value::Int((v1 * v2) + acc)),
                             _ => None,
                         })
                         .collect::<Option<Vec<lang::Value>>>()
@@ -543,7 +543,7 @@ impl SynthLanguage for lang::VecLang {
                         .zip(acc.iter())
                         .map(|tup| match tup {
                             ((lang::Value::Int(v1), lang::Value::Int(v2)), lang::Value::Int(acc))
-				=> Some(lang::Value::Int(acc - (v1 * v2))),
+                => Some(lang::Value::Int(acc - (v1 * v2))),
                             _ => None,
                         })
                         .collect::<Option<Vec<lang::Value>>>()
@@ -662,6 +662,7 @@ pub fn vecs_eq(lvec: &CVec<lang::VecLang>, rvec: &CVec<lang::VecLang>) -> bool {
     }
 }
 
+// JB: theoretically loop based off of argnum btu lazy so not rn
 fn iter_dios(_argnum: usize, depth: usize, values: Vec<&str>, variable_names: Vec<&str>, operations: Vec<Vec<String>>) -> Workload {
     recipe_utils::iter_metric(recipe_utils::base_lang(3), "EXPR", Metric::Depth, depth)
     .filter(Filter::Contains("VAR".parse().unwrap()))
@@ -670,6 +671,7 @@ fn iter_dios(_argnum: usize, depth: usize, values: Vec<&str>, variable_names: Ve
     .plug("OP1", &Workload::new(operations[0].clone()))
     .plug("OP2", &Workload::new(operations[1].clone()))
     .plug("OP3", &Workload::new(operations[2].clone()))
+
 }
 
 fn extend_rules() -> ruler::enumo::Ruleset<lang::VecLang>{
@@ -760,39 +762,17 @@ fn explore_ruleset_at_depth(current_ruleset: Ruleset<lang::VecLang>,
                  -> Ruleset<lang::VecLang>
 {
     let start = std::time::Instant::now();
-<<<<<<< Updated upstream
-    let mut workload: ruler::enumo::Workload = iter_dios(3, depth, vals.clone(), vars.clone(), ops.clone());
-            // .filter(Filter::MetricEq(Metric::Depth, depth));
-    println!(
-        "WORKLOAD IS {:#?}", workload.clone().force()
-        // .map(|s| s.to_string()).collect::<Vec<_>>()
-    );
-    // std::process::exit(0);
-=======
     let mut workload: ruler::enumo::Workload = iter_dios(3, depth, vals.clone(), vars.clone(), ops.clone())
             .filter(Filter::MetricEq(Metric::Depth, depth))
             .filter(Filter::Canon(vars.into_iter().map(|x| x.to_string()).collect()));
->>>>>>> Stashed changes
     if filter {
         workload = workload.filter(Filter::Contains("Vec".parse().unwrap()));
     }
     let scheduler = Scheduler::Compress(ruler::Limits::synthesis());
-<<<<<<< Updated upstream
-    println!(
-        "=============Scheduler has been run================"
-    );
-=======
->>>>>>> Stashed changes
     let egraph: EGraph<lang::VecLang, SynthAnalysis> = scheduler.run(&workload.to_egraph(), &current_ruleset);
 
     
     let mut candidates =  Ruleset::fast_cvec_match(&egraph);
-<<<<<<< Updated upstream
-    println!(
-        "=============Generated {} candidates for depth {}================", candidates.len(), depth
-    );
-=======
->>>>>>> Stashed changes
     ruler::logger::log_rules(&candidates, Some((format!("candidates/depth{}_post_cvec_match.json", depth)).as_str()), run_name);
     let mut rules = candidates.minimize(current_ruleset.clone(), scheduler).0;
     println!(
@@ -808,7 +788,7 @@ fn explore_ruleset_at_depth(current_ruleset: Ruleset<lang::VecLang>,
 }
 
 
-fn extract_vector_operations(unops: Vec<String>, binops: Vec<String>, triops: Vec<String>) -> (Vec<Vec<String>>, Vec<Vec<String>>) {
+fn extract_vector_operations(unops: Vec<String>, binops: Vec<String>, triops: Vec<String>) -> (Vec<Vec<_>>, Vec<Vec<_>>) {
     let (vector_rules_unops, scalar_rules_unops): (Vec<_>, Vec<_>) =
         unops.into_iter().partition(|element| element.to_lowercase().contains("vec"));
     let (vector_rules_binops, scalar_rules_binops): (Vec<_>, Vec<_>) =
@@ -823,7 +803,7 @@ fn extract_vector_operations(unops: Vec<String>, binops: Vec<String>, triops: Ve
 }
 
 
-fn a_la_carte(rules: Ruleset<lang::VecLang>, scalar_ops: Vec<Vec<String>>, vector_ops: Vec<Vec<String>>) -> Ruleset<lang::VecLang> {
+fn a_la_carte(rules: Ruleset<lang::VecLang>, scalar_ops: Vec<Vec<_>>, vector_ops: Vec<Vec<_>>) -> Ruleset<lang::VecLang> {
     // make rules for depth 1, non-vec
     // make rules for depth 1, vec, possibly use rule liting
     // make rules for depth 2, non-vec, then use rule lifting again
@@ -843,7 +823,7 @@ pub fn run(
 
     // add all seed rules
     let mut seed_rules : ruler::enumo::Ruleset<lang::VecLang> = ruler::enumo::Ruleset::default();
-    
+
     for rule in dios_config.seed_rules.into_iter() {
         match ruler::enumo::Rule::from_string(&rule) {
             Ok(r) => {
@@ -861,43 +841,16 @@ pub fn run(
 
     let vals = ["0", "1"].to_vec();
     let vars = ["a", "b", "c", "d", "e", "f"].to_vec();
-<<<<<<< Updated upstream
-    
-    let unops = vec!["sqrt", "sgn", "neg"].iter().map(|&x| String::from(x)).collect::<Vec<String>>();
-    let unops_vec = vec!["VecSgn", "VecSqrt", "VecNeg", "Vec"].iter().map(|&x| String::from(x)).collect::<Vec<String>>();
-    let binops = vec!["/", "+", "*", "-"].iter().map(|&x| String::from(x)).collect::<Vec<String>>();
-    let binops_vec = vec!["VecAdd", "VecMul", "VecMinus", "VecDiv"].iter().map(|&x| String::from(x)).collect::<Vec<String>>();
-    let triops = vec![];
-    let triops_vec = vec!["VecMAC", "VecMULS"].iter().map(|&x| String::from(x)).collect::<Vec<String>>();
-
-    // learn ops first, then learn ops_vec?
-    let ops = [unops, binops, triops].to_vec();
-    let ops_vec = [unops_vec, binops_vec, triops_vec];
-
-
-    let mut rules = seed_rules.clone();
-    for idx in 4..=5 {
-        rules = explore_ruleset_at_depth(rules, idx-2, false, &run_name, vals.clone(), vars.clone(), ops.clone());
-    }
-    for idx in 6..=6 {
-        rules = explore_ruleset_at_depth(rules, idx-2, true, &run_name, vals.clone(), vars.clone(), ops.clone());
-    }
-=======
 
     let mut rules = seed_rules.clone();
     let (vec_ops, scalar_ops) = extract_vector_operations(dios_config.unops, dios_config.binops, dios_config.triops);
->>>>>>> Stashed changes
 
     // do the thing!
-
-<<<<<<< Updated upstream
-    Ok(rules)
-}
-=======
+    
 
     ruler::logger::log_rules(&rules, Some("rulesets/ruleset.json"), run_name);
 
     Ok(rules)
 }
 
->>>>>>> Stashed changes
+
