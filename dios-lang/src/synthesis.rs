@@ -662,16 +662,23 @@ pub fn vecs_eq(lvec: &CVec<lang::VecLang>, rvec: &CVec<lang::VecLang>) -> bool {
     }
 }
 
-// JB: theoretically loop based off of argnum btu lazy so not rn
-fn iter_dios(_argnum: usize, depth: usize, values: Vec<&str>, variable_names: Vec<&str>, operations: Vec<Vec<String>>) -> Workload {
-    recipe_utils::iter_metric(recipe_utils::base_lang(3), "EXPR", Metric::Depth, depth)
-    .filter(Filter::Contains("VAR".parse().unwrap()))
+// now, instead of always passing in all operations, only some operations will be passed in 
+fn iter_dios(depth: usize, values: Vec<String>, variable_names: Vec<String>, operations: Vec<Vec<String>>) -> Workload {
+    let mut workload = recipe_utils::base_lang(operations.len());
+    
+    workload = recipe_utils::iter_metric(workload, "EXPR", Metric::Depth, depth)
+    // JB: was this just to ensure that variables included in rules/ don't learn val only rules? unsure, explore
+    // .filter(Filter::Contains("VAR".parse().unwrap()))
     .plug("VAL", &Workload::new(values))
     .plug("VAR", &Workload::new(variable_names))
-    .plug("OP1", &Workload::new(operations[0].clone()))
-    .plug("OP2", &Workload::new(operations[1].clone()))
-    .plug("OP3", &Workload::new(operations[2].clone()))
+    .filter(Filter::MetricEq(Metric::Depth, depth))
+    .filter(Filter::Canon(variable_names.clone().into_iter().map(|x| x.to_string()).collect()));
 
+    for (i, operation_layer) in operations.iter().enumerate() {
+        workload = workload.plug(format!("OP{}", i), &Workload::new(operation_layer.clone()));
+    }
+
+    workload
 }
 
 fn extend_rules() -> ruler::enumo::Ruleset<lang::VecLang>{
@@ -681,111 +688,72 @@ fn extend_rules() -> ruler::enumo::Ruleset<lang::VecLang>{
     )
 }
 
-// fn run_workload() -> ruler::Workload {
-//     let scheduler = Scheduler::Compress(ruler::Limits::synthesis());
-//     let egraph: EGraph<lang::VecLang, SynthAnalysis> = scheduler.run(&workload.to_egraph(), &current_ruleset);
-//     let mut candidates =  Ruleset::fast_cvec_match(&egraph);
-//     ruler::logger::log_rules(&candidates, Some((format!("candidates/depth{}_post_cvec_match.json", depth)).as_str()), run_name);
-//     let mut rules = candidates.minimize(current_ruleset.clone(), scheduler).0;
-    
-// } 
-
-
-// this times out again while reifying workload
-fn explore_original_ruler1(consts_: Vec<&str>, vars_: Vec<&str>, operations: Vec<Vec<String>>, rules: &mut Ruleset<lang::VecLang>) {
-    use ruler::{
-        enumo::{Filter, Ruleset, Workload},
-        recipe_utils::{base_lang, run_workload},
-    };
-    let lang = base_lang(3)
-            .plug("OP1", &Workload::new(operations[0].clone()))
-            .plug("OP2", &Workload::new(operations[1].clone()))
-            .plug("OP3", &Workload::new(operations[2].clone()));
-    let consts = Workload::new(consts_.clone());
-    let vars = Workload::new(vars_.clone());
-
-    println!("layer1");
-    // let filter = Filter::Contains("a".parse().unwrap());
-    let layer1 = lang
-        .clone()
-        .plug("VAL", &consts)
-        .plug("VAR", &vars)
-        .plug("EXPR", &vars.clone().append(consts.clone()));
-
-    let layer1_rules = run_workload(
-        layer1.clone(),
-        rules.clone(),
-        ruler::Limits::synthesis(),
-        ruler::Limits::minimize(),
-        false,
-    );
-    rules.extend(layer1_rules);
-
-    // Layer 2 (two ops)
-    println!("layer2");
-    let layer2 = lang
-        .clone()
-        .plug("EXPR", &layer1)
-        .plug("VAL", &Workload::empty())
-        .plug("VAR", &Workload::empty());
-    let layer2_rules = run_workload(
-        layer2.clone(),
-        rules.clone(),
-        ruler::Limits::synthesis(),
-        ruler::Limits::minimize(),
-        true,
-    );
-    rules.extend(layer2_rules);
-
-    // Layer 2 (two ops)
-    println!("layer3");
-    // not sure that this matters at this point? seems like the thing they do above is the canonical thing
-    let layer3 = lang
-        .clone()
-        .plug("EXPR", &layer2)
-        .plug("VAL", &Workload::empty())
-        .plug("VAR", &Workload::empty());
-    layer3.pretty_print();
-    let layer3_rules = run_workload(
-        layer2.clone(),
-        rules.clone(),
-        ruler::Limits::synthesis(),
-        ruler::Limits::minimize(),
-        true,
-    );
-    rules.extend(layer3_rules);
-}
-
 fn explore_ruleset_at_depth(current_ruleset: Ruleset<lang::VecLang>, 
-                depth: usize, filter: bool, run_name: &str, 
-                vals: Vec<&str>, vars: Vec<&str>, ops: Vec<Vec<String>>)
-                 -> Ruleset<lang::VecLang>
+    depth: usize, filter: bool, run_name: &str, 
+    vals: Vec<&str>, vars: Vec<&str>, ops: Vec<Vec<String>>)
+     -> Ruleset<lang::VecLang>
 {
-    let start = std::time::Instant::now();
-    let mut workload: ruler::enumo::Workload = iter_dios(3, depth, vals.clone(), vars.clone(), ops.clone())
-            .filter(Filter::MetricEq(Metric::Depth, depth))
-            .filter(Filter::Canon(vars.clone().into_iter().map(|x| x.to_string()).collect()));
-    if filter {
-        workload = workload.filter(Filter::Contains("Vec".parse().unwrap()));
-    }
-    let scheduler = Scheduler::Compress(ruler::Limits::synthesis());
-    let egraph: EGraph<lang::VecLang, SynthAnalysis> = scheduler.run(&workload.to_egraph_with_vars(vars.clone().into_iter().map(|s| s.to_string()).collect()), &current_ruleset);
+let mut workload: ruler::enumo::Workload = iter_dios(depth, vals.clone(), vars.clone(), ops.clone());
 
-    
-    let mut candidates =  Ruleset::fast_cvec_match(&egraph);
-    ruler::logger::log_rules(&candidates, Some((format!("candidates/depth{}_post_cvec_match.json", depth)).as_str()), run_name);
-    let mut rules = candidates.minimize(current_ruleset.clone(), scheduler).0;
-    println!(
-        "Done with generating rules of depth {} after {} secs, {} eclasses, {} rules",
-        depth,
-        start.elapsed().as_secs(),
-        egraph.number_of_classes(),
-        rules.len()
-    );
-    ruler::logger::log_rules(&rules, Some((format!("candidates/depth{}_ruleset.json", depth)).as_str()), run_name);
-    rules.extend(current_ruleset);
-    rules
+if filter {
+workload = workload.filter(Filter::Contains("Vec".parse().unwrap()));
 }
+let scheduler = Scheduler::Compress(ruler::Limits::synthesis());
+let egraph: EGraph<lang::VecLang, SynthAnalysis> = scheduler.run(&workload.to_egraph_with_vars(vars.clone().into_iter().map(|s| s.to_string()).collect()), &current_ruleset);
+
+
+let mut candidates =  Ruleset::fast_cvec_match(&egraph);
+ruler::logger::log_rules(&candidates, Some((format!("candidates/depth{}_post_cvec_match.json", depth)).as_str()), run_name);
+let mut rules = candidates.minimize(current_ruleset.clone(), scheduler).0;
+println!(
+"Done with generating rules of depth {} after {} secs, {} eclasses, {} rules",
+depth,
+start.elapsed().as_secs(),
+egraph.number_of_classes(),
+rules.len()
+);
+ruler::logger::log_rules(&rules, Some((format!("candidates/depth{}_ruleset.json", depth)).as_str()), run_name);
+rules.extend(current_ruleset);
+rules
+}
+
+
+fn explore_ops_at_depth(rules: &mut Ruleset<lang::VecLang>, 
+                        ops: Vec<Vec<String>>, 
+                        vals: Vec<String>, 
+                        vars: Vec<String>, 
+                        depth: usize, 
+                        are_vec_ops: bool, 
+                        run_name: String,
+                        rule_lifting: bool) 
+                        // -> &mut Ruleset<lang::VecLang> 
+{
+    use ruler::recipe_utils::*;
+
+    // main goal is to cut down on size of variables, even before using the canonical filter
+    if depth == 1 && vars.len() > ops.len() {
+        let vars = vars[0..ops.len()].to_vec();
+    }
+    else if depth == 2 && vars.len() > ops.len() * 2 {
+        let vars = vars[0..ops.len()*2].to_vec();
+    }
+
+    let mut workload: ruler::enumo::Workload = iter_dios(depth, vals.clone(), vars.clone(), ops.clone());
+    let new_ruleset = {
+            if rule_lifting {
+            run_rule_lifting(workload, (*rules).clone(), ruler::Limits::synthesis(), ruler::Limits::synthesis())
+        }
+        else {
+            run_workload(workload, (*rules).clone(), ruler::Limits::synthesis(), ruler::Limits::synthesis(), true)
+        }
+    };
+    let file_str = match are_vec_ops { true=>"vec", false=>"non-vec" };
+    ruler::logger::log_rules(&new_ruleset, Some((format!("candidates/depth_{}_ruleset_{}.json", depth, file_str)).as_str()), &run_name);
+
+    rules.extend(new_ruleset);
+    // rules
+}
+
 
 
 fn extract_vector_operations(unops: Vec<String>, binops: Vec<String>, triops: Vec<String>) -> (Vec<Vec<String>>, Vec<Vec<String>>) {
@@ -803,14 +771,22 @@ fn extract_vector_operations(unops: Vec<String>, binops: Vec<String>, triops: Ve
 }
 
 
-fn a_la_carte(rules: Ruleset<lang::VecLang>, scalar_ops: Vec<Vec<String>>, vector_ops: Vec<Vec<String>>) -> Ruleset<lang::VecLang> {
-    // make rules for depth 1, non-vec
-
-    // make rules for depth 1, vec, possibly use rule liting
-    // make rules for depth 2, non-vec, then use rule lifting again
-    // repeat for depth 3
-
-    
+fn a_la_carte(rules: &mut Ruleset<lang::VecLang>, 
+                scalar_ops: Vec<Vec<String>>, 
+                vector_ops: Vec<Vec<String>>, 
+                vals: Vec<String>, 
+                vars: Vec<String>,
+                run_name: String) -> Ruleset<lang::VecLang> 
+{
+    // learn rules for scalar ops up to depth 3
+    for i in 1..4 {
+        debug!("exploring scalar ops at depth {i}");
+        explore_ops_at_depth(rules, scalar_ops, vals, vars, i, false, run_name, false);
+    }
+    // now, using rule lifting, learn rules for vector ops up to depth 3 -- might need to tweak to depth 2?
+    for i in 1..4 {
+        explore_ops_at_depth(rules, vec_ops, vals, vars, i, true, run_name, true)
+    }
 
     rules
 }
@@ -841,14 +817,16 @@ pub fn run(
 
     seed_rules.extend(extend_rules());
 
-    let vals = ["0", "1"].to_vec();
-    let vars = ["a", "b", "c", "d", "e", "f"].to_vec();
+    let vals = ["0", "1"].iter().map(|x| x.to_string()).collect();
+    // if you pass in all vars and then use canon filter, it will still reify all 
+    // and THEN filter them -> don't bother, send in exact number of vars needed
+    let vars = ["a", "b", "c", "d", "e", "f"].iter().map(|x| x.to_string()).collect();
 
     let mut rules = seed_rules.clone();
     let (vec_ops, scalar_ops) = extract_vector_operations(dios_config.unops.clone(), dios_config.binops.clone(), dios_config.triops.clone());
-
     // do the thing!
-    explore_original_ruler1(vals, vars, [dios_config.unops, dios_config.binops, dios_config.triops].to_vec(), &mut rules);
+    // explore_original_ruler1(vals, vars, [dios_config.unops, dios_config.binops, dios_config.triops].to_vec(), &mut rules);
+    let rules = a_la_carte(&mut rules, scalar_ops, vec_ops, vals, vars, "with_rule_lifting".to_string());
 
     ruler::logger::log_rules(&rules, Some("rulesets/ruleset.json"), run_name);
 
