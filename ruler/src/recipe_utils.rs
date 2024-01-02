@@ -46,6 +46,8 @@ fn run_workload_internal<L: SynthLanguage>(
     allow_empty: bool,
 ) -> Ruleset<L> {
     let t = Instant::now();
+    // println!("WORKLOAD {:?}", workload.force().collect::<Vec<_>>());
+    // std::process::exit(0);
 
     let egraph = workload.to_egraph::<L>();
     let compressed = Scheduler::Compress(prior_limits).run(&egraph, &prior);
@@ -56,6 +58,8 @@ fn run_workload_internal<L: SynthLanguage>(
     } else {
         Ruleset::cvec_match(&compressed)
     };
+
+    println!("{candidates:?}");
 
     let num_prior = prior.len();
     crate::logger::log_rules(&candidates, Some("candidates_ruler/candidates.json"), "candidates1");

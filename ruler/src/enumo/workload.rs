@@ -79,8 +79,20 @@ impl Workload {
         Self::Set(sexps)
     }
 
-    pub fn to_egraph<L: SynthLanguage>(&self) -> EGraph<L, SynthAnalysis> {
+    pub fn to_egraph_with_vars<L:SynthLanguage>(&self, vars: Vec<String>) -> EGraph<L, SynthAnalysis> { 
         let mut egraph = EGraph::default();
+        let sexps = self.clone().force();
+        L::initialize_vars(&mut egraph, &vars);
+
+        for sexp in sexps {
+            println!("adding {:?}", sexp);
+            egraph.add_expr(&sexp.to_string().parse::<RecExpr<L>>().unwrap());
+        }
+        egraph
+    }
+
+    pub fn to_egraph<L: SynthLanguage>(&self) -> EGraph<L, SynthAnalysis> {
+        // let mut egraph = EGraph::default();
         let sexps = self.clone().force();
 
         // Have to find all the variables first so that we can initialize
@@ -93,7 +105,7 @@ impl Workload {
         // can matter, so make sure we preserve the order in the workload.
         // TODO: why does this order matter?
         let mut vars: Vec<String> = vec![];
-        for sexp in sexps.clone() {
+        for sexp in sexps {
             println!("adding {:?}", sexp);
             let expr: RecExpr<L> = sexp.to_string().parse().unwrap();
             for node in expr.as_ref() {
@@ -106,37 +118,30 @@ impl Workload {
                 }
             }
         }
-        L::initialize_vars(&mut egraph, &vars);
 
-        for sexp in sexps {
-            println!("adding {:?}", sexp);
-            egraph.add_expr(&sexp.to_string().parse::<RecExpr<L>>().unwrap());
-        }
-        egraph
+        return self.to_egraph_with_vars(vars);
     }
 
-    // make force return an iterator instead
-    // iterator over sexps to add to egraph
-    pub fn force(&self) -> Vec<Sexp> {
+    pub fn force_original(&self) -> Vec<Sexp> {
         match self {
             Workload::Set(set) => set.clone(),
             Workload::Plug(wkld, name, pegs) => {
                 let mut res = vec![];
-                let pegs = pegs.force();
-                for sexp in wkld.force() {
+                let pegs = pegs.force_original();
+                for sexp in wkld.force_original() {
                     res.extend(sexp.plug(name, &pegs));
                 }
                 res
             }
             Workload::Filter(f, workload) => {
-                let mut set = workload.force();
+                let mut set = workload.force_original();
                 set.retain(|sexp| f.test(sexp));
                 set
             }
             Workload::Append(workloads) => {
                 let mut set = vec![];
                 for w in workloads {
-                    set.extend(w.force());
+                    set.extend(w.force_original());
                 }
                 set
             }
@@ -170,41 +175,33 @@ impl Workload {
         }
     }
 
-    // Implementation of force using an iterator, except here Sammy and I wrote a substitute function to just substitute all
-    // occurrences of target with plugs, but the problem with that is that it doesn't emulate cartesian product because it assumes
-    // that the sexps are formatted as OP EXPR1 EXPR2 EXPR3, when they are formatted as OP EXPR EXPR EXPR
-    // make force return an iterator instead
-    // iterator over sexps to add to egraph
-    pub fn force_iterator(self) -> Box<dyn Iterator<Item = Sexp>> {
-        match self {
-            Workload::Set(set) => Box::new(set.clone().into_iter()),
-            Workload::Plug(wkld, name, pegs) => {
-                // iterate over each peg and apply in that manner
-                let pegs = pegs.force();
-                let iterator = pegs.map(move|peg| (*wkld.clone(),name.clone(),peg)).map(
-                    |(wkld, name, peg)| {
-                        wkld.force().map(move |expr| {
-                            Self::substitute(name.clone(), peg.clone(), expr)
-                        })
-                    }
-                ).flatten();
-                return Box::new(iterator);
-            }
-            Workload::Filter(f, workload) => {
-                let set = workload.force().filter_map(move |sexp| {
-                    f.test(&sexp).then(|| sexp)
-                });
-                return Box::new(set);
-            }
-            Workload::Append(workloads) => {
-                
-                let set= workloads.into_iter().flat_map(move |thing| {thing.force()});
-                // for w in workloads {
-                //     set = set.chain(w.force());
-                // }
-                return Box::new(set);
-            }
-        }
+    pub fn force(self) -> Box<dyn Iterator<Item = Sexp>> {
+        self.into_iter()
+        // match self {
+        //     Workload::Set(set) => Box::new(set.clone().into_iter()),
+        //     Workload::Plug(wkld, name, pegs) => {
+        //         // iterate over each peg and apply in that manner
+        //         let pegs = pegs.force();
+        //         let iterator = pegs.map(move|peg| (*wkld.clone(),name.clone(),peg)).map(
+        //             |(wkld, name, peg)| {
+        //                 wkld.force().map(move |expr| {
+        //                     Self::substitute(name.clone(), peg.clone(), expr)
+        //                 })
+        //             }
+        //         ).flatten();
+        //         return Box::new(iterator);
+        //     }
+        //     Workload::Filter(f, workload) => {
+        //         let set = workload.force().filter_map(move |sexp| {
+        //             f.test(&sexp).then(|| sexp)
+        //         });
+        //         return Box::new(set);
+        //     }
+        //     Workload::Append(workloads) => {
+        //         let set= workloads.into_iter().flat_map(move |thing| {thing.force()});
+        //         return Box::new(set);
+        //     }
+        // }
     }
 
     pub fn pretty_print(&self) {
@@ -222,16 +219,6 @@ impl Workload {
             _ => Workload::Plug(Box::new(self), name.into(), Box::new(workload.clone())),
         }
     }
-
-    // pub fn plug_iterator(self, name: impl Into<String>, workload: &Workload) -> Self {
-    //     match workload {
-    //         // Empty plug is the same as filter excludes
-    //         Workload::Set(xs) if xs.is_empty() => {
-    //             self.filter(Filter::Excludes(name.into().parse().unwrap()))
-    //         }
-    //         _ => Workload::Plug(Box::new(self), name.into(), Box::new(workload.clone())),
-    //     }
-    // }
 
     pub fn append(self, workload: impl Into<Workload>) -> Self {
         let into: Workload = workload.into();

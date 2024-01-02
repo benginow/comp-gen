@@ -1,8 +1,5 @@
 use std::{str::FromStr, iter::FromIterator};
-use std::str::FromStr;
 use std::{collections::VecDeque, fmt::Display};
-
-
 use super::*;
 
 #[derive(Clone, Debug)]
@@ -38,120 +35,6 @@ where
 {
     type Item = Sexp;
 
-    /// Intuitively, the thing that we want to do is perform a traversal of the leaves
-    /// of the following tree. Each level of the tree represents substituting the hole
-    /// variable (`A` in this case), with every instance of some other iterator.
-    ///
-    /// ```
-    ///             (+ A A)
-    ///            /       \
-    ///     (+ 0 A)         (+ 1 A)
-    ///       / \             / \
-    /// (+ 0 0) (+ 0 1) (+ 1 0) (+ 1 1)
-    /// ```
-    ///
-    /// The thing that makes it tricky to write this traversal in a lazy way is that we
-    /// don't know what this tree will look like up-front; it's lazily produced by
-    /// another iterator filling in the values of `A`.
-    ///
-    /// The trick is that we can use a stack to represent where we are in this tree
-    /// traversal, making sure that we have enough information to unfold the next layer
-    /// of the tree. Specifically, we can store an iterator for each layer of the tree,
-    /// and a template to generate the next layer deep in the tree.
-    ///
-    /// Pictorially, it will look something like this:
-    ///
-    /// ```
-    /// 1.
-    /// (+ A A)
-    ///
-    /// 2.
-    /// (+ A A)
-    ///    |
-    /// (+ 0 A)
-    ///
-    /// 3.
-    /// (+ A A)
-    ///    |
-    /// (+ 0 A)
-    ///    |
-    /// (+ 0 0)
-    ///
-    /// 4.
-    ///     (+ A A)
-    ///        |
-    ///     (+ 0 A)
-    ///      /  \
-    /// (+ 0 0) (+ 0 1)
-    /// ```
-    ///
-    /// We implement this by maintaining work on a stack. An item of work is a template
-    /// expression along with an iterator. Each item of work represents the set of
-    /// expressions obtained by replacing the first instance of the needle variable with
-    /// every item of the iterator. For example, `(+ 0 A), [0, 1, 2]` represents the set
-    /// of expressions `(+ 0 0) (+ 0 1) (+ 0 2)`. By moving through the iterator, you
-    /// can lazily generate nodes of the tree in the layer below the template
-    /// expression.
-    ///
-    /// In this way, we can use these items of work to keep track of where we have
-    /// explored in our tree search so far: each item of work keeps track of where we
-    /// are at each layer of the tree. Once there are no more instances of the needle
-    /// variable, we can yield the item from the iterator.
-    ///
-    /// Here is the actual algorithm:
-    /// Given an item of work, we
-    ///
-    /// 1. Try to progress the search horiztonally in the tree. We do this by checking
-    ///    the iterator associated with an item of work. If there are no items left, we
-    ///    have reached the end of this layer. We simply move onto the next item of
-    ///    work. If there are items left in the iterator,
-    /// 2. We try to spawn a deeper layer of the search. We do this by starting a new
-    ///    iterator for the child of the previous layer. If we can't go any deeper, then
-    ///    we know that we are at a leaf, and can yield this item. If we can, we make
-    ///    sure to put this item at the front of the stack so that it is processed on
-    ///    the next iterator. This results in a depth-first traversal of the tree.
-    ///
-    /// Let's walk through how this works for this workload: `(+ A A).plug(A, {0, 1, 2})`
-    ///
-    /// The stack starts off with
-    ///
-    /// ```
-    /// (+ A A), [0, 1, 2]
-    /// ```
-    ///
-    /// ```
-    /// (+ 0 A) [0, 1, 2]
-    /// (+ A A) [1, 2]
-    /// ```
-    ///
-    /// ```
-    /// (+ 0 0) [0, 1, 2]
-    /// (+ 0 A) [1, 2]
-    /// (+ A A) [1, 2]
-    /// ```
-    ///
-    /// Produced!: `(+ 0 0)`
-    ///
-    /// ```
-    /// (+ 0 A) [1, 2]
-    /// (+ A A) [1, 2]
-    /// ```
-    ///
-    /// ```
-    /// (+ 0 1) [0, 1, 2]
-    /// (+ 0 A) [2]
-    /// (+ A A) [1, 2]
-    /// ```
-    ///
-    /// Produced!: `(+ 0 1)`
-    ///
-    /// ```
-    /// (+ 0 2) [0, 1, 2]
-    /// (+ 0 A) []
-    /// (+ A A) [1, 2]
-    /// ```
-    ///
-    /// Produced!: `(+ 0 2)`
     fn next(&mut self) -> Option<Self::Item> {
         if let Some((parent_sexp, mut parent_iter)) = self.stack.pop_front() {
             // if there is juice left in the iterator
@@ -293,7 +176,6 @@ impl Sexp {
         self.apply_subst(&subst)
     }
 
-    // change this to the substitute function 
     pub(crate) fn plug(&self, name: &str, pegs: &[Self]) -> Vec<Sexp> {
         use itertools::Itertools;
         match self {
@@ -308,75 +190,29 @@ impl Sexp {
         } 
     }
 
+    // change this to the substitute function 
+    // pub(crate) fn plug(&self, name: &str, pegs: Box<Workload>) -> Box<dyn Iterator<Item = Sexp>> {
 
-    // fn cartesian_product<'a>(iterators: Vec<Box<dyn Iterator<Item = Sexp>>>) -> Box<dyn Iterator<Item = Sexp>> {
-    //     let thing = match iterators.split_first() {
-    //         Some((first,rest)) => {
-    //             Box::new(first.flat_map(
-    //                 move |x| Self::cartesian_product(rest).map(
-    //                     |sexp| Sexp::List([x.clone(), sexp].to_vec()))
-    //             ).map(Sexp::List))
+    //     match self {
+    //         Sexp::Atom(s) if s == name => {
+    //             return Box::new(pegs.into_iter());
+    //         },
+    //         Sexp::Atom(_) => { 
+    //             return Box::new(vec![self.clone()].into_iter()); 
+    //         },
+    //         Sexp::List(sexps) => {
+
+    //             let v = sexps.clone()
+    //             .into_iter()
+    //             .map(move |sexp| (sexp, name.clone(), pegs))
+    //                 .map(|(sexp, name, pegs)| {
+    //                     SexpSubstIter::new(sexp, name, move || pegs.into_iter())
+    //                 })
+    //             .flatten();
+    //             return Box::new(v);
     //         }
-    //         None => Box::new(std::iter::empty()),
-    //     };
-    //     return thing;
+    //     }
     // }
-
-
-    // fn cartesian_product_sexps<'a>(iterators: &mut Vec<Box<dyn Iterator<Item = Sexp>>>) -> Box<dyn Iterator<Item = Sexp> + 'a> {
-    //     let val = Self::cartesian_product(iterators)
-    //     .map(|items| Sexp::List(items));
-    //     Box::new(val)
-    // }
-
-    
-
-    // This was my last implementation of cartesian product, I think
-    fn cartesian_product<'a>(iterators: &'a mut Vec<Box<dyn Iterator<Item = Sexp> + 'a>>) -> Box<dyn Iterator<Item = Vec<Sexp>> + 'a> {
-        // this is a vector of iterators over sexps.
-        // we want a mapping that will make a cartesian product over those iterators
-        if let Some(iter) = iterators.pop() {
-            let current_iterator = iter.map(|val| vec![val]);
-            let child_iterators = (Self::cartesian_product(iterators));
-            let combined_iterators = current_iterator.flat_map(move |vec| { 
-                
-                let val = child_iterators.map(move |item| 
-                    {
-                        let mut vec_cloned = vec.clone();
-                        let mut item_cloned = item.clone();
-                        item_cloned.append(&mut vec_cloned);
-                        item_cloned
-                    });
-                val 
-            });
-            Box::new(combined_iterators)
-        }
-        else {
-            Box::new(std::iter::empty())
-        }
-    }
-
-    
-
-    // Iterator implementation of plug
-    pub(crate) fn plug_iterator(&self, name: &str, pegs: Box<dyn Iterator<Item = Sexp>>) -> Box<dyn Iterator<Item = Sexp>> {
-        match self {
-            Sexp::Atom(s) if s == name => {return Box::new(pegs.map(|s| s.clone()))},
-            Sexp::Atom(_) => {return Box::new(vec![self.clone()].into_iter())},
-            Sexp::List(sexps) => 
-            {
-                let mut iterators = sexps
-                .iter()
-                .map(|x| x.plug(name, pegs))
-                .map(|iterator| IterRestart::boxed(*iterator))
-                .collect::<Vec<_>>();
-
-                let products = Self::cartesian_product(&mut iterators);
-
-                return Box::new(products);
-            }
-        };
-    }
 
     pub(crate) fn measure(&self, metric: Metric) -> usize {
         match self {
@@ -467,20 +303,20 @@ mod test {
     #[test]
     fn plug() {
         let x = "x".parse::<Sexp>().unwrap();
-        let pegs = Workload::new(["1", "2", "3"]).force();
+        let pegs = Workload::new(["1", "2", "3"]).force().collect::<Vec<_>>();
         let expected = vec![x.clone()];
-        let actual = x.plug("a", pegs);
-        assert_eq!(actual.collect::<Vec<_>>(), expected);
+        let actual = x.plug("a", &pegs);
+        assert_eq!(actual, expected);
 
-        let expected = pegs.collect::<Vec<_>>().clone();
-        let actual = x.plug("x", pegs);
-        assert_eq!(actual.collect::<Vec<_>>(), expected);
+        let expected = pegs.clone();
+        let actual = x.plug("x", &pegs);
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn play_with_iterators() {
         let x = "(x x)".parse::<Sexp>().unwrap();
-        let pegs = Workload::new(["1", "2", "3"]).force();
+        let pegs = Workload::new(["1", "2", "3"]).force().collect::<Vec<_>>();
         let expected = Workload::new([
             "(1 1)", "(1 2)", "(1 3)", "(2 1)", "(2 2)", "(2 3)", "(3 1)", "(3 2)", "(3 3)",
         ]).force();
@@ -488,23 +324,22 @@ mod test {
 
         // now, lets do the peg thing but with iterators only
          
-        let actual: Vec<Sexp> = x.plug("x", pegs).collect();
+        let actual: Vec<Sexp> = x.plug("x", &pegs);
         println!("x is {x:?}");
         println!("actual is {actual:?}");
         println!("expected is {:?}", expected.collect::<Vec<_>>());
         // we have an iterator over the pegs, which will be an iterator over sexps
-        
     }
 
     #[test]
     fn plug_cross_product() {
         let term = "(x x)";
-        let pegs = Workload::new(["1", "2", "3"]).force();
+        let pegs = Workload::new(["1", "2", "3"]).force().collect::<Vec<_>>();
         let expected = Workload::new([
             "(1 1)", "(1 2)", "(1 3)", "(2 1)", "(2 2)", "(2 3)", "(3 1)", "(3 2)", "(3 3)",
         ])
         .force().collect::<Vec<_>>();
-        let actual = term.parse::<Sexp>().unwrap().plug("x", pegs).collect::<Vec<_>>();
+        let actual = term.parse::<Sexp>().unwrap().plug("x", &pegs);
         println!("expected: {expected:?} \nactual: {actual:?}");
         assert_eq!(actual, expected);
     }

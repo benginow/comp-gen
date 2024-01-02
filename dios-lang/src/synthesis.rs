@@ -276,6 +276,17 @@ impl SynthLanguage for lang::VecLang {
     type Constant = lang::Value;
     // type Config = DiosConfig;
 
+    fn is_rule_lifting() -> bool {
+        true
+    }
+
+    fn get_lifting_rules() -> Ruleset<Self> {
+        Ruleset::new([
+            "(VecAdd (Vec ?b) (Vec ?a)) ==> (Vec (+ ?b ?a))", 
+            "(VecDiv (Vec ?b) (Vec ?a)) ==> (Vec (/ ?b ?a))"]
+        )
+    }
+
     fn to_var(&self) -> Option<egg::Symbol> {
         if let lang::VecLang::Symbol(sym) = self {
             Some(*sym)
@@ -752,10 +763,11 @@ fn a_la_carte(rules: &mut Ruleset<lang::VecLang>,
                 run_name: String) -> Ruleset<lang::VecLang> 
 {
     // learn rules for scalar ops up to depth 3
-    for i in 2..4 {
-        debug!("exploring scalar ops at depth {i}");
-        explore_ops_at_depth(rules, scalar_ops.clone(), vals.clone(), vars.clone(), i, false, run_name.clone(), false);
-    }
+    // for i in 2..4 {
+    //     debug!("exploring scalar ops at depth {i}");
+    //     explore_ops_at_depth(rules, scalar_ops.clone(), vals.clone(), vars.clone(), i, false, run_name.clone(), false);
+    // }
+    
     // now, using rule lifting, learn rules for vector ops up to depth 3 -- might need to tweak to depth 2?
     for i in 2..4 {
         debug!("exploring vector ops at depth {i}, using rule lifting");
@@ -803,6 +815,8 @@ pub fn run(
         scalar_ops.pop();
     }
     // do the thing!
+    let rules_scalar = Ruleset::from_file("rational_rules.txt");
+    rules.extend(rules_scalar);
     let rules = a_la_carte(&mut rules, scalar_ops, vec_ops, vals, vars, "with_rule_lifting".to_string());
 
     ruler::logger::log_rules(&rules, Some("rulesets/ruleset.json"), run_name);
