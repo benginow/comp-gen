@@ -669,13 +669,14 @@ fn iter_dios(depth: usize, values: Vec<String>, variable_names: Vec<String>, ope
     workload = recipe_utils::iter_metric(workload, "EXPR", Metric::Depth, depth)
     // JB: was this just to ensure that variables included in rules/ don't learn val only rules? unsure, explore
     // .filter(Filter::Contains("VAR".parse().unwrap()))
-    .plug("VAL", &Workload::new(values))
-    .plug("VAR", &Workload::new(variable_names))
+    .plug("VAL", &Workload::new(values.clone()))
+    .plug("VAR", &Workload::new(variable_names.clone()))
     .filter(Filter::MetricEq(Metric::Depth, depth))
     .filter(Filter::Canon(variable_names.clone().into_iter().map(|x| x.to_string()).collect()));
 
     for (i, operation_layer) in operations.iter().enumerate() {
-        workload = workload.plug(format!("OP{}", i), &Workload::new(operation_layer.clone()));
+        // println!("plugging layer {i} {operation_layer:?}");
+        workload = workload.plug(format!("OP{}", i+1), &Workload::new(operation_layer.clone()));
     }
 
     workload
@@ -687,36 +688,6 @@ fn extend_rules() -> ruler::enumo::Ruleset<lang::VecLang>{
         "(VecDiv (Vec ?b) (Vec ?a)) ==> (Vec (/ ?b ?a))"]
     )
 }
-
-fn explore_ruleset_at_depth(current_ruleset: Ruleset<lang::VecLang>, 
-    depth: usize, filter: bool, run_name: &str, 
-    vals: Vec<&str>, vars: Vec<&str>, ops: Vec<Vec<String>>)
-     -> Ruleset<lang::VecLang>
-{
-let mut workload: ruler::enumo::Workload = iter_dios(depth, vals.clone(), vars.clone(), ops.clone());
-
-if filter {
-workload = workload.filter(Filter::Contains("Vec".parse().unwrap()));
-}
-let scheduler = Scheduler::Compress(ruler::Limits::synthesis());
-let egraph: EGraph<lang::VecLang, SynthAnalysis> = scheduler.run(&workload.to_egraph_with_vars(vars.clone().into_iter().map(|s| s.to_string()).collect()), &current_ruleset);
-
-
-let mut candidates =  Ruleset::fast_cvec_match(&egraph);
-ruler::logger::log_rules(&candidates, Some((format!("candidates/depth{}_post_cvec_match.json", depth)).as_str()), run_name);
-let mut rules = candidates.minimize(current_ruleset.clone(), scheduler).0;
-println!(
-"Done with generating rules of depth {} after {} secs, {} eclasses, {} rules",
-depth,
-start.elapsed().as_secs(),
-egraph.number_of_classes(),
-rules.len()
-);
-ruler::logger::log_rules(&rules, Some((format!("candidates/depth{}_ruleset.json", depth)).as_str()), run_name);
-rules.extend(current_ruleset);
-rules
-}
-
 
 fn explore_ops_at_depth(rules: &mut Ruleset<lang::VecLang>, 
                         ops: Vec<Vec<String>>, 
@@ -730,15 +701,17 @@ fn explore_ops_at_depth(rules: &mut Ruleset<lang::VecLang>,
 {
     use ruler::recipe_utils::*;
 
+    let mut vars = vars.clone();
+
     // main goal is to cut down on size of variables, even before using the canonical filter
     if depth == 1 && vars.len() > ops.len() {
-        let vars = vars[0..ops.len()].to_vec();
+        vars = vars[0..ops.len()].to_vec();
     }
     else if depth == 2 && vars.len() > ops.len() * 2 {
-        let vars = vars[0..ops.len()*2].to_vec();
+        vars = vars[0..ops.len()*2].to_vec();
     }
 
-    let mut workload: ruler::enumo::Workload = iter_dios(depth, vals.clone(), vars.clone(), ops.clone());
+    let workload: ruler::enumo::Workload = iter_dios(depth, vals.clone(), vars.clone(), ops.clone());
     let new_ruleset = {
             if rule_lifting {
             run_rule_lifting(workload, (*rules).clone(), ruler::Limits::synthesis(), ruler::Limits::synthesis())
@@ -779,16 +752,17 @@ fn a_la_carte(rules: &mut Ruleset<lang::VecLang>,
                 run_name: String) -> Ruleset<lang::VecLang> 
 {
     // learn rules for scalar ops up to depth 3
-    for i in 1..4 {
+    for i in 2..4 {
         debug!("exploring scalar ops at depth {i}");
-        explore_ops_at_depth(rules, scalar_ops, vals, vars, i, false, run_name, false);
+        explore_ops_at_depth(rules, scalar_ops.clone(), vals.clone(), vars.clone(), i, false, run_name.clone(), false);
     }
     // now, using rule lifting, learn rules for vector ops up to depth 3 -- might need to tweak to depth 2?
-    for i in 1..4 {
-        explore_ops_at_depth(rules, vec_ops, vals, vars, i, true, run_name, true)
+    for i in 2..4 {
+        debug!("exploring vector ops at depth {i}, using rule lifting");
+        explore_ops_at_depth(rules, vector_ops.clone(), vals.clone(), vars.clone(), i, true, run_name.clone(), true)
     }
 
-    rules
+    (*rules).clone()
 }
 
 pub fn run(
@@ -824,8 +798,11 @@ pub fn run(
 
     let mut rules = seed_rules.clone();
     let (vec_ops, scalar_ops) = extract_vector_operations(dios_config.unops.clone(), dios_config.binops.clone(), dios_config.triops.clone());
+    let mut scalar_ops = scalar_ops.clone();
+    while scalar_ops[scalar_ops.len() - 1].len() == 0 {
+        scalar_ops.pop();
+    }
     // do the thing!
-    // explore_original_ruler1(vals, vars, [dios_config.unops, dios_config.binops, dios_config.triops].to_vec(), &mut rules);
     let rules = a_la_carte(&mut rules, scalar_ops, vec_ops, vals, vars, "with_rule_lifting".to_string());
 
     ruler::logger::log_rules(&rules, Some("rulesets/ruleset.json"), run_name);
