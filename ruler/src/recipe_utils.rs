@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::{time::Instant, io::Write};
 
 use crate::{
     enumo::{Filter, Metric, Ruleset, Scheduler, Workload},
@@ -15,18 +15,6 @@ pub fn iter_metric(wkld: Workload, atom: &str, met: Metric, n: usize) -> Workloa
     }
     pegs
 }
-
-// I don't think this is the play?
-// pub fn iter_metric2(wkld: Workload, atom: Vec<String>, met: Metric, n: usize) -> Workload {
-//     let mut pegs = wkld.clone();
-//     for i in 1..(n + 1) {
-//         for a in &atom {
-//             pegs = pegs.clone().plug(a, &(pegs.clone()));
-//         }
-//         pegs = pegs.filter(Filter::MetricLt(met, i + 1));
-//     }
-//     pegs
-// }
 
 pub fn substitute(workload: Workload, sub: Workload, atom: &str) -> Workload {
     let mut pegs = Workload::Set(vec![]);
@@ -45,25 +33,57 @@ fn run_workload_internal<L: SynthLanguage>(
     fast_match: bool,
     allow_empty: bool,
 ) -> Ruleset<L> {
-    let t = Instant::now();
-    // println!("WORKLOAD {:?}", workload.force().collect::<Vec<_>>());
-    // std::process::exit(0);
+    use std::time::Instant;
+    use std::fs::*;
+    use std::fs::File;
 
+    let file_path = "timings.txt";
+
+    // Create OpenOptions with the append flag
+    let mut options = OpenOptions::new();
+    options.append(true);
+
+    // Open the file with write access and append flag
+    let mut file = match options.open(file_path) {
+        Ok(file) => file,
+        Err(e) => {
+            // Handle the error
+            panic!("Error opening file: {}", e);
+        }
+    };
+    // let mut file = File::open("timings.txt").unwrap();
+
+    let t = Instant::now();
     let egraph = workload.to_egraph::<L>();
-    let compressed = Scheduler::Compress(prior_limits).run(&egraph, &prior);
+    let elapsed = t.elapsed();
+    // let info = format!("time taken to convert workload to egraph {elapsed:?}");
+    write!(file, "1 time taken to convert workload to egraph {elapsed:?}\n").unwrap();
 
     
+    let now = Instant::now();
+    let compressed = Scheduler::Compress(prior_limits).run(&egraph, &prior);
+    let elapsed = now.elapsed();
+    // write elapsed time to a file
+    write!(file, "2 time taken to compress egraph {elapsed:?}\n").unwrap();
+
+    // println!("Compression time: {:.2?}", elapsed);
+
+    let now = Instant::now();
     let mut candidates = if fast_match {
         Ruleset::fast_cvec_match(&compressed)
     } else {
         Ruleset::cvec_match(&compressed)
     };
-
-    println!("{candidates:?}");
+    let elapsed = now.elapsed();
+    write!(&file, "3 time taken to cvec match {elapsed:?}\n").unwrap();
 
     let num_prior = prior.len();
     crate::logger::log_rules(&candidates, Some("candidates_ruler/candidates.json"), "candidates1");
+    let now = Instant::now();
     let (chosen, _) = candidates.minimize(prior, Scheduler::Compress(minimize_limits));
+    let elapsed = now.elapsed();
+    write!(file, "4 time taken to minimize chandidates {elapsed:?}\n").unwrap();
+
     let time = t.elapsed().as_secs_f64();
 
     if chosen.is_empty() && !allow_empty {

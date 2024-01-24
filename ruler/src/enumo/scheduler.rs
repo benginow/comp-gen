@@ -42,7 +42,7 @@ where
         matches: Vec<egg::SearchMatches<L>>,
     ) -> usize {
         use log::debug;
-        debug!("applying {rewrite:#?}");
+        // debug!("applying {rewrite:#?}");
         rewrite.apply(egraph, &matches).len()
     }
 }
@@ -140,7 +140,8 @@ impl Scheduler {
                 let ids: Vec<Id> = egraph.classes().map(|c| c.id).collect();
 
                 let out = Self::Simple(*limits).run(egraph, ruleset);
-
+                println!("built egraph of current ruleset");
+                
                 // Build a map from id in out to all of the ids in egraph that are equivalent
                 let mut unions = HashMap::default();
                 for id in ids {
