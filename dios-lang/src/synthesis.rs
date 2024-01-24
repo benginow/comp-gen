@@ -3,7 +3,7 @@ use comp_gen::ruler::{
 };
 use egg::{self, EGraph, Id};
 use log::debug;
-use num::integer::Roots;
+use num::{integer::Roots, ToPrimitive};
 use rand::Rng;
 use rand_pcg::Pcg32;
 // ruler no longer has Equality and Synthesizer
@@ -673,9 +673,20 @@ pub fn vecs_eq(lvec: &CVec<lang::VecLang>, rvec: &CVec<lang::VecLang>) -> bool {
     }
 }
 
+fn number_of_terms(operations: Vec<Vec<String>>, depth: usize, vars: usize) -> u64 {
+    let mut number_of_op_combinations: u64 = 0;
+    for (i, operation_layer) in itertools::enumerate(operations) {
+        number_of_op_combinations += (operation_layer.len() * num::pow(vars, i)).to_u64().unwrap();
+    }
+    num::pow(number_of_op_combinations, depth)
+} 
+
 // now, instead of always passing in all operations, only some operations will be passed in 
 fn iter_dios(depth: usize, values: Vec<String>, variable_names: Vec<String>, operations: Vec<Vec<String>>) -> Workload {
+
+    println!("operations length {:?}", operations.len());
     let mut workload = recipe_utils::base_lang(operations.len());
+    println!("beginning workload {:?}", workload.clone());
     
     workload = recipe_utils::iter_metric(workload, "EXPR", Metric::Depth, depth)
     // JB: was this just to ensure that variables included in rules/ don't learn val only rules? unsure, explore
@@ -683,12 +694,16 @@ fn iter_dios(depth: usize, values: Vec<String>, variable_names: Vec<String>, ope
     .plug("VAL", &Workload::new(values.clone()))
     .plug("VAR", &Workload::new(variable_names.clone()))
     .filter(Filter::MetricEq(Metric::Depth, depth))
+    // JB: I don't think this does much -- look into this
     .filter(Filter::Canon(variable_names.clone().into_iter().map(|x| x.to_string()).collect()));
 
     for (i, operation_layer) in operations.iter().enumerate() {
         // println!("plugging layer {i} {operation_layer:?}");
         workload = workload.plug(format!("OP{}", i+1), &Workload::new(operation_layer.clone()));
     }
+
+    println!("created workload is {:#?}", workload.clone().force().collect::<Vec<_>>());
+
 
     workload
 }
@@ -705,29 +720,51 @@ fn explore_ops_at_depth(rules: &mut Ruleset<lang::VecLang>,
                         vals: Vec<String>, 
                         vars: Vec<String>, 
                         depth: usize, 
+                        // change are_vec_ops to arbitrary filters
                         are_vec_ops: bool, 
                         run_name: String,
                         rule_lifting: bool) 
                         // -> &mut Ruleset<lang::VecLang> 
 {
     use ruler::recipe_utils::*;
+    use std::io;
 
+    // JB todo: make it optional to do this
+    let num_vars = number_of_terms(ops.clone(), depth, vars.len() + vals.len());
+    println!("Number of nodes in egraph will be: {num_vars}. Are you sure you want to proceed? n for no");
+    let mut answer = String::new();
+    io::stdin().read_line(&mut answer)
+        .expect("Failed to read line");
+    if answer.contains("n") {
+        return ();
+    }
     let mut vars = vars.clone();
 
     // main goal is to cut down on size of variables, even before using the canonical filter
-    if depth == 1 && vars.len() > ops.len() {
-        vars = vars[0..ops.len()].to_vec();
-    }
-    else if depth == 2 && vars.len() > ops.len() * 2 {
-        vars = vars[0..ops.len()*2].to_vec();
-    }
+    // if depth == 2 && vars.len() > ops.len() {
+    //     vars = vars[0..ops.len()].to_vec();
+    // }
+    // else if depth == 3 && vars.len() > ops.len() * 2 {
+    //     vars = vars[0..ops.len()*2].to_vec();
+    // }
 
     let workload: ruler::enumo::Workload = iter_dios(depth, vals.clone(), vars.clone(), ops.clone());
+    let workload = { 
+        if are_vec_ops {
+            workload.filter(Filter::Contains("Vec".parse().unwrap()))
+        }
+        else { 
+            workload
+        }
+    };
+    // println!("workload is {:?}", workload.clone().force().collect::<Vec<_>>());
+    // std::process::exit(0);
     let new_ruleset = {
-            if rule_lifting {
+        if rule_lifting {
             run_rule_lifting(workload, (*rules).clone(), ruler::Limits::synthesis(), ruler::Limits::synthesis())
         }
         else {
+            // println!("prior rules are {rules:?}");
             run_workload(workload, (*rules).clone(), ruler::Limits::synthesis(), ruler::Limits::synthesis(), true)
         }
     };
@@ -741,12 +778,17 @@ fn explore_ops_at_depth(rules: &mut Ruleset<lang::VecLang>,
 
 
 fn extract_vector_operations(unops: Vec<String>, binops: Vec<String>, triops: Vec<String>) -> (Vec<Vec<String>>, Vec<Vec<String>>) {
-    let (vector_rules_unops, scalar_rules_unops): (Vec<_>, Vec<_>) =
+    let (vector_rules_unops, scalar_rules_unops): (Vec<String>, Vec<String>) =
         unops.into_iter().partition(|element| element.to_lowercase().contains("vec"));
     let (vector_rules_binops, scalar_rules_binops): (Vec<_>, Vec<_>) =
         binops.into_iter().partition(|element| element.to_lowercase().contains("vec"));
-        let (vector_rules_triops, scalar_rules_triops): (Vec<_>, Vec<_>) =
+    let (vector_rules_triops, scalar_rules_triops): (Vec<_>, Vec<_>) =
         triops.into_iter().partition(|element| element.to_lowercase().contains("vec"));
+
+    //clunky, fix later
+    // vector_rules_unops.append(&mut scalar_rules_unops.clone());
+    // vector_rules_binops.append(&mut scalar_rules_binops.clone());
+    // vector_rules_triops.append(&mut scalar_rules_triops.clone());
 
     let vector_ops = [vector_rules_unops, vector_rules_binops, vector_rules_triops].to_vec();
     let scalar_ops = [scalar_rules_unops, scalar_rules_binops, scalar_rules_triops].to_vec();
@@ -762,18 +804,74 @@ fn a_la_carte(rules: &mut Ruleset<lang::VecLang>,
                 vars: Vec<String>,
                 run_name: String) -> Ruleset<lang::VecLang> 
 {
-    // learn rules for scalar ops up to depth 3
-    // for i in 2..4 {
-    //     debug!("exploring scalar ops at depth {i}");
-    //     explore_ops_at_depth(rules, scalar_ops.clone(), vals.clone(), vars.clone(), i, false, run_name.clone(), false);
-    // }
-    
-    // now, using rule lifting, learn rules for vector ops up to depth 3 -- might need to tweak to depth 2?
-    for i in 2..4 {
-        debug!("exploring vector ops at depth {i}, using rule lifting");
-        explore_ops_at_depth(rules, vector_ops.clone(), vals.clone(), vars.clone(), i, true, run_name.clone(), true)
+    // learn rules for scalar ops up to depth 2, no need to go much deeper i don't think
+    debug!("Learning scalar rules");
+    for i in 2..3 {
+        debug!("Exploring scalar ops at depth {i}");
+        explore_ops_at_depth(rules, scalar_ops.clone(), vals.clone(), vars.clone(), i, false, run_name.clone(), false);
     }
 
+    // now, for each related vector rules and scalar rule (ie vecadd/add, pairwise learn rules about the two)
+
+    
+    // now, using rule lifting, learn rules for vector ops up to depth 3 -- might need to tweak to depth 2?
+
+    // 
+    assert!(vector_ops.len() >= 3);
+    // let vector_unary_binary = vector_ops[0..2].to_vec();
+    // let vector_ternary = vec![vector_ops[2].clone()];
+
+    let related_unary: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn", "VecSqrt", "sqrt", "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_binary_add = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_binary_mul = vec![vec!["Vec"], vec!["VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    // JB: do the math for this 
+    // let related_mac_muls = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMul", "*"], vec!["VecMAC", "VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_mac = vec![vec!["Vec"], vec!["VecMul"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_mac_add = vec![vec!["Vec"], vec!["VecAdd"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+
+
+    // let related_mac_muls2 = vec![vec!["Vec"], vec!["VecMul", "*"], vec!["VecMAC", "VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let rules_to_learn = vec![related_unary, related_binary_add, related_binary_mul, related_mac, related_muls, related_mac_add];
+    // let rules_to_learn_d2 = vec![related_mac, related_muls, related_mac_add];
+
+    for (i, opset) in itertools::enumerate(rules_to_learn) {
+        // JB: todo make this a loop if needed
+        debug!("Learning {opset:?} at depth 3");
+        // maybe add additional filters?
+        explore_ops_at_depth(rules, opset.clone(), vals.clone(), vars.clone(), 3, true, format!("opset{}_{}", i, run_name), false);
+        // std::process::exit(0);
+
+        // debug!("Learning {opset:?} at depth 3");
+        // explore_ops_at_depth(rules, opset, vals.clone(), vars.clone(), 4, true, format!("opset{}_{}", i, run_name), false)
+        
+    }
+    // for (i, opset) in itertools::enumerate(rules_to_learn_d2) {
+    //     // JB: todo make this a loop if needed
+    //     debug!("Learning {opset:?} at depth 2");
+    //     // maybe add additional filters?
+    //     explore_ops_at_depth(rules, opset.clone(), vals.clone(), vars.clone(), 2, true, format!("opset{}_{}", i, run_name), false);
+    //     // std::process::exit(0);
+    // }
+
+    // explore all vector ops now
+    // debug!("Exploring all vector ops at depth 3");
+    // explore_ops_at_depth(rules, vector_ops.clone(), vals.clone(), vars.clone(), 3, true, run_name.clone(), false);
+
+
+    // JB: why does it have to be depth 3. so weird.
+    // for i in 3 {
+    //     debug!("ITERATION {i}, unary+binary");
+    //     debug!("exploring vector ops at depth {i}");
+    // }
+    // no need to learn super deep rules for vecMAC and vecMULS
+    // for i in 2..2 {
+        // debug!("ITERATION {}, ternary", 1);
+
+        // explore_ops_at_depth(rules, vector_ternary.clone(), vals.clone(), vars.clone(), 3, true, format!("{} {}", run_name.clone(), "_ternary"), true);
+    // }
+    // explore_ops_at_depth(rules, vector_unary_binary.clone(), vals.clone(), vars.clone(), 2, true, run_name.clone(), false);
+    
     (*rules).clone()
 }
 
@@ -815,9 +913,11 @@ pub fn run(
         scalar_ops.pop();
     }
     // do the thing!
-    let rules_scalar = Ruleset::from_file("rational_rules.txt");
-    rules.extend(rules_scalar);
-    let rules = a_la_carte(&mut rules, scalar_ops, vec_ops, vals, vars, "with_rule_lifting".to_string());
+    // let rules_scalar = Ruleset::from_file("rational_rules.txt");
+    // rules.extend(rules_scalar);
+    println!("scalar ops {scalar_ops:?}\nvector ops {vec_ops:?}");
+    // std::process::exit(0);
+    let rules = a_la_carte(&mut rules, scalar_ops, vec_ops, vals, vars, "categorizing_vector_rules".to_string());
 
     ruler::logger::log_rules(&rules, Some("rulesets/ruleset.json"), run_name);
 

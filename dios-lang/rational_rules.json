@@ -1861,16 +1861,6 @@
     "bidirectional": false
   },
   {
-    "lhs": "(/ (neg 1) (+ ?a ?a))",
-    "rhs": "(/ (neg 1) ?a)",
-    "bidirectional": false
-  },
-  {
-    "lhs": "(/ (neg 1) ?a)",
-    "rhs": "(/ (neg 1) (+ ?a ?a))",
-    "bidirectional": false
-  },
-  {
     "lhs": "(/ (/ 1 ?a) ?a)",
     "rhs": "(/ (/ 1 ?a) (sgn ?a))",
     "bidirectional": false

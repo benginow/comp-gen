@@ -370,8 +370,6 @@
 (* (neg ?a) (sqrt 1)) ==> (* (sqrt 1) (neg ?a))
 (* (sqrt 0) (sgn ?a)) ==> (* (sgn ?a) (sqrt 0))
 (* (sgn ?a) (sqrt 0)) ==> (* (sqrt 0) (sgn ?a))
-(/ (neg 1) (+ ?a ?a)) ==> (/ (neg 1) ?a)
-(/ (neg 1) ?a) ==> (/ (neg 1) (+ ?a ?a))
 (/ (/ 1 ?a) ?a) ==> (/ (/ 1 ?a) (sgn ?a))
 (/ (/ 1 ?a) (sgn ?a)) ==> (/ (/ 1 ?a) ?a)
 (* (/ 1 ?a) (sgn ?a)) ==> (* (/ 1 ?a) ?a)
