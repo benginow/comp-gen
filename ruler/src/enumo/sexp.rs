@@ -2,6 +2,86 @@ use std::{str::FromStr, iter::FromIterator};
 use std::{collections::VecDeque, fmt::Display};
 use super::*;
 
+// =========================== CANON ONLY ITERATOR ===========================
+
+#[derive(Clone, Debug)]
+pub struct SexpSubstIterCanon<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I, 
+{
+    needle: String,
+    // spawns a new iterator for the pegs -> this function needs to be modified s.t. it takes the current element and truncates
+    spawn_iterator: F,
+    // stack contains a sexp and an interator
+    stack: VecDeque<(Sexp, I, usize)>,
+}
+
+impl<I, F> SexpSubstIterCanon<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I,
+{
+    pub(crate) fn new<S: ToString>(inital_sexp: Sexp, needle: S, spawn_iterator: F) -> Self {
+        let initial_iter = spawn_iterator();
+        SexpSubstIterCanon {
+            needle: needle.to_string(),
+            spawn_iterator,
+            stack: VecDeque::from([(inital_sexp, initial_iter, 0)]),
+        }
+    }
+}
+
+impl<I, F> Iterator for SexpSubstIterCanon<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I,
+{
+    type Item = Sexp;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        use itertools::Itertools;
+
+        if let Some((parent_sexp, mut parent_iter, idx)) = self.stack.pop_front() {
+            // if there is juice left in the iterator
+            if let Some(next_item) = parent_iter.next() {
+                // try to go deeper one layer by replacing the first instance of the
+                // needle with the item we got from the iterator
+                if let Some(child_sexp) = parent_sexp.replace_first(&self.needle, &next_item) {
+                    // there might be more juice in the parent_iter,
+                    // so push it back on the stack so that we try
+                    // to process it again
+                    self.stack.push_front((parent_sexp, parent_iter, idx+1));
+
+                    // next we want to spawn a new iterator representing one layer
+                    // deeper in the search. we want to make sure that this item
+                    // is the next item processed on the stack so that we perform
+                    // a depth-first traversal of the tree.
+                    // how can we truncate spawn_iterator s.t. it starts at a certain index?
+                    let child_iter = (self.spawn_iterator)().dropping(idx);
+                    self.stack.push_front((child_sexp, child_iter, idx));
+
+                    self.next()
+                } else {
+                    // otherwise (no needle), we are at a leaf and all instances
+                    // of the needle are fully instantiated. we can yield this
+                    // item from the iterator
+                    Some(parent_sexp)
+                }
+            } else {
+                // we are done with this layer of the tree. continue processing
+                // the next item on the stack
+                self.next()
+            }
+        } else {
+            None
+        }
+    }
+}
+
+// =========================== NON-CANON ITERATOR ===========================
+
+
 #[derive(Clone, Debug)]
 pub struct SexpSubstIter<I, F>
 where
@@ -339,6 +419,19 @@ mod test {
             "(1 1)", "(1 2)", "(1 3)", "(2 1)", "(2 2)", "(2 3)", "(3 1)", "(3 2)", "(3 3)",
         ])
         .force().collect::<Vec<_>>();
+        let actual = term.parse::<Sexp>().unwrap().plug("x", &pegs);
+        println!("expected: {expected:?} \nactual: {actual:?}");
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn plug_cross_product_canon() {
+        let term = "(x x)";
+        let pegs = Workload::new(["1", "2", "3"]).force().collect::<Vec<_>>();
+        let expected = Workload::new([
+            "(1 1)", "(1 2)", "(1 3)", "(2 2)", "(2 3)", "(3 3)",
+        ])
+        .force_canon().collect::<Vec<_>>();
         let actual = term.parse::<Sexp>().unwrap().plug("x", &pegs);
         println!("expected: {expected:?} \nactual: {actual:?}");
         assert_eq!(actual, expected);

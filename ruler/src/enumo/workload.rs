@@ -9,6 +9,27 @@ impl IntoIterator for Workload {
     type Item = Sexp;
     type IntoIter = Box<dyn Iterator<Item = Sexp>>;
 
+    // normal representation
+    // fn into_iter(self) -> Self::IntoIter {
+    //     match self {
+    //         Workload::Set(v) => Box::new(v.into_iter()),
+    //         Workload::Plug(wkld, hole, pegs) => Box::new(
+    //             wkld.into_iter()
+    //                 .map(move |sexp| (sexp, hole.clone(), pegs.clone()))
+    //                 .map(|(sexp, hole, pegs)| {
+    //                     SexpSubstIter::new(sexp, hole, move || pegs.clone().into_iter())
+    //                 })
+    //                 .flatten(),
+    //         ),
+    //         Workload::Filter(filter, wkld) => {
+    //             Box::new(wkld.into_iter().filter(move |sexp| filter.test(sexp)))
+    //         }
+    //         Workload::Append(wklds) => {
+    //             Box::new(wklds.into_iter().map(|wkld| wkld.into_iter()).flatten())
+    //         }
+    //     }
+    // }
+    // canonical representation
     fn into_iter(self) -> Self::IntoIter {
         match self {
             Workload::Set(v) => Box::new(v.into_iter()),
@@ -16,7 +37,14 @@ impl IntoIterator for Workload {
                 wkld.into_iter()
                     .map(move |sexp| (sexp, hole.clone(), pegs.clone()))
                     .map(|(sexp, hole, pegs)| {
-                        SexpSubstIter::new(sexp, hole, move || pegs.clone().into_iter())
+                        SexpSubstIterCanon::new(sexp, hole, move |start| {
+                            if (start.to_string().is_empty()) {
+                                pegs.clone().into_iter()
+                            }
+                            else {
+                                let idx = pegs.
+                            }
+                        } )
                     })
                     .flatten(),
             ),
@@ -31,7 +59,13 @@ impl IntoIterator for Workload {
 }
 
 #[derive(PartialEq, Eq, Clone, Debug)]
-pub enum Workload {
+pub struct Workload {
+    workload: Wkld,
+    is_canon: bool
+}
+
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub enum Wkld {
     Set(Vec<Sexp>),
     Plug(Box<Self>, String, Box<Self>),
     Filter(Filter, Box<Self>),
@@ -40,7 +74,13 @@ pub enum Workload {
 
 impl Default for Workload {
     fn default() -> Self {
-        Workload::Set(vec![])
+        Workload {
+            workload: Wkld::Set(vec![]),
+            // by default, we will generate canonical rules, but this doesn't have to always be the case
+            // JB TODO: make this configureable
+            is_canon: true
+        }
+        
     }
 }
 
@@ -50,15 +90,23 @@ impl Workload {
         I: IntoIterator,
         I::Item: AsRef<str>,
     {
-        Self::Set(
-            vals.into_iter()
-                .map(|x| x.as_ref().parse().unwrap())
-                .collect(),
-        )
+        Workload {
+            workload: Wkld::Set(
+                vals.into_iter()
+                    .map(|x| x.as_ref().parse().unwrap())
+                    .collect(),
+            ),
+            is_canon: true
+        }
+        
     }
 
     pub fn empty() -> Self {
-        Self::Set(vec![])
+        Workload {
+            workload: Wkld::Set(vec![]),
+            is_canon: true
+        }
+        
     }
 
     pub fn to_file(&self, filename: &str) {
@@ -76,7 +124,7 @@ impl Workload {
         for line in std::io::BufRead::lines(reader) {
             sexps.push(line.unwrap().parse().unwrap());
         }
-        Self::Set(sexps)
+        Workload { workload: Wkld::Set(sexps), is_canon: true }
     }
 
     pub fn to_egraph_with_vars<L:SynthLanguage>(&self, vars: Vec<String>) -> EGraph<L, SynthAnalysis> { 
@@ -124,8 +172,8 @@ impl Workload {
 
     pub fn force_original(&self) -> Vec<Sexp> {
         match self {
-            Workload::Set(set) => set.clone(),
-            Workload::Plug(wkld, name, pegs) => {
+            Wkld::Set(set) => set.clone(),
+            Wkld::Plug(wkld, name, pegs) => {
                 let mut res = vec![];
                 let pegs = pegs.force_original();
                 for sexp in wkld.force_original() {
@@ -133,12 +181,12 @@ impl Workload {
                 }
                 res
             }
-            Workload::Filter(f, workload) => {
+            Wkld::Filter(f, workload) => {
                 let mut set = workload.force_original();
                 set.retain(|sexp| f.test(sexp));
                 set
             }
-            Workload::Append(workloads) => {
+            Wkld::Append(workloads) => {
                 let mut set = vec![];
                 for w in workloads {
                     set.extend(w.force_original());
@@ -173,6 +221,11 @@ impl Workload {
         else {
             Sexp::List(inner)
         }
+    }
+
+    // need some way to indicate to into_iter that we want the canonical version of sexpsubstiter
+    pub fn force_canon(self) -> Box<dyn Iterator<Item = Sexp>> {
+        self.into_iter()
     }
 
     pub fn force(self) -> Box<dyn Iterator<Item = Sexp>> {
@@ -211,23 +264,24 @@ impl Workload {
     }
 
     pub fn plug(self, name: impl Into<String>, workload: &Workload) -> Self {
-        match workload {
+        match workload.workload {
             // Empty plug is the same as filter excludes
-            Workload::Set(xs) if xs.is_empty() => {
+            Wkld::Set(xs) if xs.is_empty() => {
                 self.filter(Filter::Excludes(name.into().parse().unwrap()))
             }
-            _ => Workload::Plug(Box::new(self), name.into(), Box::new(workload.clone())),
+            _ => Wkld::Plug(Box::new(self), name.into(), Box::new(workload.clone())),
         }
     }
 
     pub fn append(self, workload: impl Into<Workload>) -> Self {
         let into: Workload = workload.into();
-        match (self, into) {
-            (Workload::Set(xs), Workload::Set(ys)) => {
+        match (self.workload, into.workload) {
+            (Wkld::Set(xs), Wkld::Set(ys)) => {
                 let mut all = vec![];
                 all.extend(xs);
                 all.extend(ys);
-                Workload::Set(all)
+                // if either is not canonical, then none of the reification will be canonical
+                Workload { workload: Wkld::Set(all), is_canon: self.is_canon && into.is_canon }
             }
             (Workload::Append(xs), Workload::Append(ys)) => {
                 let mut all = vec![];

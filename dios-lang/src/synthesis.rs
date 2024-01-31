@@ -853,7 +853,7 @@ fn a_la_carte(rules: &mut Ruleset<lang::VecLang>,
     // let related_mac_muls = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMul", "*"], vec!["VecMAC", "VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus", "VecAdd"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    // let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
     // let related_mac_add = vec![vec!["Vec"], vec!["VecAdd"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
@@ -867,39 +867,8 @@ fn a_la_carte(rules: &mut Ruleset<lang::VecLang>,
     for (i, opset) in itertools::enumerate(rules_to_learn) {
         // JB: todo make this a loop if needed
         debug!("Learning {opset:?} at depth 3");
-        // maybe add additional filters?
         explore_ops_at_depth(rules, opset.clone(), vals.clone(), vars.clone(), 3, true, format!("opset{}_{}", i, run_name), false);
-        // std::process::exit(0);
-
-        // debug!("Learning {opset:?} at depth 3");
-        // explore_ops_at_depth(rules, opset, vals.clone(), vars.clone(), 4, true, format!("opset{}_{}", i, run_name), false)
-        
     }
-    // for (i, opset) in itertools::enumerate(rules_to_learn_d2) {
-    //     // JB: todo make this a loop if needed
-    //     debug!("Learning {opset:?} at depth 2");
-    //     // maybe add additional filters?
-    //     explore_ops_at_depth(rules, opset.clone(), vals.clone(), vars.clone(), 2, true, format!("opset{}_{}", i, run_name), false);
-    //     // std::process::exit(0);
-    // }
-
-    // explore all vector ops now
-    // debug!("Exploring all vector ops at depth 3");
-    // explore_ops_at_depth(rules, vector_ops.clone(), vals.clone(), vars.clone(), 3, true, run_name.clone(), false);
-
-
-    // JB: why does it have to be depth 3. so weird.
-    // for i in 3 {
-    //     debug!("ITERATION {i}, unary+binary");
-    //     debug!("exploring vector ops at depth {i}");
-    // }
-    // no need to learn super deep rules for vecMAC and vecMULS
-    // for i in 2..2 {
-        // debug!("ITERATION {}, ternary", 1);
-
-        // explore_ops_at_depth(rules, vector_ternary.clone(), vals.clone(), vars.clone(), 3, true, format!("{} {}", run_name.clone(), "_ternary"), true);
-    // }
-    // explore_ops_at_depth(rules, vector_unary_binary.clone(), vals.clone(), vars.clone(), 2, true, run_name.clone(), false);
     
     (*rules).clone()
 }
