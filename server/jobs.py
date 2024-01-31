@@ -529,7 +529,7 @@ def overall_performance(
         (18, 18, 4, 4),
     ]
     qr_decomp_sizes = [3, 4]
-    ruleset = rulesets["ruleset_ruler2_depth4_simple"]
+    ruleset = rulesets["triop_truncation"]
 
     # create all the jobs
     for size in mat_mul_sizes:
@@ -621,7 +621,7 @@ def overall_performance_small(
         (18, 18, 4, 4),
     ]
     qr_decomp_sizes = [3, 4]
-    ruleset = rulesets["ruleset-ruler2-depth6-prod-vecmac-vecmuls"]
+    ruleset = rulesets["triop_truncation"]
 
     # create all the jobs
     for size in mat_mul_sizes:
@@ -1178,7 +1178,7 @@ def alpha_beta_ablation(
 
 
 @job()
-def estimate(args, after=None, memlimit=220, **_):
+def estimate(args=["performance"], after=None, memlimit=220, **_):
     """
     Run cycle estimation on jobs that the key: `args`
     """

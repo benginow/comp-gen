@@ -693,7 +693,8 @@ fn iter_dios(depth: usize, values: Vec<String>, variable_names: Vec<String>, ope
     // .filter(Filter::Contains("VAR".parse().unwrap()))
     .plug("VAL", &Workload::new(values.clone()))
     .plug("VAR", &Workload::new(variable_names.clone()))
-    .filter(Filter::MetricEq(Metric::Depth, depth))
+    // JB: toggle between eq and lt
+    .filter(Filter::MetricLt(Metric::Depth, depth+1))
     // JB: I don't think this does much -- look into this
     .filter(Filter::Canon(variable_names.clone().into_iter().map(|x| x.to_string()).collect()));
 
@@ -702,10 +703,25 @@ fn iter_dios(depth: usize, values: Vec<String>, variable_names: Vec<String>, ope
         workload = workload.plug(format!("OP{}", i+1), &Workload::new(operation_layer.clone()));
     }
 
-    println!("created workload is {:#?}", workload.clone().force().collect::<Vec<_>>());
+    // println!("created workload is {:#?}", workload.clone().force().collect::<Vec<_>>());
 
 
     workload
+}
+
+fn iter_dios_limited(depth: usize, values: Vec<String>, variable_names: Vec<String>, operations: Vec<Vec<String>>) -> Workload {
+    // there will ops up to triops here -> if this changes, this code needs to change
+    let leq_binop_workload = iter_dios(depth-1, values, variable_names, operations[0..operations.len() - 1].to_vec());
+    // println!("leq binop workload is {:?}", leq_binop_workload.clone().force().collect::<Vec<_>>());
+    let triop_workload = Workload::new(["(OP3 EXPR EXPR EXPR)", "EXPR"]);
+    let final_workload = triop_workload
+                            .plug("OP3", &Workload::new(operations[operations.len()-1].clone()))
+                            .plug("EXPR",&leq_binop_workload);
+                        // println!("final workload is {:#?}", final_workload.clone().force().collect::<Vec<_>>().len());
+                        // println!("final workload is {:#?}", final_workload.clone().force().collect::<Vec<_>>());
+
+    final_workload
+
 }
 
 fn extend_rules() -> ruler::enumo::Ruleset<lang::VecLang>{
@@ -732,12 +748,12 @@ fn explore_ops_at_depth(rules: &mut Ruleset<lang::VecLang>,
     // JB todo: make it optional to do this
     let num_vars = number_of_terms(ops.clone(), depth, vars.len() + vals.len());
     println!("Number of nodes in egraph will be: {num_vars}. Are you sure you want to proceed? n for no");
-    let mut answer = String::new();
-    io::stdin().read_line(&mut answer)
-        .expect("Failed to read line");
-    if answer.contains("n") {
-        return ();
-    }
+    // let mut answer = String::new();
+    // io::stdin().read_line(&mut answer)
+    //     .expect("Failed to read line");
+    // if answer.contains("n") {
+    //     return ();
+    // }
     let mut vars = vars.clone();
 
     // main goal is to cut down on size of variables, even before using the canonical filter
@@ -748,7 +764,16 @@ fn explore_ops_at_depth(rules: &mut Ruleset<lang::VecLang>,
     //     vars = vars[0..ops.len()*2].to_vec();
     // }
 
-    let workload: ruler::enumo::Workload = iter_dios(depth, vals.clone(), vars.clone(), ops.clone());
+    
+    let workload: ruler::enumo::Workload = { 
+        if (ops.len() >= 3) {
+            debug!("running limited workload");
+            iter_dios_limited(depth, vals.clone(), vars.clone(), ops.clone())
+        } 
+        else {
+            iter_dios(depth, vals.clone(), vars.clone(), ops.clone())
+        }
+    };
     let workload = { 
         if are_vec_ops {
             workload.filter(Filter::Contains("Vec".parse().unwrap()))
@@ -822,17 +847,21 @@ fn a_la_carte(rules: &mut Ruleset<lang::VecLang>,
     // let vector_ternary = vec![vector_ops[2].clone()];
 
     let related_unary: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn", "VecSqrt", "sqrt", "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_binary_add = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_binary_mul = vec![vec!["Vec"], vec!["VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let binary_ops = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-", "VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    // let related_binary_mul = vec![vec!["Vec"], vec!["VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     // JB: do the math for this 
     // let related_mac_muls = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMul", "*"], vec!["VecMAC", "VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_mac = vec![vec!["Vec"], vec!["VecMul"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_mac_add = vec![vec!["Vec"], vec!["VecAdd"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus", "VecAdd"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+
+    // let related_mac_add = vec![vec!["Vec"], vec!["VecAdd"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
 
     // let related_mac_muls2 = vec![vec!["Vec"], vec!["VecMul", "*"], vec!["VecMAC", "VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let rules_to_learn = vec![related_unary, related_binary_add, related_binary_mul, related_mac, related_muls, related_mac_add];
+    let rules_to_learn = vec![related_unary, binary_ops, related_mac, related_muls];
+    // let rules_to_learn = vec![related_mac, related_muls, related_mac_add];
+    
     // let rules_to_learn_d2 = vec![related_mac, related_muls, related_mac_add];
 
     for (i, opset) in itertools::enumerate(rules_to_learn) {

@@ -85,7 +85,7 @@ impl Workload {
         L::initialize_vars(&mut egraph, &vars);
 
         for sexp in sexps {
-            // println!("adding {:?}", sexp);
+            println!("adding {:?}", sexp);
             egraph.add_expr(&sexp.to_string().parse::<RecExpr<L>>().unwrap());
         }
         egraph

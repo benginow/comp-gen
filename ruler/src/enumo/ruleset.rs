@@ -394,6 +394,7 @@ impl<L: SynthLanguage> Ruleset<L> {
     }
 
     fn select(&mut self, step_size: usize, invalid: &mut Ruleset<L>) -> Self {
+        use log::debug;
         let mut chosen = Self::default();
         self.0
             .sort_by(|_, rule1, _, rule2| {
@@ -408,6 +409,7 @@ impl<L: SynthLanguage> Ruleset<L> {
                 if rule.is_valid() {
                     selected.add(rule.clone());
                 } else {
+                    debug!("{:?} is invalid, added to invalid set", rule.to_string());
                     invalid.add(rule.clone());
                 }
 

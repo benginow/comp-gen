@@ -1,0 +1,1 @@
+error: could not find `Cargo.toml` in `/Users/benginow/Projects/isaria/comp-gen` or any parent directory
