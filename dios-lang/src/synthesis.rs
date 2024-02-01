@@ -846,20 +846,20 @@ fn a_la_carte(rules: &mut Ruleset<lang::VecLang>,
     // let vector_unary_binary = vector_ops[0..2].to_vec();
     // let vector_ternary = vec![vector_ops[2].clone()];
 
-    let related_unary: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn", "VecSqrt", "sqrt", "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let binary_ops = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-", "VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let all_rules: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn", "VecSqrt", "sqrt", "VecNeg", "neg"], vec!["VecAdd", "+", "VecMinus", "-", "VecMul", "*", "VecDiv", "/"], vec!["VecMAC", "VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    // let binary_ops = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-", "VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     // let related_binary_mul = vec![vec!["Vec"], vec!["VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     // JB: do the math for this 
     // let related_mac_muls = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMul", "*"], vec!["VecMAC", "VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus", "VecAdd"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    // let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus", "VecAdd"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    // let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     // let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
     // let related_mac_add = vec![vec!["Vec"], vec!["VecAdd"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
 
     // let related_mac_muls2 = vec![vec!["Vec"], vec!["VecMul", "*"], vec!["VecMAC", "VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let rules_to_learn = vec![related_unary, binary_ops, related_mac, related_muls];
+    let rules_to_learn = vec![all_rules];
     // let rules_to_learn = vec![related_mac, related_muls, related_mac_add];
     
     // let rules_to_learn_d2 = vec![related_mac, related_muls, related_mac_add];
