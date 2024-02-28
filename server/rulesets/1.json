@@ -29,12 +29,22 @@
     {
       "lhs": "(VecAdd (Vec ?b) (Vec ?a))",
       "rhs": "(Vec (+ ?b ?a))",
-      "bidirectional": false
+      "bidirectional": true
+    },
+    {
+      "lhs": "(Vec (+ ?b ?a))",
+      "rhs": "(VecAdd (Vec ?b) (Vec ?a))",
+      "bidirectional": true
     },
     {
       "lhs": "(VecDiv (Vec ?b) (Vec ?a))",
       "rhs": "(Vec (/ ?b ?a))",
-      "bidirectional": false
+      "bidirectional": true
+    },
+    {
+      "lhs": "(Vec (/ ?b ?a))",
+      "rhs": "(VecDiv (Vec ?b) (Vec ?a))",
+      "bidirectional": true
     },
     {
       "lhs": "1",

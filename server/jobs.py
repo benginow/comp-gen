@@ -445,7 +445,7 @@ def fast_overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance1",
             timeout=3000,
             memlimit=memlimit,
             after=after,
@@ -457,7 +457,7 @@ def fast_overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance1",
             timeout=3000,
             memlimit=memlimit,
             after=after,
@@ -467,7 +467,7 @@ def fast_overall_performance(
         Path("jobs"),
         ruleset,
         make_config(alpha=15, beta=6, timeout=180),
-        key="performance",
+        key="performance1",
         timeout=3000,
         memlimit=memlimit,
         after=after,
@@ -479,7 +479,7 @@ def fast_overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance1",
             timeout=10000,
             memlimit=memlimit,
             after=after,
@@ -529,7 +529,7 @@ def overall_performance(
         (18, 18, 4, 4),
     ]
     qr_decomp_sizes = [3, 4]
-    ruleset = rulesets["triop_truncation"]
+    ruleset = rulesets["2"]
 
     # create all the jobs
     for size in mat_mul_sizes:
@@ -538,7 +538,7 @@ def overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance2",
             timeout=3000,
             memlimit=memlimit,
             after=after,
@@ -550,7 +550,7 @@ def overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance2",
             timeout=3000,
             memlimit=memlimit,
             after=after,
@@ -560,7 +560,7 @@ def overall_performance(
         Path("jobs"),
         ruleset,
         make_config(alpha=15, beta=6, timeout=180),
-        key="performance",
+        key="performance2",
         timeout=3000,
         memlimit=memlimit,
         after=after,
@@ -572,7 +572,7 @@ def overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance2",
             timeout=10000,
             memlimit=memlimit,
             after=after,
@@ -595,33 +595,8 @@ def overall_performance_small(
 
     mat_mul_sizes = [
         (2, 2, 2, 2),
-        (2, 3, 3, 3),
-        (3, 3, 3, 3),
-        (4, 4, 4, 4),
-        (8, 8, 8, 8),
-        (10, 10, 10, 10),
-        (16, 16, 16, 16),
-        (18, 18, 18, 18),
-        (20, 20, 20, 20),
     ]
-    conv_2d_sizes = [
-        (3, 3, 2, 2),
-        (3, 3, 3, 3),
-        (3, 5, 3, 3),
-        (4, 4, 3, 3),
-        (8, 8, 3, 3),
-        (10, 10, 2, 2),
-        (10, 10, 3, 3),
-        (10, 10, 4, 4),
-        (16, 16, 2, 2),
-        (16, 16, 3, 3),
-        (16, 16, 4, 4),
-        (18, 18, 2, 2),
-        (18, 18, 3, 3),
-        (18, 18, 4, 4),
-    ]
-    qr_decomp_sizes = [3, 4]
-    ruleset = rulesets["triop_truncation"]
+    ruleset = rulesets["1"]
 
     # create all the jobs
     for size in mat_mul_sizes:
@@ -632,40 +607,6 @@ def overall_performance_small(
             make_config(alpha=15, beta=6, timeout=180),
             key="performance-vecmac-vecmuls",
             timeout=3000,
-            memlimit=memlimit,
-            after=after,
-        )
-
-    for size in conv_2d_sizes:
-        make_2d_conv(
-            Path("jobs"),
-            size,
-            ruleset,
-            make_config(alpha=15, beta=6, timeout=180),
-            key="performance-vecmac-vecmuls",
-            timeout=3000,
-            memlimit=memlimit,
-            after=after,
-        )
-
-    q_prod(
-        Path("jobs"),
-        ruleset,
-        make_config(alpha=15, beta=6, timeout=180),
-        key="performance-vecmac-vecmuls",
-        timeout=3000,
-        memlimit=memlimit,
-        after=after,
-    )
-
-    for size in qr_decomp_sizes:
-        qr_decomp(
-            Path("jobs"),
-            size,
-            ruleset,
-            make_config(alpha=15, beta=6, timeout=180),
-            key="performance-vecmac-vecmuls",
-            timeout=10000,
             memlimit=memlimit,
             after=after,
         )
