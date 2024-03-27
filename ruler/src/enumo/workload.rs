@@ -3,7 +3,11 @@ use egg::{EGraph, ENodeOrVar, RecExpr};
 use super::*;
 use crate::{SynthAnalysis, SynthLanguage};
 use std::io::Write;
-
+use std::sync::{atomic, Mutex, RwLock};
+use lazy_static::lazy_static;
+use std::cell::RefCell;
+use std::sync::atomic::AtomicBool;
+static IS_CANON: AtomicBool = AtomicBool::new(true);
 
 impl IntoIterator for Workload {
     type Item = Sexp;
@@ -31,14 +35,25 @@ impl IntoIterator for Workload {
     // }
     // canonical representation
     fn into_iter(self) -> Self::IntoIter {
+        let mut is_canon = true;
+        if !IS_CANON.load(atomic::Ordering::Relaxed) {
+            is_canon = false;
+        }
         match self {
             Workload::Set(v) => Box::new(v.into_iter()),
             Workload::Plug(wkld, hole, pegs) => Box::new(
                 wkld.into_iter()
                     .map(move |sexp| (sexp, hole.clone(), pegs.clone()))
-                    .map(|(sexp, hole, pegs)| {
-                        SexpSubstIterCanon::new(sexp, hole, move || {
-                                pegs.clone().into_iter() } )
+                    .map(move |(sexp, hole, pegs)| 
+                    {
+                        if is_canon {
+                            Box::new(SexpSubstIterCanon::new(sexp, hole, move || {
+                                pegs.clone().into_iter() })) as Box<dyn Iterator<Item = sexp::Sexp>>
+                        }
+                        else {
+                            Box::new(SexpSubstIter::new(sexp, hole, move || {
+                                pegs.clone().into_iter() })) as Box<dyn Iterator<Item = sexp::Sexp>>
+                        }
                     })
                     .flatten(),
             ),
@@ -58,7 +73,6 @@ pub enum Workload {
     Plug(Box<Self>, String, Box<Self>),
     Filter(Filter, Box<Self>),
     Append(Vec<Self>),
-    
 }
 
 impl Default for Workload {
@@ -78,6 +92,10 @@ impl Workload {
                 .map(|x| x.as_ref().parse().unwrap())
                 .collect(),
         )
+    }
+
+    pub fn is_not_canon(&self) {
+        // IS_CANON.store(false, atomic::Ordering::Relaxed);
     }
 
     pub fn empty() -> Self {
@@ -108,7 +126,7 @@ impl Workload {
         L::initialize_vars(&mut egraph, &vars);
 
         for sexp in sexps {
-            println!("adding {:?}", sexp);
+            // println!("adding {:?}", sexp);
             egraph.add_expr(&sexp.to_string().parse::<RecExpr<L>>().unwrap());
         }
         egraph
@@ -129,7 +147,7 @@ impl Workload {
         // TODO: why does this order matter?
         let mut vars: Vec<String> = vec![];
         for sexp in sexps {
-            println!("adding {:?}", sexp);
+            // println!("adding {:?}", sexp);
             let expr: RecExpr<L> = sexp.to_string().parse().unwrap();
             for node in expr.as_ref() {
                 if let ENodeOrVar::Var(v) = node.clone().to_enode_or_var() {

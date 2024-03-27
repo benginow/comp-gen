@@ -441,3 +441,18 @@ time taken to cvec match 23.741375mstime taken to minimize chandidates 9.010825s
 2 time taken to compress egraph 1.434299458s
 3 time taken to cvec match 379.4205ms
 4 time taken to minimize chandidates 46.702991916s
+1 time taken to convert workload to egraph 8.23875ms
+2 time taken to compress egraph 1.849708ms
+3 time taken to cvec match 4.142667ms
+1 time taken to convert workload to egraph 7.068292ms
+2 time taken to compress egraph 3.319792ms
+3 time taken to cvec match 6.646583ms
+4 time taken to minimize chandidates 2.075947708s
+1 time taken to convert workload to egraph 6.443833ms
+2 time taken to compress egraph 2.27625ms
+3 time taken to cvec match 5.877583ms
+4 time taken to minimize chandidates 2.14393725s
+1 time taken to convert workload to egraph 299.716680125s
+2 time taken to compress egraph 1.727883084s
+3 time taken to cvec match 386.71825ms
+4 time taken to minimize chandidates 49.720592917s

@@ -1,0 +1,501 @@
+warning: unused import: `log::debug`
+  --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/enumo/scheduler.rs:44:13
+   |
+44 |         use log::debug;
+   |             ^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `iter::FromIterator`
+ --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/enumo/sexp.rs:1:25
+  |
+1 | use std::{str::FromStr, iter::FromIterator};
+  |                         ^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `fmt::Display`
+ --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/enumo/sexp.rs:2:34
+  |
+2 | use std::{collections::VecDeque, fmt::Display};
+  |                                  ^^^^^^^^^^^^
+
+warning: the item `Display` is imported redundantly
+  --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/language.rs:2:18
+   |
+2  |     fmt::{Debug, Display},
+   |                  ^^^^^^^
+...
+10 | use crate::*;
+   |     -------- the item `Display` is already imported here
+
+warning: unused import: `File`
+ --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/logger.rs:2:29
+  |
+2 |     fs::{self, OpenOptions, File},
+  |                             ^^^^
+
+warning: unused import: `io::Write`
+ --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/recipe_utils.rs:1:26
+  |
+1 | use std::{time::Instant, io::Write};
+  |                          ^^^^^^^^^
+
+warning: the item `Instant` is imported redundantly
+  --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/recipe_utils.rs:36:9
+   |
+1  | use std::{time::Instant, io::Write};
+   |           ------------- the item `Instant` is already imported here
+...
+36 |     use std::time::Instant;
+   |         ^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::fs::File`
+  --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/recipe_utils.rs:38:9
+   |
+38 |     use std::fs::File;
+   |         ^^^^^^^^^^^^^
+
+warning: unused variable: `file`
+  --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/recipe_utils.rs:47:13
+   |
+47 |     let mut file = match options.open(file_path) {
+   |             ^^^^ help: if this is intentional, prefix it with an underscore: `_file`
+   |
+   = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `elapsed`
+  --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/recipe_utils.rs:58:9
+   |
+58 |     let elapsed = t.elapsed();
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_elapsed`
+
+warning: unused variable: `elapsed`
+  --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/recipe_utils.rs:65:9
+   |
+65 |     let elapsed = now.elapsed();
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_elapsed`
+
+warning: unused variable: `elapsed`
+  --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/recipe_utils.rs:77:9
+   |
+77 |     let elapsed = now.elapsed();
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_elapsed`
+
+warning: unused variable: `elapsed`
+  --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/recipe_utils.rs:83:9
+   |
+83 |     let elapsed = now.elapsed();
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_elapsed`
+
+warning: variable does not need to be mutable
+  --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/recipe_utils.rs:47:9
+   |
+47 |     let mut file = match options.open(file_path) {
+   |         ----^^^^
+   |         |
+   |         help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` on by default
+
+warning: trait `ClonableIterator` is never used
+   --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/enumo/sexp.rs:162:7
+    |
+162 | trait ClonableIterator: Iterator + Clone {}
+    |       ^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` on by default
+
+warning: associated functions `substitute_inner` and `substitute` are never used
+   --> /Users/benginow/Projects/isaria/comp-gen/ruler/src/enumo/workload.rs:174:19
+    |
+70  | impl Workload {
+    | ------------- associated functions in this implementation
+...
+174 |     pub(crate) fn substitute_inner(name: std::string::String, peg: Sexp, hole: Sexp) -> Vec<Sexp> {
+    |                   ^^^^^^^^^^^^^^^^
+...
+191 |     pub(crate) fn substitute(name: std::string::String, peg: Sexp, hole: Sexp) -> Sexp {
+    |                   ^^^^^^^^^^
+
+warning: `ruler` (lib) generated 16 warnings (run `cargo fix --lib -p ruler` to apply 7 suggestions)
+warning: unused import: `egg`
+ --> /Users/benginow/Projects/isaria/comp-gen/comp-gen/src/phases.rs:2:5
+  |
+2 | use egg::*;
+  |     ^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `egg`
+ --> /Users/benginow/Projects/isaria/comp-gen/comp-gen/src/run.rs:4:5
+  |
+4 | use egg::*;
+  |     ^^^
+
+warning: `comp-gen` (lib) generated 2 warnings
+warning: the item `egg` is imported redundantly
+ --> src/cost.rs:1:11
+  |
+1 | use egg::{self, CostFunction, Language};
+  |           ^^^^ the item `egg` is already defined here
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `egg::*`
+ --> src/error.rs:1:5
+  |
+1 | use egg::*;
+  |     ^^^^^^
+
+warning: unused import: `ruler::SynthLanguage`
+ --> src/fuzz.rs:5:5
+  |
+5 |     ruler::SynthLanguage,
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `vecs_eq`
+  --> src/fuzz.rs:12:36
+   |
+12 |     synthesis::{split_into_halves, vecs_eq},
+   |                                    ^^^^^^^
+
+warning: unused import: `egg::*`
+ --> src/handwritten.rs:1:5
+  |
+1 | use egg::*;
+  |     ^^^^^^
+
+warning: unused imports: `FromOp`, `define_language`
+ --> src/lang.rs:1:17
+  |
+1 | use egg::{self, define_language, Id, Language, FromOp};
+  |                 ^^^^^^^^^^^^^^^                ^^^^^^
+
+warning: the item `egg` is imported redundantly
+ --> src/lang.rs:1:11
+  |
+1 | use egg::{self, define_language, Id, Language, FromOp};
+  |           ^^^^ the item `egg` is already defined here
+
+warning: the item `egg` is imported redundantly
+ --> src/synthesis.rs:4:11
+  |
+4 | use egg::{self, EGraph, Id};
+  |           ^^^^ the item `egg` is already defined here
+
+warning: unused import: `std::io`
+   --> src/synthesis.rs:709:9
+    |
+709 |     use std::io;
+    |         ^^^^^^^
+
+warning: unnecessary parentheses around `if` condition
+   --> src/synthesis.rs:722:12
+    |
+722 |         if (ops.len() >= 3) {
+    |            ^              ^
+    |
+    = note: `#[warn(unused_parens)]` on by default
+help: remove these parentheses
+    |
+722 -         if (ops.len() >= 3) {
+722 +         if ops.len() >= 3 {
+    |
+
+warning: unused imports: `FromOp`, `define_language`
+ --> src/desugared_lang.rs:1:17
+  |
+1 | use egg::{self, define_language, Id, Language, FromOp};
+  |                 ^^^^^^^^^^^^^^^                ^^^^^^
+
+warning: the item `egg` is imported redundantly
+ --> src/desugared_lang.rs:1:11
+  |
+1 | use egg::{self, define_language, Id, Language, FromOp};
+  |           ^^^^ the item `egg` is already defined here
+
+warning: unused import: `itertools::Itertools`
+ --> src/desugared_lang.rs:2:5
+  |
+2 | use itertools::Itertools;
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `egg::*`
+  --> src/main.rs:16:5
+   |
+16 | use egg::*;
+   |     ^^^^^^
+
+warning: unreachable statement
+  --> src/fuzz.rs:33:9
+   |
+31 |         return false;
+   |         ------------ any code following this expression is unreachable
+32 |         use rand_pcg::Lcg64Xsh32;
+33 |         let mut rng = Lcg64Xsh32::new(0,0);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unreachable statement
+   |
+   = note: `#[warn(unreachable_code)]` on by default
+
+warning: unused import: `egg`
+ --> src/desugar.rs:3:5
+  |
+3 | use egg::*;
+  |     ^^^
+
+warning: unused import: `Language`
+ --> src/desugared_lang.rs:1:38
+  |
+1 | use egg::{self, define_language, Id, Language, FromOp};
+  |                                      ^^^^^^^^
+
+warning: variable `length` is assigned to, but never used
+  --> src/fuzz.rs:78:17
+   |
+78 |         let mut length = 0;
+   |                 ^^^^^^
+   |
+   = note: consider using `_length` instead
+   = note: `#[warn(unused_variables)]` on by default
+
+warning: value assigned to `length` is never read
+  --> src/fuzz.rs:94:13
+   |
+94 |             length = cvec.len();
+   |             ^^^^^^
+   |
+   = help: maybe it is overwritten before being read?
+   = note: `#[warn(unused_assignments)]` on by default
+
+warning: unused variable: `lhs`
+  --> src/fuzz.rs:25:9
+   |
+25 |         lhs: &egg::Pattern<Self>,
+   |         ^^^ help: if this is intentional, prefix it with an underscore: `_lhs`
+
+warning: unused variable: `rhs`
+  --> src/fuzz.rs:26:9
+   |
+26 |         rhs: &egg::Pattern<Self>,
+   |         ^^^ help: if this is intentional, prefix it with an underscore: `_rhs`
+
+warning: field `nested` is never read
+  --> src/main.rs:26:5
+   |
+24 | struct Cmdline {
+   |        ------- field in this struct
+25 |     #[argh(subcommand)]
+26 |     nested: Commands,
+   |     ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: field `0` is never read
+  --> src/main.rs:33:11
+   |
+33 |     Synth(SynthOpts),
+   |     ----- ^^^^^^^^^
+   |     |
+   |     field in this variant
+   |
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+   |
+33 |     Synth(()),
+   |           ~~
+
+warning: field `0` is never read
+  --> src/main.rs:35:13
+   |
+35 |     Compile(CompileOpts),
+   |     ------- ^^^^^^^^^^^
+   |     |
+   |     field in this variant
+   |
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+   |
+35 |     Compile(()),
+   |             ~~
+
+warning: fields `output`, `config`, and `checkpoint` are never read
+  --> src/main.rs:43:5
+   |
+41 | pub struct SynthOpts {
+   |            --------- fields in this struct
+42 |     #[argh(positional)]
+43 |     output: String,
+   |     ^^^^^^
+...
+47 |     config: Option<synthesis::DiosConfig>,
+   |     ^^^^^^
+...
+51 |     checkpoint: Option<PathBuf>,
+   |     ^^^^^^^^^^
+   |
+   = note: `SynthOpts` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+
+warning: multiple fields are never read
+   --> src/main.rs:71:5
+    |
+68  | struct CompileOpts {
+    |        ----------- fields in this struct
+...
+71  |     input: String,
+    |     ^^^^^
+...
+75  |     dios_example_bin: PathBuf,
+    |     ^^^^^^^^^^^^^^^^
+...
+79  |     dios_bin: PathBuf,
+    |     ^^^^^^^^
+...
+83  |     dios_params: PathBuf,
+    |     ^^^^^^^^^^^
+...
+87  |     vector_width: usize,
+    |     ^^^^^^^^^^^^
+...
+91  |     rules: PathBuf,
+    |     ^^^^^
+...
+95  |     pre_desugared: bool,
+    |     ^^^^^^^^^^^^^
+...
+99  |     config: Option<comp_gen::config::CompilerConfiguration>,
+    |     ^^^^^^
+...
+103 |     output_dir: Option<PathBuf>,
+    |     ^^^^^^^^^^
+...
+107 |     costfn: String,
+    |     ^^^^^^
+    |
+    = note: `CompileOpts` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `synth` is never used
+   --> src/main.rs:124:4
+    |
+124 | fn synth(synth_opts: SynthOpts) -> Res<()> {
+    |    ^^^^^
+
+warning: function `compile` is never used
+   --> src/main.rs:139:4
+    |
+139 | fn compile(opts: CompileOpts) -> Res<()> {
+    |    ^^^^^^^
+
+warning: associated functions `dios`, `alternative`, and `accurate` are never used
+  --> src/cost.rs:26:12
+   |
+25 | impl VecCostFn {
+   | -------------- associated functions in this implementation
+26 |     pub fn dios() -> Self {
+   |            ^^^^
+...
+40 |     pub fn alternative() -> Self {
+   |            ^^^^^^^^^^^
+...
+54 |     pub fn accurate() -> Self {
+   |            ^^^^^^^^
+
+warning: function `build_litvec_rule` is never used
+  --> src/handwritten.rs:44:8
+   |
+44 | pub fn build_litvec_rule(vec_width: usize) -> Vec<egg::Rewrite<VecLang, ()>> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `to_value` is never used
+ --> src/stringconversion.rs:7:4
+  |
+7 | fn to_value(s: &str, erase: bool) -> lexpr::Value {
+  |    ^^^^^^^^
+
+warning: function `to_egg` is never used
+  --> src/stringconversion.rs:24:4
+   |
+24 | fn to_egg(
+   |    ^^^^^^
+
+warning: function `convert_string` is never used
+  --> src/stringconversion.rs:99:8
+   |
+99 | pub fn convert_string(input: &str) -> io::Result<String> {
+   |        ^^^^^^^^^^^^^^
+
+warning: function `vecs_eq` is never used
+   --> src/synthesis.rs:626:8
+    |
+626 | pub fn vecs_eq(lvec: &CVec<lang::VecLang>, rvec: &CVec<lang::VecLang>) -> bool {
+    |        ^^^^^^^
+
+warning: function `number_of_terms` is never used
+   --> src/synthesis.rs:638:4
+    |
+638 | fn number_of_terms(operations: Vec<Vec<String>>, depth: usize, vars: usize) -> u64 {
+    |    ^^^^^^^^^^^^^^^
+
+warning: function `iter_dios` is never used
+   --> src/synthesis.rs:647:4
+    |
+647 | fn iter_dios(depth: usize, values: Vec<String>, variable_names: Vec<String>, operations: Vec<Vec<String>>) -> Workload {
+    |    ^^^^^^^^^
+
+warning: function `iter_dios_limited` is never used
+   --> src/synthesis.rs:674:4
+    |
+674 | fn iter_dios_limited(depth: usize, values: Vec<String>, variable_names: Vec<String>, operations: Vec<Vec<String>>) -> Workload {
+    |    ^^^^^^^^^^^^^^^^^
+
+warning: function `extend_rules` is never used
+   --> src/synthesis.rs:688:4
+    |
+688 | fn extend_rules() -> ruler::enumo::Ruleset<lang::VecLang>{
+    |    ^^^^^^^^^^^^
+
+warning: function `explore_ops_at_depth` is never used
+   --> src/synthesis.rs:699:4
+    |
+699 | fn explore_ops_at_depth(rules: &mut Ruleset<lang::VecLang>, 
+    |    ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `extract_vector_operations` is never used
+   --> src/synthesis.rs:754:4
+    |
+754 | fn extract_vector_operations(unops: Vec<String>, binops: Vec<String>, triops: Vec<String>) -> (Vec<Vec<String>>, Vec<Vec<String>>) {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `a_la_carte` is never used
+   --> src/synthesis.rs:774:4
+    |
+774 | fn a_la_carte(rules: &mut Ruleset<lang::VecLang>, 
+    |    ^^^^^^^^^^
+
+warning: function `run` is never used
+   --> src/synthesis.rs:826:8
+    |
+826 | pub fn run(
+    |        ^^^
+
+warning: `dios-lang` (bin "dios-lang") generated 42 warnings (run `cargo fix --bin "dios-lang"` to apply 10 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+warning: the following packages contain code that will be rejected by a future version of Rust: svg v0.7.2
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running `target/debug/dios-lang`
+list to concats returned this: (Vec (+ (Get I 0) (+ (Get I 1) (+ (Get I 2) (Get I 3)))) 0 0 0)
+parsing concats returns this: (Vec (+ (Get I 0) (+ (Get I 1) (+ (Get I 2) (Get I 3)))) 0 0 0)
+lhs is (+ ?a ?b)
+rhs is (+ ?b ?a)
+lhs is (VecSum (Vec ?a ?b ?c ?d))
+rhs is (+ ?a (VecSum (Vec 0 ?b ?c ?d)))
+lhs is (VecSum (Vec ?a ?b ?c ?d))
+rhs is (+ ?b (VecSum (Vec ?a 0 ?c ?d)))
+lhs is (VecSum (Vec ?a ?b ?c ?d))
+rhs is (+ ?c (VecSum (Vec ?a ?b 0 ?d)))
+lhs is (VecSum (Vec ?a ?b ?c ?d))
+rhs is (+ ?d (VecSum (Vec ?a ?b ?c 0)))
+lhs is (VecSum (Vec ?a ?b ?c 0))
+rhs is (+ ?c (VecSum (Vec ?a ?b 0 0)))
+lhs is (+ ?a ?b)
+rhs is (VecSum (Vec ?a ?b 0 0))
+lhs is (+ ?a ?b)
+rhs is (VecSum (Vec 0 0 ?a ?b))
+this is the outputted program: (Vec (+ (Get I 0) (+ (Get I 1) (+ (Get I 2) (Get I 3)))) 0 0 0)
+cost: 106.01500000000001

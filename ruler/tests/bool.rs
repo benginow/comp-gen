@@ -5,18 +5,7 @@ pub mod bool;
 use serde::{Deserialize, Serialize};
 
 
-egg::define_language! {
-    #[derive(Serialize, Deserialize)]
-  pub enum Bool {
-    "~" = Not(Id),
-    "&" = And([Id; 2]),
-    "|" = Or([Id; 2]),
-    "^" = Xor([Id; 2]),
-    "->" = Implies([Id; 2]),
-    Lit(bool),
-    Var(egg::Symbol),
-  }
-}
+
 
 impl SynthLanguage for Bool {
     type Constant = bool;

@@ -11,7 +11,7 @@ pub fn list_to_concats(vec_width: usize, input: &str) -> io::Result<String> {
         list.remove(0);
         let mut concats = list
             .into_iter()
-            .chunks(vec_width)
+            .chunks(vec_width)           
             .into_iter()
             .map(|c| {
                 let mut chunk = c.into_iter().collect_vec();
@@ -20,6 +20,10 @@ pub fn list_to_concats(vec_width: usize, input: &str) -> io::Result<String> {
                     chunk.push(lexpr::Value::Number(lexpr::Number::from(0)))
                 }
                 chunk.insert(0, lexpr::Value::symbol("Vec"));
+
+
+                // chunk.insert(0, lexpr::Value::symbol("("));
+                // chunk.push(0, lexpr::Value::symbol(")"));
                 lexpr::Value::list(chunk)
             })
             .collect_vec();
@@ -27,6 +31,8 @@ pub fn list_to_concats(vec_width: usize, input: &str) -> io::Result<String> {
         let init = concats.remove(0);
         let expr = concats.into_iter().fold(init, |acc, x| {
             lexpr::Value::list(vec![lexpr::Value::symbol("Concat"), x, acc])
+
+            // lexpr::Value::list(vec![lexpr::Value::symbol("Head"), x, acc])
         });
         lexpr::to_string(&expr)
     } else {

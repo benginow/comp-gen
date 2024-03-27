@@ -1,0 +1,6 @@
+{
+  "name": "9.json",
+  "operation_matching": "AllAtOnce",
+  "canon_force": true,
+  "arity_shorting": true
+}

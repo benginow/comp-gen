@@ -67,7 +67,7 @@ impl<L: SynthLanguage> Analysis<L> for SynthAnalysis {
         };
 
         use log::debug;
-        debug!("getting cvec for {:?}", enode);
+        // debug!("getting cvec for {:?}", enode);
         Signature {
             cvec: enode.eval(egraph.analysis.cvec_len, get_cvec),
             interval: enode.mk_interval(get_interval),
@@ -105,7 +105,8 @@ impl<L: SynthLanguage> Analysis<L> for SynthAnalysis {
         };
         let new_max = match (to.interval.high.as_ref(), from.interval.high.as_ref()) {
             (None, None) => None,
-            (None, Some(y)) => Some(y.clone()),
+            (None, Some(y
+            )) => Some(y.clone()),
             (Some(x), None) => Some(x.clone()),
             (Some(x), Some(y)) => Some(x.min(y).clone()),
         };

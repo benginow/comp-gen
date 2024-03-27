@@ -21,7 +21,7 @@ Cargo.lock
 /server/figs/*.pdf
 /server/figs/_old_data_/
 *.DS_Store
-/server/jobs/
+# /server/jobs/
 /server/completed.tar
 /output/
 *.pem

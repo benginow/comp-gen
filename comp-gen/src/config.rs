@@ -1,5 +1,6 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, ptr::null};
 
+use ruler::Phase;
 use serde::{Deserialize, Serialize};
 
 use crate::{phases, FromPattern};
@@ -28,6 +29,33 @@ pub struct CompilerConfiguration {
     pub phase: PhaseConfiguration,
     pub scheduler: Option<RuleSchedulerOpt>,
     pub stats: Option<PathBuf>,
+}
+
+pub fn default_compiler_config() -> CompilerConfiguration {
+    CompilerConfiguration {
+        total_node_limit: 1000000,
+        total_iter_limit: 4000,
+        timeout: 180,
+        dry_run: false,
+        dump_rules: true,
+        debug: false,
+        reuse_egraphs: true,
+        cd_filter: None,
+        require_all_vars: false,
+        phase: PhaseConfiguration::Single {
+            name: "all".to_string(),
+            cd: [None, None],
+            ca: [None, None],
+            fresh_egraph: None,
+            node_limit: None,
+            iter_limit: None,
+            timeout: None,
+            disabled: None,
+            scheduler: None,
+        },
+        scheduler:Some(RuleSchedulerOpt::Simple),
+        stats:None
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

@@ -83,75 +83,76 @@ where
 // =========================== NON-CANON ITERATOR ===========================
 
 
-// #[derive(Clone, Debug)]
-// pub struct SexpSubstIter<I, F>
-// where
-//     I: Iterator<Item = Sexp>,
-//     F: Fn() -> I,
-// {
-//     needle: String,
-//     spawn_iterator: F,
-//     stack: VecDeque<(Sexp, I)>,
-// }
+#[derive(Clone, Debug)]
+pub struct SexpSubstIter<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I,
+{
+    needle: String,
+    spawn_iterator: F,
+    stack: VecDeque<(Sexp, I)>,
+}
 
-// impl<I, F> SexpSubstIter<I, F>
-// where
-//     I: Iterator<Item = Sexp>,
-//     F: Fn() -> I,
-// {
-//     pub(crate) fn new<S: ToString>(inital_sexp: Sexp, needle: S, spawn_iterator: F) -> Self {
-//         let initial_iter = spawn_iterator();
-//         SexpSubstIter {
-//             needle: needle.to_string(),
-//             spawn_iterator,
-//             stack: VecDeque::from([(inital_sexp, initial_iter)]),
-//         }
-//     }
-// }
+impl<I, F> SexpSubstIter<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I,
+{
+    pub(crate) fn new<S: ToString>(inital_sexp: Sexp, needle: S, spawn_iterator: F) -> Self {
+        let initial_iter = spawn_iterator();
+        SexpSubstIter {
+            needle: needle.to_string(),
+            spawn_iterator,
+            stack: VecDeque::from([(inital_sexp, initial_iter)]),
+        }
+    }
+}
 
-// impl<I, F> Iterator for SexpSubstIter<I, F>
-// where
-//     I: Iterator<Item = Sexp>,
-//     F: Fn() -> I,
-// {
-//     type Item = Sexp;
+impl<I, F> Iterator for SexpSubstIter<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I,
+{
+    type Item = Sexp;
 
-//     fn next(&mut self) -> Option<Self::Item> {
-//         if let Some((parent_sexp, mut parent_iter)) = self.stack.pop_front() {
-//             // if there is juice left in the iterator
-//             if let Some(next_item) = parent_iter.next() {
-//                 // try to go deeper one layer by replacing the first instance of the
-//                 // needle with the item we got from the iterator
-//                 if let Some(child_sexp) = parent_sexp.replace_first(&self.needle, &next_item) {
-//                     // there might be more juice in the parent_iter,
-//                     // so push it back on the stack so that we try
-//                     // to process it again
-//                     self.stack.push_front((parent_sexp, parent_iter));
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some((parent_sexp, mut parent_iter)) = self.stack.pop_front() {
+            // println!("a");
+            // if there is juice left in the iterator
+            if let Some(next_item) = parent_iter.next() {
+                // try to go deeper one layer by replacing the first instance of the
+                // needle with the item we got from the iterator
+                if let Some(child_sexp) = parent_sexp.replace_first(&self.needle, &next_item) {
+                    // there might be more juice in the parent_iter,
+                    // so push it back on the stack so that we try
+                    // to process it again
+                    self.stack.push_front((parent_sexp, parent_iter));
 
-//                     // next we want to spawn a new iterator representing one layer
-//                     // deeper in the search. we want to make sure that this item
-//                     // is the next item processed on the stack so that we perform
-//                     // a depth-first traversal of the tree.
-//                     let child_iter = (self.spawn_iterator)();
-//                     self.stack.push_front((child_sexp, child_iter));
+                    // next we want to spawn a new iterator representing one layer
+                    // deeper in the search. we want to make sure that this item
+                    // is the next item processed on the stack so that we perform
+                    // a depth-first traversal of the tree.
+                    let child_iter = (self.spawn_iterator)();
+                    self.stack.push_front((child_sexp, child_iter));
 
-//                     self.next()
-//                 } else {
-//                     // otherwise (no needle), we are at a leaf and all instances
-//                     // of the needle are fully instantiated. we can yield this
-//                     // item from the iterator
-//                     Some(parent_sexp)
-//                 }
-//             } else {
-//                 // we are done with this layer of the tree. continue processing
-//                 // the next item on the stack
-//                 self.next()
-//             }
-//         } else {
-//             None
-//         }
-//     }
-// }
+                    self.next()
+                } else {
+                    // otherwise (no needle), we are at a leaf and all instances
+                    // of the needle are fully instantiated. we can yield this
+                    // item from the iterator
+                    Some(parent_sexp)
+                }
+            } else {
+                // we are done with this layer of the tree. continue processing
+                // the next item on the stack
+                self.next()
+            }
+        } else {
+            None
+        }
+    }
+}
 
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub enum Sexp {
@@ -159,8 +160,8 @@ pub enum Sexp {
     List(Vec<Self>),
 }
 
-trait ClonableIterator: Iterator + Clone {}
-impl<I> ClonableIterator for I where I: Iterator + Clone {}
+// trait ClonableIterator: Iterator + Clone {}
+// impl<I> ClonableIterator for I where I: Iterator + Clone {}
 
 impl FromStr for Sexp {
     type Err = String;
