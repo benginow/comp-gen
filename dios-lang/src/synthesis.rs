@@ -182,7 +182,7 @@ fn ruleset_gen(rules: &mut Ruleset<lang::VecLang>,
     let operation_iterations: Vec<(Vec<Vec<String>>, usize)> = match operations {
         Operations::Algorithm => {
             // TODO
-            vec![(ops,4)]
+            vec![(ops,3)]
         }
         Operations::HandPicked => {
             handpicked()
@@ -190,7 +190,7 @@ fn ruleset_gen(rules: &mut Ruleset<lang::VecLang>,
         Operations::HandPickedThinner => {
             handpicked_thinner()
         }
-        Operations::AllAtOnce => vec![(ops, 4)],
+        Operations::AllAtOnce => vec![(ops, 3)],
     };
 
     for (operation_set, depth) in operation_iterations {
