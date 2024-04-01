@@ -11,8 +11,6 @@ from typing import Any, Callable, Dict, List, Tuple
 from itertools import product
 from enum import Enum
 
-
-
 import click
 
 JOBS = {}
@@ -622,7 +620,7 @@ def overall_performance(
         (18, 18, 4, 4),
     ]
     qr_decomp_sizes = [3, 4]
-    ruleset = rulesets["1"]
+    ruleset = rulesets["4"]
 
     # create all the jobs
     for size in mat_mul_sizes:
@@ -631,7 +629,7 @@ def overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance1",
+            key="performance4",
             timeout=3000,
             memlimit=memlimit,
             after=after,
@@ -643,7 +641,7 @@ def overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance1",
+            key="performance4",
             timeout=3000,
             memlimit=memlimit,
             after=after,
@@ -653,7 +651,7 @@ def overall_performance(
         Path("jobs"),
         ruleset,
         make_config(alpha=15, beta=6, timeout=180),
-        key="performance1",
+        key="performance4",
         timeout=3000,
         memlimit=memlimit,
         after=after,
@@ -665,7 +663,7 @@ def overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance1",
+            key="performance4",
             timeout=10000,
             memlimit=memlimit,
             after=after,

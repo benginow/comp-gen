@@ -95,7 +95,7 @@ impl Workload {
     }
 
     pub fn is_not_canon(&self) {
-        // IS_CANON.store(false, atomic::Ordering::Relaxed);
+        IS_CANON.store(false, atomic::Ordering::Relaxed);
     }
 
     pub fn empty() -> Self {

@@ -117,10 +117,10 @@ fn arity_shorting(depth: usize, values: Workload, variable_names: Workload, oper
 
 fn seed() -> ruler::enumo::Ruleset<lang::VecLang> {
     Ruleset::new([
-        "(+ a b) ==> (+ b a)",
-        "(* a b) ==> (* b a)",
-        "(VecAdd a b) ==> (VecAdd b a)",
-        "(VecMul a b) ==> (VecMul b a)",
+        "(+ ?a ?b) ==> (+ ?b ?a)",
+        "(* ?a ?b) ==> (* ?b ?a)",
+        "(VecAdd ?a ?b) ==> (VecAdd ?b ?a)",
+        "(VecMul ?a ?b) ==> (VecMul ?b ?a)",
         "(VecAdd (Vec ?b) (Vec ?a)) ==> (Vec (+ ?b ?a))", 
         "(VecDiv (Vec ?b) (Vec ?a)) ==> (Vec (/ ?b ?a))"]
     )
