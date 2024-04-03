@@ -1,0 +1,15 @@
+{
+  "date": "Feb28-1225",
+  "name": "mat-mul_2x2_2x2",
+  "owner": "root@benginows-Air.lan",
+  "key": "performance-vecmac-vecmuls",
+  "memory_limit": 220,
+  "timeout": 3000,
+  "command": "./run.sh",
+  "after": null,
+  "metadata": {
+    "rules.json": "/Users/benginow/Projects/isaria/comp-gen/server/rulesets/1.json",
+    "compile.json": "config_a15_b6.json",
+    "costfn": "alternative"
+  }
+}

@@ -1,0 +1,9 @@
+{
+    "rust-analyzer.diagnostics.useRustcErrorCode": true,
+    "rust-analyzer.linkedProjects": [
+        "./dios-lang/Cargo.toml"
+    ],
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
+      }
+}

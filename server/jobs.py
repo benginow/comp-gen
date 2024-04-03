@@ -8,11 +8,27 @@ import subprocess
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Tuple
+from itertools import product
+from enum import Enum
 
 import click
 
 JOBS = {}
 
+class Operations(Enum):
+    # Won't run algorithm until later
+    # Algorithm = "Algorithm"
+    HandPicked = "HandPicked"
+    HandPickedThinner = "HandPickedThinner"
+    AllAtOnce = "AllAtOnce"
+
+
+class SynthesisConfig:
+    def __init__(self, filename, operation_matching, canon_force, arity_shorting):
+        self.filename = filename
+        self.operation_matching = operation_matching
+        self.canon_force = canon_force
+        self.arity_shorting = arity_shorting
 
 def unique_name(path: Path, suffix: int = 0) -> Path:
     """Find a unique path based on `path` and adding a suffix."""
@@ -337,6 +353,80 @@ def qr_decomp(
     shutil.copy(ruleset, job_dir / "rules.json")
     create_compile_config(compile, job_dir / "compile.json")
 
+def generate_synthesis_config(config, job_dir):
+    data = {
+        "name": config.filename,
+        "operation_matching": config.operation_matching.value,
+        "canon_force": config.canon_force,
+        "arity_shorting": config.arity_shorting
+    }
+    json.dump(data, (job_dir / f"{config.filename}").open("w"), indent=2)
+
+def make_synthesis_experimental(
+    jobs_dir: Path,
+    synth_timeout: int,
+    name: str = "synthesis",
+    eqsat_iter: int = 3,
+    eqsat_timeout: int = 60,
+    memlimit: int = 450,
+    after: str | None = None,
+    config: SynthesisConfig | None = None,
+):
+    synth_config = json.load((Path("synthesis") / "base.json").open("r"))
+    synth_config["ruler_config"]["abs_timeout"] = synth_timeout
+    synth_config["ruler_config"]["eqsat_iter_limit"] = eqsat_iter
+    synth_config["ruler_config"]["eqsat_time_limit"] = eqsat_timeout
+
+    job_dir = make_job_dir(
+        jobs_dir,
+        f"{name}-{synth_timeout}",
+        {
+            "memory_limit": memlimit,
+            "timeout": synth_timeout * 5,
+            "command": "./run.sh",
+            "after": after,
+            "metadata": {
+                "timeout": synth_timeout,
+                "eqsat_iter_limit": eqsat_iter,
+                "eqsat_timeout": eqsat_timeout,
+            },
+        },
+        [
+            " ".join(
+                [
+                    "RUST_LOG=debug,egg=info,z3=off",
+                    "$compgen_bin",
+                    "synth",
+                    "ruleset.json",
+                    "--config",
+                    "synth.json",
+                    "--synth",
+                    config.filename                ]
+            )
+        ],
+    )
+    json.dump(synth_config, (job_dir / "synth.json").open("w"), indent=2)
+
+    generate_synthesis_config(config, job_dir)
+
+@job()
+def experimental_synth(rulesets: Dict[str, Path] | None = None, after=None, memlimit=220, **_):
+    i=0
+    for operation_matching, canon_force, arity_shorting in product(Operations, [True, False], [True, False]):
+        filename = f"{i+1}.json"
+        i=i+1
+        config = SynthesisConfig(filename, operation_matching, canon_force, arity_shorting)
+        # may want to augment timeouts?
+        make_synthesis_experimental(Path("jobs"),
+            60000,
+            name="synthesis",
+            eqsat_iter=3,
+            eqsat_timeout=60,
+            after=after,
+            memlimit=memlimit,
+            config=config,
+            )
+
 
 def make_synthesis(
     jobs_dir: Path,
@@ -353,10 +443,11 @@ def make_synthesis(
     synth_config["ruler_config"]["abs_timeout"] = synth_timeout
     synth_config["ruler_config"]["eqsat_iter_limit"] = eqsat_iter
     synth_config["ruler_config"]["eqsat_time_limit"] = eqsat_timeout
-    if binops is not None:
-        synth_config["binops"] = binops
-    if triops is not None:
-        synth_config["triops"] = triops
+
+    # if binops is not None:
+    #     synth_config["binops"] = binops
+    # if triops is not None:
+    #     synth_config["triops"] = triops
 
     job_dir = make_job_dir(
         jobs_dir,
@@ -445,7 +536,7 @@ def fast_overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance1",
             timeout=3000,
             memlimit=memlimit,
             after=after,
@@ -457,7 +548,7 @@ def fast_overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance1",
             timeout=3000,
             memlimit=memlimit,
             after=after,
@@ -467,7 +558,7 @@ def fast_overall_performance(
         Path("jobs"),
         ruleset,
         make_config(alpha=15, beta=6, timeout=180),
-        key="performance",
+        key="performance1",
         timeout=3000,
         memlimit=memlimit,
         after=after,
@@ -479,7 +570,7 @@ def fast_overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance1",
             timeout=10000,
             memlimit=memlimit,
             after=after,
@@ -529,7 +620,7 @@ def overall_performance(
         (18, 18, 4, 4),
     ]
     qr_decomp_sizes = [3, 4]
-    ruleset = rulesets["ruleset_ruler2_depth4_simple"]
+    ruleset = rulesets["4"]
 
     # create all the jobs
     for size in mat_mul_sizes:
@@ -538,7 +629,7 @@ def overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance4",
             timeout=3000,
             memlimit=memlimit,
             after=after,
@@ -550,7 +641,7 @@ def overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance4",
             timeout=3000,
             memlimit=memlimit,
             after=after,
@@ -560,7 +651,7 @@ def overall_performance(
         Path("jobs"),
         ruleset,
         make_config(alpha=15, beta=6, timeout=180),
-        key="performance",
+        key="performance4",
         timeout=3000,
         memlimit=memlimit,
         after=after,
@@ -572,7 +663,7 @@ def overall_performance(
             size,
             ruleset,
             make_config(alpha=15, beta=6, timeout=180),
-            key="performance",
+            key="performance4",
             timeout=10000,
             memlimit=memlimit,
             after=after,
@@ -595,33 +686,8 @@ def overall_performance_small(
 
     mat_mul_sizes = [
         (2, 2, 2, 2),
-        (2, 3, 3, 3),
-        (3, 3, 3, 3),
-        (4, 4, 4, 4),
-        (8, 8, 8, 8),
-        (10, 10, 10, 10),
-        (16, 16, 16, 16),
-        (18, 18, 18, 18),
-        (20, 20, 20, 20),
     ]
-    conv_2d_sizes = [
-        (3, 3, 2, 2),
-        (3, 3, 3, 3),
-        (3, 5, 3, 3),
-        (4, 4, 3, 3),
-        (8, 8, 3, 3),
-        (10, 10, 2, 2),
-        (10, 10, 3, 3),
-        (10, 10, 4, 4),
-        (16, 16, 2, 2),
-        (16, 16, 3, 3),
-        (16, 16, 4, 4),
-        (18, 18, 2, 2),
-        (18, 18, 3, 3),
-        (18, 18, 4, 4),
-    ]
-    qr_decomp_sizes = [3, 4]
-    ruleset = rulesets["ruleset-ruler2-depth6-prod-vecmac-vecmuls"]
+    ruleset = rulesets["1"]
 
     # create all the jobs
     for size in mat_mul_sizes:
@@ -632,40 +698,6 @@ def overall_performance_small(
             make_config(alpha=15, beta=6, timeout=180),
             key="performance-vecmac-vecmuls",
             timeout=3000,
-            memlimit=memlimit,
-            after=after,
-        )
-
-    for size in conv_2d_sizes:
-        make_2d_conv(
-            Path("jobs"),
-            size,
-            ruleset,
-            make_config(alpha=15, beta=6, timeout=180),
-            key="performance-vecmac-vecmuls",
-            timeout=3000,
-            memlimit=memlimit,
-            after=after,
-        )
-
-    q_prod(
-        Path("jobs"),
-        ruleset,
-        make_config(alpha=15, beta=6, timeout=180),
-        key="performance-vecmac-vecmuls",
-        timeout=3000,
-        memlimit=memlimit,
-        after=after,
-    )
-
-    for size in qr_decomp_sizes:
-        qr_decomp(
-            Path("jobs"),
-            size,
-            ruleset,
-            make_config(alpha=15, beta=6, timeout=180),
-            key="performance-vecmac-vecmuls",
-            timeout=10000,
             memlimit=memlimit,
             after=after,
         )
@@ -883,6 +915,33 @@ def pruning(rulesets: Dict[str, Path] | None = None, after=None, memlimit=100, *
             metadata={"pruning": False},
         )
 
+
+
+@job()
+def ruleset_synthesis(after=None, memlimit=450, **_):
+    """
+    Synthesize rulesets with different timeouts.
+    """
+
+    timeouts = [
+        60,
+        600,
+        6000,
+        60000,
+    ]
+
+    for t in timeouts:
+        make_synthesis(
+            Path("jobs"),
+            t,
+            name="synthesis",
+            binops=["+", "-", "*", "/", "VecAdd", "VecMinus", "VecMul", "VecDiv"],
+            triops=["VecMAC", "VecMULS"],
+            eqsat_iter=3,
+            eqsat_timeout=60,
+            after=after,
+            memlimit=memlimit,
+        )
 
 @job()
 def ruleset_synthesis(after=None, memlimit=450, **_):
@@ -1176,9 +1235,13 @@ def alpha_beta_ablation(
                 memlimit=memlimit,
             )
 
+# @job()
+# def synthesize_with_synth_configs()
+    
+
 
 @job()
-def estimate(args, after=None, memlimit=220, **_):
+def estimate(args=["performance"], after=None, memlimit=220, **_):
     """
     Run cycle estimation on jobs that the key: `args`
     """

@@ -12,7 +12,7 @@ Cargo.lock
 /experiments/original-dios/results/
 *.Rhistory
 /server/completed/
-*.pyc
+*.pycgit 
 /server/diospyros-results/
 /server/in-progress/
 /server/figs/*.jpg
@@ -21,7 +21,7 @@ Cargo.lock
 /server/figs/*.pdf
 /server/figs/_old_data_/
 *.DS_Store
-/server/jobs/
+# /server/jobs/
 /server/completed.tar
 /output/
 *.pem

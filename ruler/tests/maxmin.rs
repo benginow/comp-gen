@@ -127,7 +127,7 @@ case {
     ].into()
 }
 
-egg::define_language! {
+egg::! {
  pub enum CaddyAndFRep  {
     // bool/int language
     "<" = Less([Id; 2]),

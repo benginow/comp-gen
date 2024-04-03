@@ -8,14 +8,23 @@ mod rewriteconcats;
 mod smt;
 mod stringconversion;
 mod synthesis;
+mod desugared_lang;
+mod desugared_synthesis;
+mod desugared_workloads;
+mod util;
 
 use crate::desugar::Desugar;
 use anyhow::Context;
 use argh::FromArgs;
+use comp_gen::config::{self, default_compiler_config};
 use egg::*;
 pub use error::Res;
 use log::info;
 use std::{fs, io::Write, path::PathBuf, process};
+
+// use std::sync::{Once};
+// pub static mut CANON_FORCE: Option<bool> = None;
+// pub static INIT: Once = Once::new();
 
 /// Generate and run an automatically generated compiler
 /// for the Diospyros vector language.
@@ -42,16 +51,32 @@ pub struct SynthOpts {
     output: String,
 
     /// path to a dios configuration file
-    #[argh(option, from_str_fn(read_synth_config))]
+    #[argh(option, from_str_fn(read_dios_config))]
     config: Option<synthesis::DiosConfig>,
+
+    /// path to a synthesis config file
+    #[argh(option, from_str_fn(read_synth_config))]
+    synth: Option<synthesis::SynthesisConfig>,
 
     /// path to a chkpt file
     #[argh(option, from_str_fn(read_path))]
     checkpoint: Option<PathBuf>,
 }
 
+
 /// Read a `synthesis::DiosConfig` from a path (represented as a `&str`).
-fn read_synth_config(path: &str) -> Result<synthesis::DiosConfig, String> {
+fn read_synth_config(path: &str) -> Result<synthesis::SynthesisConfig, String> {
+    let config_file = fs::File::open(path)
+        .context("open synth path")
+        .map_err(|e| e.to_string())?;
+    let parsed: synthesis::SynthesisConfig = serde_json::from_reader(config_file)
+        .context(format!("parse {path:?} as dios_config"))
+        .map_err(|e| e.to_string())?;
+    Ok(parsed)
+}
+
+/// Read a `synthesis::DiosConfig` from a path (represented as a `&str`).
+fn read_dios_config(path: &str) -> Result<synthesis::DiosConfig, String> {
     let config_file = fs::File::open(path)
         .context("open config path")
         .map_err(|e| e.to_string())?;
@@ -121,10 +146,21 @@ fn read_compiler_config(
 
 /// Synthesize a new ruleset using `Ruler`.
 fn synth(synth_opts: SynthOpts) -> Res<()> {
+    let synth_config = synth_opts.synth.unwrap_or_default();
+    // INIT.call_once(|| {
+    //     // Since this access is inside a call_once, before any other accesses, it is safe
+    //     unsafe {
+    //         CANON_FORCE = Some(synth_config.canon_force);
+    //     }
+    // });
     let report = synthesis::run(
         synth_opts.config.unwrap_or_default(),
+        synth_config,
         synth_opts.checkpoint,
     )?;
+
+   
+
     let file = std::fs::File::create(&synth_opts.output)
         .unwrap_or_else(|_| panic!("Failed to open '{}'", &synth_opts.output));
     // report.to_file(&synth_opts.output);
@@ -237,4 +273,122 @@ fn main() -> Res<()> {
         Commands::Synth(opts) => synth(opts),
         Commands::Compile(opts) => compile(opts),
     }
+    
+}
+
+
+// shuffle vectors: 
+// swaps: Vec (1 0 2 3), Vec (0 1 3 2), Vec (3 1 2 0), Vec (0 3 2 1), Vec(0 2 1 3), Vec(2 1 0 3)
+// rotations: Vec (3 0 1 2), Vec (1 2 3 0)
+#[cfg(test)]
+mod shuffle_tests {
+    use super::*;
+    use egg::*;
+    use log::debug;
+
+    #[test]
+    fn shuffling() {
+        let program = "(List (VecAdd (VecAdd (VecAdd 
+            (Vec (Get I 0) 0 0 0)
+            (Vec (Get I 1) 0 0 0))
+            (Vec (Get I 2) 0 0 0))
+            (Vec (Get I 3) 0 0 0))
+        )";
+        let concats = rewriteconcats::list_to_concats(4, &program).unwrap();
+        println!("list to concats returned this: {}",concats);
+        let prog: egg::RecExpr<desugared_lang::VecLangDesugared> = concats.parse().unwrap();
+        println!("parsing concats returns this: {}", prog);
+
+        let mut compiler: comp_gen::Compiler<desugared_lang::VecLangDesugared, (), _> = comp_gen::Compiler::with_cost_fn(cost::VecCostFnDesugared::dios());
+
+        // add rules to compiler
+        compiler.with_init_node(desugared_lang::VecLangDesugared::Const(desugared_lang::Value::Int(0)));
+
+        // add predesugared rules
+        compiler.add_external_rules(&PathBuf::from("sum_and_shufl_rules.json"));
+
+        // add litvec rules
+        compiler
+            .add_rules(
+                handwritten::build_litvec_rule_desugared(4).into_iter(),
+            )
+            .output_rule_distribution("rule_distribution.csv", |x| x);
+
+
+        let config = default_compiler_config();
+        compiler.with_config(&config);
+
+        // compiler.with_explanations();
+        let (cost, prog, mut _eg) = compiler.compile(prog);
+        println!("this is the outputted program: {}", prog);
+        println!("cost: {cost}");
+    }
+}
+
+#[cfg(test)]
+mod sum_tests {
+    use super::*;
+    use egg::*;
+    use log::debug;
+
+    #[test]
+    fn generate_vecsum_rules() {
+        let ruleset = desugared_synthesis::run().unwrap();
+        println!("{:#?}", ruleset);
+    }
+
+    #[test]
+    fn futzing_about() {
+        let spec: String = "(list
+            (box (* I$0 F$0))
+            (box (+ (* I$0 F$1) (* I$1 F$0)))
+            (box (* I$1 F$1))
+            (box (+ (* I$0 F$2) (* I$2 F$0)))
+            (box (+ (* I$0 F$3) (* I$1 F$2) (* I$2 F$1) (* I$3 F$0)))
+            (box (+ (* I$1 F$3) (* I$3 F$1)))
+            (box (* I$2 F$2))
+            (box (+ (* I$2 F$3) (* I$3 F$2)))
+            (box (* I$3 F$3)))".to_string();
+        let program: String = stringconversion::convert_string(&spec).unwrap();
+        println!("convert string returned this: {}",program);
+        let concats = rewriteconcats::list_to_concats(4, &program).unwrap();
+        println!("list to concats returned this: {}",concats);
+        let prog: egg::RecExpr<lang::VecLang> = concats.parse().unwrap();
+        println!("parsing concats returns this: {}", prog);
+    }
+
+    #[test]
+    fn vecsum_fun() {
+        // this doesn't seem 100% right, but it is what it is.
+        let program = "(List (+ (Get I 0) (+ (Get I 1) (+ (Get I 2) (Get I 3)))))";
+        let concats = rewriteconcats::list_to_concats(4, &program).unwrap();
+        println!("list to concats returned this: {}",concats);
+        let prog = concats.parse().unwrap();
+        println!("parsing concats returns this: {}", prog);
+
+        let mut compiler: comp_gen::Compiler<desugared_lang::VecLangDesugared, (), _> = comp_gen::Compiler::with_cost_fn(cost::VecCostFnDesugared::dios());
+
+        // add rules to compiler
+        compiler.with_init_node(desugared_lang::VecLangDesugared::Const(desugared_lang::Value::Int(0)));
+
+        // add predesugared rules
+        compiler.add_external_rules(&PathBuf::from("sum_rules.json"));
+
+        // add litvec rules
+        compiler
+            .add_rules(
+                handwritten::build_litvec_rule_desugared(4).into_iter(),
+            )
+            .output_rule_distribution("rule_distribution.csv", |x| x);
+
+
+        let config = default_compiler_config();
+        compiler.with_config(&config);
+
+        // compiler.with_explanations();
+        let (cost, prog, mut _eg) = compiler.compile(prog);
+        println!("this is the outputted program: {}", prog);
+        println!("cost: {cost}");
+    }
+
 }

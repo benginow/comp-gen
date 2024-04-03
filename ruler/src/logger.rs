@@ -14,12 +14,21 @@ use crate::{count_lines, enumo::Ruleset, DeriveType, Limits, Phase, SynthLanguag
  * the array, and writes it back to the file
  */
 fn add_json_to_file(json: Value, path: Option<&str>) {
+    use std::path::Path;
+
     let path = match path {
         Some(p) => p,
         None => "nightly/data/output.json"
     };
     std::fs::create_dir_all("nightly/data").unwrap_or_else(|e| panic!("Error creating dir: {}", e));
 
+    if let Some(parent) = Path::new(&path).parent() {
+        if !parent.exists() {
+            std::fs::create_dir_all(parent).unwrap();
+        }
+    }
+
+    println!("path {path} may not exist");
     OpenOptions::new()
         .read(true)
         .write(true)
@@ -212,7 +221,7 @@ fn get_derivability<L: SynthLanguage>(
 pub fn log_rules<L: SynthLanguage>(
     ruleset: &Ruleset<L>,
     filepath: Option<&str>,
-    name: &str
+    name: String
 ) {
     add_json_to_file(json!({
         "num_rules": ruleset.len(),

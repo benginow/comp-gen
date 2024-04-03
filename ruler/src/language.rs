@@ -58,7 +58,6 @@ impl<L: SynthLanguage> Analysis<L> for SynthAnalysis {
                     for n in s.as_ref() {
                         nodes.push(n.clone().map_children(|id| Id::from(usize::from(id) + i)));
                     }
-
                     map.insert(id, Id::from(nodes.len() - 1));
                 }
             });
@@ -67,6 +66,8 @@ impl<L: SynthLanguage> Analysis<L> for SynthAnalysis {
             RecExpr::from(nodes)
         };
 
+        use log::debug;
+        // debug!("getting cvec for {:?}", enode);
         Signature {
             cvec: enode.eval(egraph.analysis.cvec_len, get_cvec),
             interval: enode.mk_interval(get_interval),
@@ -104,7 +105,8 @@ impl<L: SynthLanguage> Analysis<L> for SynthAnalysis {
         };
         let new_max = match (to.interval.high.as_ref(), from.interval.high.as_ref()) {
             (None, None) => None,
-            (None, Some(y)) => Some(y.clone()),
+            (None, Some(y
+            )) => Some(y.clone()),
             (Some(x), None) => Some(x.clone()),
             (Some(x), Some(y)) => Some(x.min(y).clone()),
         };

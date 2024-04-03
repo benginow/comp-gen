@@ -288,7 +288,7 @@ def diospyros_cycles(egg_kernel_csv):
         return pd.DataFrame()
 
 
-@query(key="performance", pinned_date="Sep05")
+@query(key="performance2", pinned_date="Feb29")
 def est_cycles(row):
     x = row.exp_dir
     return pd.DataFrame(
@@ -526,6 +526,7 @@ def ls(key, time, metric):
 @click.option("--commit", is_flag=True)
 @click.option("--diff", is_flag=True)
 def update(name, time, commit, diff):
+
     query_list = "\n".join([f"- {x}" for x in QUERIES.keys()])
     if name is None:
         print(f"Available queries:\n{query_list}")
@@ -541,6 +542,9 @@ def update(name, time, commit, diff):
         query_date = config["pinned_date"]
     exps = all_experiments(query_key=config["key"], query_time=query_date)
 
+    print("hello1")
+
+
     res = []
     for _, row in exps.iterrows():
         res.append(config["func"](row))
@@ -550,6 +554,9 @@ def update(name, time, commit, diff):
         >> reset_index(drop=True)
         >> display()
     )
+
+    print("hello2")
+
 
     data_dir = Path("figs") / "data"
     data_dir.mkdir(exist_ok=True)

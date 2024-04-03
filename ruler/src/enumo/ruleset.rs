@@ -408,6 +408,7 @@ impl<L: SynthLanguage> Ruleset<L> {
                 if rule.is_valid() {
                     selected.add(rule.clone());
                 } else {
+                    // debug!("{:?} is invalid, added to invalid set", rule.to_string());
                     invalid.add(rule.clone());
                 }
 

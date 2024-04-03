@@ -1,0 +1,1117 @@
+[2024-02-29T19:28:10Z DEBUG dios_lang] CompileOpts {
+        input: "mat-mul",
+        dios_example_bin: "../../../diospyros/dios-example-gen",
+        dios_bin: "../../../diospyros/dios",
+        dios_params: "params.json",
+        vector_width: 4,
+        rules: "rules.json",
+        pre_desugared: false,
+        config: Some(
+            CompilerConfiguration {
+                total_node_limit: 2000000000,
+                total_iter_limit: 4000,
+                timeout: 180,
+                dry_run: false,
+                debug: false,
+                dump_rules: true,
+                reuse_egraphs: true,
+                cd_filter: None,
+                require_all_vars: false,
+                phase: Phases {
+                    phases: [
+                        Phases {
+                            phases: [
+                                Single {
+                                    name: "pre-compile",
+                                    cd: [
+                                        None,
+                                        Some(
+                                            15.0,
+                                        ),
+                                    ],
+                                    ca: [
+                                        Some(
+                                            6.0,
+                                        ),
+                                        None,
+                                    ],
+                                    fresh_egraph: Some(
+                                        true,
+                                    ),
+                                    node_limit: Some(
+                                        500000,
+                                    ),
+                                    iter_limit: Some(
+                                        2,
+                                    ),
+                                    timeout: Some(
+                                        30,
+                                    ),
+                                    disabled: Some(
+                                        false,
+                                    ),
+                                    scheduler: None,
+                                },
+                                Single {
+                                    name: "compile",
+                                    cd: [
+                                        Some(
+                                            15.0,
+                                        ),
+                                        None,
+                                    ],
+                                    ca: [
+                                        None,
+                                        None,
+                                    ],
+                                    fresh_egraph: None,
+                                    node_limit: None,
+                                    iter_limit: Some(
+                                        2,
+                                    ),
+                                    timeout: Some(
+                                        30,
+                                    ),
+                                    disabled: Some(
+                                        false,
+                                    ),
+                                    scheduler: None,
+                                },
+                                Single {
+                                    name: "litvec",
+                                    cd: [
+                                        Some(
+                                            0.39,
+                                        ),
+                                        Some(
+                                            0.41,
+                                        ),
+                                    ],
+                                    ca: [
+                                        Some(
+                                            0.2,
+                                        ),
+                                        Some(
+                                            0.22,
+                                        ),
+                                    ],
+                                    fresh_egraph: None,
+                                    node_limit: None,
+                                    iter_limit: Some(
+                                        2,
+                                    ),
+                                    timeout: Some(
+                                        30,
+                                    ),
+                                    disabled: Some(
+                                        false,
+                                    ),
+                                    scheduler: None,
+                                },
+                            ],
+                            loops: Some(
+                                20,
+                            ),
+                            timeout: None,
+                        },
+                        Single {
+                            name: "opt",
+                            cd: [
+                                None,
+                                Some(
+                                    15.0,
+                                ),
+                            ],
+                            ca: [
+                                None,
+                                Some(
+                                    6.0,
+                                ),
+                            ],
+                            fresh_egraph: Some(
+                                true,
+                            ),
+                            node_limit: None,
+                            iter_limit: Some(
+                                10,
+                            ),
+                            timeout: None,
+                            disabled: Some(
+                                false,
+                            ),
+                            scheduler: Some(
+                                Simple,
+                            ),
+                        },
+                    ],
+                    loops: None,
+                    timeout: None,
+                },
+                scheduler: Some(
+                    Simple,
+                ),
+                stats: None,
+            },
+        ),
+        output_dir: Some(
+            "results",
+        ),
+        costfn: "alternative",
+    }
+#f
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Phase config: Loop {
+        phases: [
+            Loop {
+                phases: [
+                    Single(
+                        SinglePhase {
+                            name: "pre-compile",
+                            fresh_egraph: true,
+                            node_limit: Some(
+                                500000,
+                            ),
+                            iter_limit: Some(
+                                2,
+                            ),
+                            timeout: Some(
+                                30,
+                            ),
+                            scheduler: None,
+                        },
+                    ),
+                    Single(
+                        SinglePhase {
+                            name: "compile",
+                            fresh_egraph: false,
+                            node_limit: None,
+                            iter_limit: Some(
+                                2,
+                            ),
+                            timeout: Some(
+                                30,
+                            ),
+                            scheduler: None,
+                        },
+                    ),
+                    Single(
+                        SinglePhase {
+                            name: "litvec",
+                            fresh_egraph: false,
+                            node_limit: None,
+                            iter_limit: Some(
+                                2,
+                            ),
+                            timeout: Some(
+                                30,
+                            ),
+                            scheduler: None,
+                        },
+                    ),
+                ],
+                loops: 20,
+                timeout: None,
+            },
+            Single(
+                SinglePhase {
+                    name: "opt",
+                    fresh_egraph: true,
+                    node_limit: None,
+                    iter_limit: Some(
+                        10,
+                    ),
+                    timeout: None,
+                    scheduler: Some(
+                        Simple,
+                    ),
+                },
+            ),
+        ],
+        loops: 1,
+        timeout: None,
+    }
+[2024-02-29T19:28:10Z INFO  comp_gen::run] loop 0
+[2024-02-29T19:28:10Z INFO  comp_gen::run] loop 0
+[2024-02-29T19:28:10Z INFO  comp_gen::run] ==========================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Starting Phase pre-compile
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Using 31 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::run] ==========================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecAdd (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (+ ?b0 ?a0) (+ ?b1 ?a1) (+ ?b2 ?a2) (+ ?b3 ?a3)) (ruler_0_lr)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecAdd (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (+ ?b0 ?a0) (+ ?b1 ?a1) (+ ?b2 ?a2) (+ ?b3 ?a3)) (ruler_1_lr-rev)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecDiv (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (/ ?b0 ?a0) (/ ?b1 ?a1) (/ ?b2 ?a2) (/ ?b3 ?a3)) (ruler_2_lr)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecDiv (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (/ ?b0 ?a0) (/ ?b1 ?a1) (/ ?b2 ?a2) (/ ?b3 ?a3)) (ruler_3_lr-rev)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.00 ca:10.00] (neg ?a) => (- 0 ?a) (ruler_6_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- 0 ?a) => (neg ?a) (ruler_7_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* ?a 0) => (- ?a ?a) (ruler_8_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- ?a ?a) => (* ?a 0) (ruler_9_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- ?a ?a) => (* 0 ?a) (ruler_10_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* 0 ?a) => (- ?a ?a) (ruler_11_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* ?a 1) => (* 1 ?a) (ruler_12_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* 1 ?a) => (* ?a 1) (ruler_13_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ 0 ?a) => (+ ?a 0) (ruler_14_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ ?a 0) => (+ 0 ?a) (ruler_15_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ ?a 1) => (+ 1 ?a) (ruler_16_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ 1 ?a) => (+ ?a 1) (ruler_17_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- ?a 0) => (* ?a 1) (ruler_18_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* ?a 1) => (- ?a 0) (ruler_19_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- ?a 0) => (+ 0 ?a) (ruler_20_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ 0 ?a) => (- ?a 0) (ruler_21_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- ?a 0) => (/ ?a 1) (ruler_22_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (/ ?a 1) => (- ?a 0) (ruler_23_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.30 ca:2020.75] (VecSqrt (Vec 0 0 0 0)) => (Vec (sqrt 0) (sqrt 0) (sqrt 0) (sqrt 0)) (ruler_31_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.30 ca:2020.75] (VecSqrt (Vec 1 1 1 1)) => (Vec (sqrt 1) (sqrt 1) (sqrt 1) (sqrt 1)) (ruler_33_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2020.90] (VecNeg (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (neg ?a0) (neg ?a1) (neg ?a2) (neg ?a3)) (ruler_36_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecMinus (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (- ?b0 ?a0) (- ?b1 ?a1) (- ?b2 ?a2) (- ?b3 ?a3)) (ruler_51_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ ?b ?a) => (+ ?a ?b) (ruler_54_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ ?a ?b) => (+ ?b ?a) (ruler_55_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecMul (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (* ?b0 ?a0) (* ?b1 ?a1) (* ?b2 ?a2) (* ?b3 ?a3)) (ruler_71_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* ?b ?a) => (* ?a ?b) (ruler_75_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* ?a ?b) => (* ?b ?a) (ruler_76_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Using a fresh egraph for this phase
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Making runner
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Time left: 180s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Using timeout: 30s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Starting equality saturation
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 27, eclasses: 27
+      New: hc size 27, eclasses: 27
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 0
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.000493875
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.000084666
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 39, eclasses: 27
+      New: hc size 39, eclasses: 27
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.000084084
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=39, e=27
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 1
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.000501
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.000058333
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 39, eclasses: 27
+      New: hc size 39, eclasses: 27
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.000078791
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=39, e=27
+[2024-02-29T19:28:10Z INFO  egg::run] Stopping: Saturated
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Extracting best program
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Program is "(Vec\n  (+\n    (*\n      (Get\n        A\n        0)\n      (Get\n        B\n        0))\n    (*\n      (Get\n        A\n        1)\n      (Get\n        B\n        2)))\n  (+\n    (*\n      (Get\n        A\n        0)\n      (Get\n        B\n        1))\n    (*\n      (Get\n        A\n        1)\n      (Get\n        B\n        3)))\n  (+\n    (*\n      (Get\n        B\n        0)\n      (Get\n        A\n        2))\n    (*\n      (Get\n        B\n        2)\n      (Get\n        A\n        3)))\n  (+\n    (*\n      (Get\n        B\n        1)\n      (Get\n        A\n        2))\n    (*\n      (Get\n        B\n        3)\n      (Get\n        A\n        3))))"
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Program has not changed
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Egraph size: 39
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   Runner report
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   =============
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Phase: 'pre-compile' with 31 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Stop reason: Saturated
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Iterations: 2
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Cost: 12124.848000000002 (old: 12124.848000000002)
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Time: 0.001353333
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Egraph size: 39 nodes, 27 classes, 39 memo
+[2024-02-29T19:28:10Z INFO  comp_gen::run] ======================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Starting Phase compile
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Using 9 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::run] ======================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (+ ?b0 ?a0) (+ ?b1 ?a1) (+ ?b2 ?a2) (+ ?b3 ?a3)) => (VecAdd (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_0_lr-rev)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (+ ?b0 ?a0) (+ ?b1 ?a1) (+ ?b2 ?a2) (+ ?b3 ?a3)) => (VecAdd (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_1_lr)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (/ ?b0 ?a0) (/ ?b1 ?a1) (/ ?b2 ?a2) (/ ?b3 ?a3)) => (VecDiv (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_2_lr-rev)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (/ ?b0 ?a0) (/ ?b1 ?a1) (/ ?b2 ?a2) (/ ?b3 ?a3)) => (VecDiv (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_3_lr)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.30 ca:2020.75] (Vec (sqrt 0) (sqrt 0) (sqrt 0) (sqrt 0)) => (VecSqrt (Vec 0 0 0 0)) (ruler_30_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.30 ca:2020.75] (Vec (sqrt 1) (sqrt 1) (sqrt 1) (sqrt 1)) => (VecSqrt (Vec 1 1 1 1)) (ruler_32_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2020.90] (Vec (neg ?a0) (neg ?a1) (neg ?a2) (neg ?a3)) => (VecNeg (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_37_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (- ?b0 ?a0) (- ?b1 ?a1) (- ?b2 ?a2) (- ?b3 ?a3)) => (VecMinus (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_50_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (* ?b0 ?a0) (* ?b1 ?a1) (* ?b2 ?a2) (* ?b3 ?a3)) => (VecMul (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_72_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Making runner
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Time left: 179.998646667s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Using timeout: 30s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Starting equality saturation
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 39, eclasses: 27
+      New: hc size 39, eclasses: 27
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 0
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.000198667
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.000212375
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 71, eclasses: 43
+      New: hc size 71, eclasses: 43
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.000156083
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=71, e=43
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 1
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.000556333
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.002049167
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 583, eclasses: 299
+      New: hc size 583, eclasses: 299
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.001206333
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=583, e=299
+[2024-02-29T19:28:10Z INFO  egg::run] Stopping: IterationLimit(2)
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Extracting best program
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Program is "(VecAdd\n  (VecMul\n    (Vec\n      (Get\n        B\n        0)\n      (Get\n        B\n        1)\n      (Get\n        B\n        0)\n      (Get\n        B\n        1))\n    (Vec\n      (Get\n        A\n        0)\n      (Get\n        A\n        0)\n      (Get\n        A\n        2)\n      (Get\n        A\n        2)))\n  (VecMul\n    (Vec\n      (Get\n        B\n        2)\n      (Get\n        B\n        3)\n      (Get\n        B\n        2)\n      (Get\n        B\n        3))\n    (Vec\n      (Get\n        A\n        1)\n      (Get\n        A\n        1)\n      (Get\n        A\n        3)\n      (Get\n        A\n        3))))"
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Egraph size: 583
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   Runner report
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   =============
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Phase: 'compile' with 9 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Stop reason: IterationLimit(2)
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Iterations: 2
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Cost: 3.848 (old: 12124.848000000002)
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Time: 0.0044383750000000005
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Egraph size: 583 nodes, 299 classes, 583 memo
+[2024-02-29T19:28:10Z INFO  comp_gen::run] =====================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Starting Phase litvec
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Using 5 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::run] =====================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) => (LitVec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) (litvec)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec 0 (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) => (LitVec 0 (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) (litvec-0-0)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) 0 (Get ?a ?i2) (Get ?a ?i3)) => (LitVec (Get ?a ?i0) 0 (Get ?a ?i2) (Get ?a ?i3)) (litvec-0-1)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) (Get ?a ?i1) 0 (Get ?a ?i3)) => (LitVec (Get ?a ?i0) (Get ?a ?i1) 0 (Get ?a ?i3)) (litvec-0-2)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) 0) => (LitVec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) 0) (litvec-0-3)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Making runner
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Time left: 179.994208292s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Using timeout: 30s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Starting equality saturation
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 583, eclasses: 299
+      New: hc size 583, eclasses: 299
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 0
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.001733875
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.000212667
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 615, eclasses: 299
+      New: hc size 615, eclasses: 299
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.000910167
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=615, e=299
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 1
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.001728792
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.000117958
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 615, eclasses: 299
+      New: hc size 615, eclasses: 299
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.000866625
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=615, e=299
+[2024-02-29T19:28:10Z INFO  egg::run] Stopping: Saturated
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Extracting best program
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Program is "(VecAdd\n  (VecMul\n    (LitVec\n      (Get\n        B\n        2)\n      (Get\n        B\n        3)\n      (Get\n        B\n        0)\n      (Get\n        B\n        1))\n    (LitVec\n      (Get\n        A\n        1)\n      (Get\n        A\n        1)\n      (Get\n        A\n        2)\n      (Get\n        A\n        2)))\n  (VecMul\n    (LitVec\n      (Get\n        B\n        0)\n      (Get\n        B\n        1)\n      (Get\n        B\n        2)\n      (Get\n        B\n        3))\n    (LitVec\n      (Get\n        A\n        0)\n      (Get\n        A\n        0)\n      (Get\n        A\n        3)\n      (Get\n        A\n        3))))"
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Egraph size: 615
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   Runner report
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   =============
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Phase: 'litvec' with 5 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Stop reason: Saturated
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Iterations: 2
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Cost: 3.0519999999999996 (old: 3.848)
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Time: 0.005623708
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Egraph size: 615 nodes, 299 classes, 615 memo
+[2024-02-29T19:28:10Z INFO  comp_gen::run] loop 1
+[2024-02-29T19:28:10Z INFO  comp_gen::run] ==========================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Starting Phase pre-compile
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Using 31 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::run] ==========================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecAdd (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (+ ?b0 ?a0) (+ ?b1 ?a1) (+ ?b2 ?a2) (+ ?b3 ?a3)) (ruler_0_lr)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecAdd (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (+ ?b0 ?a0) (+ ?b1 ?a1) (+ ?b2 ?a2) (+ ?b3 ?a3)) (ruler_1_lr-rev)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecDiv (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (/ ?b0 ?a0) (/ ?b1 ?a1) (/ ?b2 ?a2) (/ ?b3 ?a3)) (ruler_2_lr)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecDiv (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (/ ?b0 ?a0) (/ ?b1 ?a1) (/ ?b2 ?a2) (/ ?b3 ?a3)) (ruler_3_lr-rev)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.00 ca:10.00] (neg ?a) => (- 0 ?a) (ruler_6_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- 0 ?a) => (neg ?a) (ruler_7_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* ?a 0) => (- ?a ?a) (ruler_8_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- ?a ?a) => (* ?a 0) (ruler_9_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- ?a ?a) => (* 0 ?a) (ruler_10_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* 0 ?a) => (- ?a ?a) (ruler_11_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* ?a 1) => (* 1 ?a) (ruler_12_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* 1 ?a) => (* ?a 1) (ruler_13_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ 0 ?a) => (+ ?a 0) (ruler_14_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ ?a 0) => (+ 0 ?a) (ruler_15_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ ?a 1) => (+ 1 ?a) (ruler_16_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ 1 ?a) => (+ ?a 1) (ruler_17_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- ?a 0) => (* ?a 1) (ruler_18_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* ?a 1) => (- ?a 0) (ruler_19_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- ?a 0) => (+ 0 ?a) (ruler_20_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ 0 ?a) => (- ?a 0) (ruler_21_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (- ?a 0) => (/ ?a 1) (ruler_22_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (/ ?a 1) => (- ?a 0) (ruler_23_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.30 ca:2020.75] (VecSqrt (Vec 0 0 0 0)) => (Vec (sqrt 0) (sqrt 0) (sqrt 0) (sqrt 0)) (ruler_31_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.30 ca:2020.75] (VecSqrt (Vec 1 1 1 1)) => (Vec (sqrt 1) (sqrt 1) (sqrt 1) (sqrt 1)) (ruler_33_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2020.90] (VecNeg (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (neg ?a0) (neg ?a1) (neg ?a2) (neg ?a3)) (ruler_36_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecMinus (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (- ?b0 ?a0) (- ?b1 ?a1) (- ?b2 ?a2) (- ?b3 ?a3)) (ruler_51_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ ?b ?a) => (+ ?a ?b) (ruler_54_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (+ ?a ?b) => (+ ?b ?a) (ruler_55_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-4039.00 ca:2021.31] (VecMul (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) => (Vec (* ?b0 ?a0) (* ?b1 ?a1) (* ?b2 ?a2) (* ?b3 ?a3)) (ruler_71_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* ?b ?a) => (* ?a ?b) (ruler_75_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:10.00] (* ?a ?b) => (* ?b ?a) (ruler_76_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Using a fresh egraph for this phase
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Making runner
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Time left: 179.988584584s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Using timeout: 30s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Starting equality saturation
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 21, eclasses: 21
+      New: hc size 21, eclasses: 21
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 0
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.000352375
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.000020083
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 21, eclasses: 21
+      New: hc size 21, eclasses: 21
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.000050666
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=21, e=21
+[2024-02-29T19:28:10Z INFO  egg::run] Stopping: Saturated
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Extracting best program
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Program is "(VecAdd\n  (VecMul\n    (LitVec\n      (Get\n        B\n        2)\n      (Get\n        B\n        3)\n      (Get\n        B\n        0)\n      (Get\n        B\n        1))\n    (LitVec\n      (Get\n        A\n        1)\n      (Get\n        A\n        1)\n      (Get\n        A\n        2)\n      (Get\n        A\n        2)))\n  (VecMul\n    (LitVec\n      (Get\n        B\n        0)\n      (Get\n        B\n        1)\n      (Get\n        B\n        2)\n      (Get\n        B\n        3))\n    (LitVec\n      (Get\n        A\n        0)\n      (Get\n        A\n        0)\n      (Get\n        A\n        3)\n      (Get\n        A\n        3))))"
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Program has not changed
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Egraph size: 21
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   Runner report
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   =============
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Phase: 'pre-compile' with 31 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Stop reason: Saturated
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Iterations: 1
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Cost: 3.0519999999999996 (old: 3.0519999999999996)
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Time: 0.000451667
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Egraph size: 21 nodes, 21 classes, 21 memo
+[2024-02-29T19:28:10Z INFO  comp_gen::run] ======================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Starting Phase compile
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Using 9 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::run] ======================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (+ ?b0 ?a0) (+ ?b1 ?a1) (+ ?b2 ?a2) (+ ?b3 ?a3)) => (VecAdd (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_0_lr-rev)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (+ ?b0 ?a0) (+ ?b1 ?a1) (+ ?b2 ?a2) (+ ?b3 ?a3)) => (VecAdd (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_1_lr)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (/ ?b0 ?a0) (/ ?b1 ?a1) (/ ?b2 ?a2) (/ ?b3 ?a3)) => (VecDiv (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_2_lr-rev)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (/ ?b0 ?a0) (/ ?b1 ?a1) (/ ?b2 ?a2) (/ ?b3 ?a3)) => (VecDiv (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_3_lr)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.30 ca:2020.75] (Vec (sqrt 0) (sqrt 0) (sqrt 0) (sqrt 0)) => (VecSqrt (Vec 0 0 0 0)) (ruler_30_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.30 ca:2020.75] (Vec (sqrt 1) (sqrt 1) (sqrt 1) (sqrt 1)) => (VecSqrt (Vec 1 1 1 1)) (ruler_32_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2020.90] (Vec (neg ?a0) (neg ?a1) (neg ?a2) (neg ?a3)) => (VecNeg (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_37_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (- ?b0 ?a0) (- ?b1 ?a1) (- ?b2 ?a2) (- ?b3 ?a3)) => (VecMinus (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_50_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:4039.00 ca:2021.31] (Vec (* ?b0 ?a0) (* ?b1 ?a1) (* ?b2 ?a2) (* ?b3 ?a3)) => (VecMul (Vec ?b0 ?b1 ?b2 ?b3) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_72_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Making runner
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Time left: 179.988132917s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Using timeout: 30s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Starting equality saturation
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 21, eclasses: 21
+      New: hc size 21, eclasses: 21
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 0
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.000113458
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.00000775
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 21, eclasses: 21
+      New: hc size 21, eclasses: 21
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.000050417
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=21, e=21
+[2024-02-29T19:28:10Z INFO  egg::run] Stopping: Saturated
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Extracting best program
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Program is "(VecAdd\n  (VecMul\n    (LitVec\n      (Get\n        B\n        2)\n      (Get\n        B\n        3)\n      (Get\n        B\n        0)\n      (Get\n        B\n        1))\n    (LitVec\n      (Get\n        A\n        1)\n      (Get\n        A\n        1)\n      (Get\n        A\n        2)\n      (Get\n        A\n        2)))\n  (VecMul\n    (LitVec\n      (Get\n        B\n        0)\n      (Get\n        B\n        1)\n      (Get\n        B\n        2)\n      (Get\n        B\n        3))\n    (LitVec\n      (Get\n        A\n        0)\n      (Get\n        A\n        0)\n      (Get\n        A\n        3)\n      (Get\n        A\n        3))))"
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Program has not changed
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Egraph size: 21
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   Runner report
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   =============
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Phase: 'compile' with 9 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Stop reason: Saturated
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Iterations: 1
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Cost: 3.0519999999999996 (old: 3.0519999999999996)
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Time: 0.000196542
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Egraph size: 21 nodes, 21 classes, 21 memo
+[2024-02-29T19:28:10Z INFO  comp_gen::run] =====================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Starting Phase litvec
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Using 5 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::run] =====================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) => (LitVec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) (litvec)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec 0 (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) => (LitVec 0 (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) (litvec-0-0)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) 0 (Get ?a ?i2) (Get ?a ?i3)) => (LitVec (Get ?a ?i0) 0 (Get ?a ?i2) (Get ?a ?i3)) (litvec-0-1)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) (Get ?a ?i1) 0 (Get ?a ?i3)) => (LitVec (Get ?a ?i0) (Get ?a ?i1) 0 (Get ?a ?i3)) (litvec-0-2)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) 0) => (LitVec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) 0) (litvec-0-3)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Making runner
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Time left: 179.987936375s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Using timeout: 30s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Starting equality saturation
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 21, eclasses: 21
+      New: hc size 21, eclasses: 21
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 0
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.00005675
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.000005625
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 21, eclasses: 21
+      New: hc size 21, eclasses: 21
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.000051042
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=21, e=21
+[2024-02-29T19:28:10Z INFO  egg::run] Stopping: Saturated
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Extracting best program
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Program is "(VecAdd\n  (VecMul\n    (LitVec\n      (Get\n        B\n        2)\n      (Get\n        B\n        3)\n      (Get\n        B\n        0)\n      (Get\n        B\n        1))\n    (LitVec\n      (Get\n        A\n        1)\n      (Get\n        A\n        1)\n      (Get\n        A\n        2)\n      (Get\n        A\n        2)))\n  (VecMul\n    (LitVec\n      (Get\n        B\n        0)\n      (Get\n        B\n        1)\n      (Get\n        B\n        2)\n      (Get\n        B\n        3))\n    (LitVec\n      (Get\n        A\n        0)\n      (Get\n        A\n        0)\n      (Get\n        A\n        3)\n      (Get\n        A\n        3))))"
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Program has not changed
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Egraph size: 21
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   Runner report
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]   =============
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Phase: 'litvec' with 5 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Stop reason: Saturated
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Iterations: 1
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Cost: 3.0519999999999996 (old: 3.0519999999999996)
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Time: 0.000139
+[2024-02-29T19:28:10Z INFO  comp_gen::stats]     Egraph size: 21 nodes, 21 classes, 21 memo
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Cost didn't change from this iteration, stopping early!
+[2024-02-29T19:28:10Z INFO  comp_gen::run] ==================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Starting Phase opt
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Using 421 rules
+[2024-02-29T19:28:10Z INFO  comp_gen::run] ==================
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-10.00 ca:5.00] 1 => (* 1 1) (ruler_4_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:10.00 ca:5.00] (* 1 1) => 1 (ruler_5_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:10.00 ca:5.00] (sgn 1) => 1 (ruler_24_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-10.00 ca:5.00] 1 => (sgn 1) (ruler_25_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:10.00 ca:5.00] (neg 0) => 0 (ruler_26_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-10.00 ca:5.00] 0 => (neg 0) (ruler_27_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:10.00 ca:5.00] (sgn 0) => 0 (ruler_28_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-10.00 ca:5.00] 0 => (sgn 0) (ruler_29_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:0.60] (VecSgn (Vec 0 0 0 0)) => (Vec 0 0 0 0) (ruler_34_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.00 ca:0.60] (Vec 0 0 0 0) => (VecSgn (Vec 0 0 0 0)) (ruler_35_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecAdd (VecMinus ?a ?a) (Vec 1 1 1 1)) => (VecMinus (Vec 1 1 1 1) (VecMinus ?a ?a)) (ruler_38_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMinus (Vec 1 1 1 1) (VecMinus ?a ?a)) => (VecAdd (VecMinus ?a ?a) (Vec 1 1 1 1)) (ruler_39_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.10] (VecAdd (Vec 0 0 0 0) ?a) => (VecMinus ?a (Vec 0 0 0 0)) (ruler_40_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.10] (VecMinus ?a (Vec 0 0 0 0)) => (VecAdd (Vec 0 0 0 0) ?a) (ruler_41_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecMinus ?b ?a) => (VecAdd (VecMinus ?b ?a) (Vec 0 0 0 0)) (ruler_42_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecAdd (VecMinus ?b ?a) (Vec 0 0 0 0)) => (VecMinus ?b ?a) (ruler_43_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecAdd ?b ?a) => (VecMinus (VecAdd ?a ?b) (Vec 0 0 0 0)) (ruler_44_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMinus (VecAdd ?a ?b) (Vec 0 0 0 0)) => (VecAdd ?b ?a) (ruler_45_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecAdd ?b ?a) => (VecAdd (VecAdd ?a ?b) (Vec 0 0 0 0)) (ruler_46_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecAdd (VecAdd ?a ?b) (Vec 0 0 0 0)) => (VecAdd ?b ?a) (ruler_47_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecMinus ?b ?a) => (VecMinus (Vec 0 0 0 0) (VecMinus ?a ?b)) (ruler_48_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMinus (Vec 0 0 0 0) (VecMinus ?a ?b)) => (VecMinus ?b ?a) (ruler_49_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.00] (VecAdd ?b ?a) => (VecAdd ?a ?b) (ruler_52_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.00] (VecAdd ?a ?b) => (VecAdd ?b ?a) (ruler_53_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.00 ca:1.61] (VecDiv (Vec 0 0 0 0) ?a) => (VecDiv (Vec 0 0 0 0) (VecMul ?a ?a)) (ruler_56_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecDiv (Vec 0 0 0 0) (VecMul ?a ?a)) => (VecDiv (Vec 0 0 0 0) ?a) (ruler_57_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.10] (VecDiv ?a (Vec 1 1 1 1)) => (VecMul ?a (Vec 1 1 1 1)) (ruler_58_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.10] (VecMul ?a (Vec 1 1 1 1)) => (VecDiv ?a (Vec 1 1 1 1)) (ruler_59_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMul (VecMul ?a ?b) (Vec 0 0 0 0)) => (VecDiv (Vec 0 0 0 0) (VecDiv ?a ?a)) (ruler_60_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMul (VecDiv ?b ?a) (Vec 0 0 0 0)) => (VecMul (Vec 0 0 0 0) ?b) (ruler_61_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMul (VecMul ?a ?b) (Vec 0 0 0 0)) => (VecMul (Vec 0 0 0 0) ?a) (ruler_62_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecMul ?b ?a) => (VecDiv (VecMul ?a ?b) (Vec 1 1 1 1)) (ruler_63_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecDiv (VecMul ?a ?b) (Vec 1 1 1 1)) => (VecMul ?b ?a) (ruler_64_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecDiv ?b ?a) => (VecMul (VecDiv ?b ?a) (Vec 1 1 1 1)) (ruler_65_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMul (VecDiv ?b ?a) (Vec 1 1 1 1)) => (VecDiv ?b ?a) (ruler_66_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecMul ?b ?a) => (VecMul (Vec 1 1 1 1) (VecMul ?a ?b)) (ruler_67_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMul (Vec 1 1 1 1) (VecMul ?a ?b)) => (VecMul ?b ?a) (ruler_68_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecDiv (VecDiv ?b ?a) (Vec 1 1 1 1)) => (VecDiv ?b ?a) (ruler_69_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecDiv ?b ?a) => (VecDiv (VecDiv ?b ?a) (Vec 1 1 1 1)) (ruler_70_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.00] (VecMul ?b ?a) => (VecMul ?a ?b) (ruler_73_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.00] (VecMul ?a ?b) => (VecMul ?b ?a) (ruler_74_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:0.71] (Vec 1 1 1 1) => (VecMAC (Vec 0 0 0 0) (Vec 1 1 1 1) (Vec 1 1 1 1)) (ruler_77_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:0.71] (VecMAC (Vec 0 0 0 0) (Vec 1 1 1 1) (Vec 1 1 1 1)) => (Vec 1 1 1 1) (ruler_78_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:0.71] (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) (Vec 0 0 0 0)) => (Vec 0 0 0 0) (ruler_79_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:0.71] (Vec 0 0 0 0) => (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) (Vec 0 0 0 0)) (ruler_80_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.61] (VecMAC (Vec 1 1 1 1) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMAC (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_81_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.61] (VecMAC (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMAC (Vec 1 1 1 1) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_82_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.30 ca:1.76] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec 0 0 0 0)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_83_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.30 ca:1.76] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec 0 0 0 0)) (ruler_84_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.30 ca:1.76] (VecMAC (Vec 0 0 0 0) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_85_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.30 ca:1.76] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMAC (Vec 0 0 0 0) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_86_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.30 ca:1.76] (VecMAC (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_87_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.30 ca:1.76] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMAC (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1)) (ruler_88_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.30 ca:1.76] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec 1 1 1 1)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_89_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.30 ca:1.76] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_90_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.66] (VecMAC (Vec 1 1 1 1) (Vec 1 1 1 1) (VecMul ?a ?a)) => (VecMAC (Vec 1 1 1 1) ?a ?a) (ruler_91_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.66] (VecMAC (Vec 1 1 1 1) ?a ?a) => (VecMAC (Vec 1 1 1 1) (Vec 1 1 1 1) (VecMul ?a ?a)) (ruler_92_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.91] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_93_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.91] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_94_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.30 ca:1.76] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec 0 0 0 0)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_95_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.30 ca:1.76] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec 0 0 0 0)) (ruler_96_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.91] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_97_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.91] (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMAC (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1)) (ruler_98_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.61] (VecMAC (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_99_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.61] (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMAC (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_100_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.21] (VecMAC (Vec 1 1 1 1) ?a (Vec 1 1 1 1)) => (VecMAC (Vec 1 1 1 1) (Vec 1 1 1 1) ?a) (ruler_101_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.21] (VecMAC (Vec 1 1 1 1) (Vec 1 1 1 1) ?a) => (VecMAC (Vec 1 1 1 1) ?a (Vec 1 1 1 1)) (ruler_102_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.21] (VecMAC ?a (Vec 1 1 1 1) (Vec 1 1 1 1)) => (VecMAC (Vec 1 1 1 1) (Vec 1 1 1 1) ?a) (ruler_103_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.21] (VecMAC (Vec 1 1 1 1) (Vec 1 1 1 1) ?a) => (VecMAC ?a (Vec 1 1 1 1) (Vec 1 1 1 1)) (ruler_104_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMAC (Vec 1 1 1 1) (VecMul ?a ?b) (Vec 0 0 0 0)) => (VecMAC (Vec 1 1 1 1) ?a (Vec 0 0 0 0)) (ruler_105_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMAC (Vec 1 1 1 1) (VecAdd ?a ?b) (Vec 0 0 0 0)) => (VecMAC (Vec 1 1 1 1) (Vec 0 0 0 0) ?a) (ruler_106_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMAC (Vec 1 1 1 1) (VecMul ?a ?b) (Vec 0 0 0 0)) => (VecMAC (Vec 1 1 1 1) (Vec 0 0 0 0) ?a) (ruler_107_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?b (VecAdd ?b ?a) (Vec 0 0 0 0)) => (VecMAC ?b (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_108_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?b (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMAC ?b (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_109_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?b (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMAC ?b (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_110_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?b (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMAC (Vec 0 0 0 0) (Vec 1 1 1 1) ?b) (ruler_111_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?b (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMAC ?b (Vec 1 1 1 1) (Vec 0 0 0 0)) (ruler_112_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?b (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMAC (Vec 0 0 0 0) ?b (Vec 1 1 1 1)) (ruler_113_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?a (Vec 0 0 0 0) (VecAdd ?a ?b)) => (VecMAC ?a (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_114_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?a (Vec 0 0 0 0) (VecAdd ?a ?b)) => (VecMAC (Vec 0 0 0 0) (Vec 1 1 1 1) ?a) (ruler_115_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?a (Vec 0 0 0 0) (VecAdd ?a ?b)) => (VecMAC ?a (Vec 1 1 1 1) (Vec 0 0 0 0)) (ruler_116_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?b (Vec 0 0 0 0) (VecAdd ?b ?a)) => (VecMAC (Vec 0 0 0 0) ?b (Vec 1 1 1 1)) (ruler_117_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?b ?a) (VecAdd ?b ?a) (Vec 1 1 1 1)) => (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) (VecAdd ?b ?a)) (ruler_118_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) (VecAdd ?b ?a)) => (VecMAC (VecMul ?b ?a) (VecAdd ?b ?a) (Vec 1 1 1 1)) (ruler_119_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?b ?a) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) (VecAdd ?b ?a)) (ruler_120_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) (VecAdd ?b ?a)) => (VecMAC (VecAdd ?b ?a) (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_121_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?b ?a) (VecMul ?b ?a) (Vec 1 1 1 1)) => (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) (VecAdd ?b ?a)) (ruler_122_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) (VecAdd ?b ?a)) => (VecMAC (VecAdd ?b ?a) (VecMul ?b ?a) (Vec 1 1 1 1)) (ruler_123_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?a ?b) (VecAdd ?a ?a) (Vec 1 1 1 1)) => (VecMAC (VecAdd ?a ?a) (Vec 1 1 1 1) (VecMul ?a ?b)) (ruler_124_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?a ?a) (Vec 1 1 1 1) (VecMul ?a ?b)) => (VecMAC (VecMul ?a ?b) (VecAdd ?a ?a) (Vec 1 1 1 1)) (ruler_125_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?a ?b) (Vec 1 1 1 1) (VecAdd ?a ?a)) => (VecMAC (VecAdd ?a ?a) (Vec 1 1 1 1) (VecMul ?a ?b)) (ruler_126_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?a ?a) (Vec 1 1 1 1) (VecMul ?a ?b)) => (VecMAC (VecMul ?a ?b) (Vec 1 1 1 1) (VecAdd ?a ?a)) (ruler_127_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?b ?b) (VecMul ?b ?a) (Vec 1 1 1 1)) => (VecMAC (VecAdd ?b ?b) (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_128_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?b ?b) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMAC (VecAdd ?b ?b) (VecMul ?b ?a) (Vec 1 1 1 1)) (ruler_129_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 0 0 0 0) (VecMul ?b ?a) (VecAdd ?b ?a)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?a) (VecMul ?b ?a)) (ruler_130_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?a) (VecMul ?b ?a)) => (VecMAC (Vec 0 0 0 0) (VecMul ?b ?a) (VecAdd ?b ?a)) (ruler_131_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?b) (VecMul ?b ?a)) => (VecMAC (Vec 0 0 0 0) (VecMul ?b ?a) (VecAdd ?b ?b)) (ruler_132_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 0 0 0 0) (VecMul ?b ?a) (VecAdd ?b ?b)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?b) (VecMul ?b ?a)) (ruler_133_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 1 1 1 1) (VecAdd ?a ?b) (VecMul ?a ?a)) => (VecMAC (Vec 1 1 1 1) (VecMul ?a ?a) (VecAdd ?a ?b)) (ruler_134_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 1 1 1 1) (VecMul ?a ?a) (VecAdd ?a ?b)) => (VecMAC (Vec 1 1 1 1) (VecAdd ?a ?b) (VecMul ?a ?a)) (ruler_135_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?a ?b) (Vec 1 1 1 1) (VecMul ?a ?a)) => (VecMAC (VecMul ?a ?a) (VecAdd ?a ?b) (Vec 1 1 1 1)) (ruler_136_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?a ?a) (VecAdd ?a ?b) (Vec 1 1 1 1)) => (VecMAC (VecAdd ?a ?b) (Vec 1 1 1 1) (VecMul ?a ?a)) (ruler_137_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?b ?b) (Vec 1 1 1 1) (VecAdd ?b ?a)) => (VecMAC (VecMul ?b ?b) (VecAdd ?b ?a) (Vec 1 1 1 1)) (ruler_138_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?b ?b) (VecAdd ?b ?a) (Vec 1 1 1 1)) => (VecMAC (VecMul ?b ?b) (Vec 1 1 1 1) (VecAdd ?b ?a)) (ruler_139_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?a ?b) (VecMul ?a ?a) (Vec 1 1 1 1)) => (VecMAC (VecMul ?a ?a) (VecAdd ?a ?b) (Vec 1 1 1 1)) (ruler_140_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?a ?a) (VecAdd ?a ?b) (Vec 1 1 1 1)) => (VecMAC (VecAdd ?a ?b) (VecMul ?a ?a) (Vec 1 1 1 1)) (ruler_141_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 1 1 1 1) (VecMul ?b ?a) (VecAdd ?b ?a)) => (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?a) (VecMul ?b ?a)) (ruler_142_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?a) (VecMul ?b ?a)) => (VecMAC (Vec 1 1 1 1) (VecMul ?b ?a) (VecAdd ?b ?a)) (ruler_143_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?b) (VecMul ?a ?a)) => (VecMAC (Vec 0 0 0 0) (VecMul ?a ?a) (VecAdd ?a ?b)) (ruler_144_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 0 0 0 0) (VecMul ?a ?a) (VecAdd ?a ?b)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?b) (VecMul ?a ?a)) (ruler_145_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?b) (VecMul ?b ?a)) => (VecMAC (Vec 1 1 1 1) (VecMul ?b ?a) (VecAdd ?b ?b)) (ruler_146_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 1 1 1 1) (VecMul ?b ?a) (VecAdd ?b ?b)) => (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?b) (VecMul ?b ?a)) (ruler_147_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?b) (VecAdd ?a ?a)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?a) (VecAdd ?a ?b)) (ruler_148_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?a) (VecAdd ?a ?b)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?b) (VecAdd ?a ?a)) (ruler_149_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?b) (VecAdd ?b ?a)) => (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?a) (VecAdd ?b ?b)) (ruler_150_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?a) (VecAdd ?b ?b)) => (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?b) (VecAdd ?b ?a)) (ruler_151_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMAC (VecAdd ?b ?a) (Vec 0 0 0 0) ?b) => (VecAdd ?b ?a) (ruler_152_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecAdd ?b ?a) => (VecMAC (VecAdd ?b ?a) (Vec 0 0 0 0) ?b) (ruler_153_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMAC (VecAdd ?b ?a) ?b (Vec 0 0 0 0)) => (VecAdd ?b ?a) (ruler_154_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecAdd ?b ?a) => (VecMAC (VecAdd ?b ?a) ?b (Vec 0 0 0 0)) (ruler_155_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMAC (VecMul ?b ?a) ?b (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_156_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecMul ?b ?a) => (VecMAC (VecMul ?b ?a) ?b (Vec 0 0 0 0)) (ruler_157_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecMul ?a ?b) => (VecMAC (VecMul ?a ?b) (Vec 0 0 0 0) ?a) (ruler_158_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMAC (VecMul ?a ?b) (Vec 0 0 0 0) ?a) => (VecMul ?a ?b) (ruler_159_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:1.61] (VecAdd ?b ?a) => (VecMAC (VecAdd ?b ?a) (Vec 0 0 0 0) (Vec 0 0 0 0)) (ruler_160_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMAC (VecAdd ?b ?a) (Vec 0 0 0 0) (Vec 0 0 0 0)) => (VecAdd ?b ?a) (ruler_161_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:1.61] (VecMul ?b ?a) => (VecMAC (VecMul ?b ?a) (Vec 0 0 0 0) (Vec 0 0 0 0)) (ruler_162_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMAC (VecMul ?b ?a) (Vec 0 0 0 0) (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_163_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?a ?a) (Vec 0 0 0 0) (VecMul ?a ?b)) => (VecMul ?a ?a) (ruler_164_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?a ?a) (VecMul ?a ?b) (Vec 0 0 0 0)) => (VecMul ?a ?a) (ruler_165_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecAdd ?b ?a) (VecAdd ?b ?b) (Vec 0 0 0 0)) => (VecAdd ?b ?a) (ruler_166_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecAdd ?b ?a) => (VecMAC (VecAdd ?b ?a) (VecAdd ?b ?b) (Vec 0 0 0 0)) (ruler_167_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecAdd ?a ?b) => (VecMAC (VecAdd ?a ?b) (Vec 0 0 0 0) (VecAdd ?a ?a)) (ruler_168_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecAdd ?a ?b) (Vec 0 0 0 0) (VecAdd ?a ?a)) => (VecAdd ?a ?b) (ruler_169_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMul ?b ?a) (ruler_170_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMAC (VecMul ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?a)) (ruler_171_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?b ?a) (VecMul ?b ?b) (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_172_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMAC (VecMul ?b ?a) (VecMul ?b ?b) (Vec 0 0 0 0)) (ruler_173_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?b ?a) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_174_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMAC (VecMul ?b ?a) (VecMul ?b ?a) (Vec 0 0 0 0)) (ruler_175_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?a ?b) => (VecMAC (VecMul ?a ?b) (Vec 0 0 0 0) (VecMul ?a ?a)) (ruler_176_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?a ?b) (Vec 0 0 0 0) (VecMul ?a ?a)) => (VecMul ?a ?b) (ruler_177_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecAdd ?b ?b) (Vec 0 0 0 0) (VecAdd ?b ?a)) => (VecAdd ?b ?b) (ruler_178_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecAdd ?b ?b) (VecAdd ?b ?a) (Vec 0 0 0 0)) => (VecAdd ?b ?b) (ruler_179_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?a ?a) (Vec 0 0 0 0) (VecAdd ?a ?b)) => (VecMul ?a ?a) (ruler_180_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?a ?a) (VecAdd ?a ?b) (Vec 0 0 0 0)) => (VecMul ?a ?a) (ruler_181_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecAdd ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?b)) => (VecAdd ?b ?a) (ruler_182_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecAdd ?b ?a) => (VecMAC (VecAdd ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?b)) (ruler_183_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecAdd ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecAdd ?b ?a) (ruler_184_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecAdd ?b ?a) => (VecMAC (VecAdd ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?a)) (ruler_185_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecAdd ?b ?a) (VecMul ?b ?b) (Vec 0 0 0 0)) => (VecAdd ?b ?a) (ruler_186_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecAdd ?b ?a) => (VecMAC (VecAdd ?b ?a) (VecMul ?b ?b) (Vec 0 0 0 0)) (ruler_187_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecAdd ?b ?a) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecAdd ?b ?a) (ruler_188_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecAdd ?b ?a) => (VecMAC (VecAdd ?b ?a) (VecMul ?b ?a) (Vec 0 0 0 0)) (ruler_189_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?b ?a) (VecAdd ?b ?b) (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_190_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMAC (VecMul ?b ?a) (VecAdd ?b ?b) (Vec 0 0 0 0)) (ruler_191_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?b ?a) (VecAdd ?b ?a) (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_192_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMAC (VecMul ?b ?a) (VecAdd ?b ?a) (Vec 0 0 0 0)) (ruler_193_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?a ?b) => (VecMAC (VecMul ?a ?b) (Vec 0 0 0 0) (VecAdd ?a ?a)) (ruler_194_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?a ?b) (Vec 0 0 0 0) (VecAdd ?a ?a)) => (VecMul ?a ?b) (ruler_195_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMAC (VecMul ?b ?a) (Vec 0 0 0 0) (VecAdd ?b ?a)) (ruler_196_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecMul ?b ?a) (Vec 0 0 0 0) (VecAdd ?b ?a)) => (VecMul ?b ?a) (ruler_197_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecAdd ?b ?b) (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecAdd ?b ?b) (ruler_198_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMAC (VecAdd ?b ?b) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecAdd ?b ?b) (ruler_199_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMAC ?b (Vec 0 0 0 0) (VecAdd ?b ?a)) => (VecMAC ?b (Vec 0 0 0 0) ?b) (ruler_200_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMAC ?a (Vec 0 0 0 0) (VecAdd ?a ?b)) => (VecMAC ?a ?a (Vec 0 0 0 0)) (ruler_201_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMAC ?b (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMAC ?b (Vec 0 0 0 0) ?b) (ruler_202_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMAC ?b (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMAC ?b (Vec 0 0 0 0) ?b) (ruler_203_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMAC ?b (VecAdd ?b ?a) (Vec 0 0 0 0)) => (VecMAC ?b (Vec 0 0 0 0) ?b) (ruler_204_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMAC ?b (Vec 0 0 0 0) (VecAdd ?b ?a)) => (VecMAC ?b (Vec 0 0 0 0) (Vec 0 0 0 0)) (ruler_205_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (Vec 1 1 1 1) (VecMul ?b ?a) ?b) => (VecMAC (Vec 1 1 1 1) ?b (VecMul ?b ?a)) (ruler_206_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (Vec 1 1 1 1) ?b (VecMul ?b ?a)) => (VecMAC (Vec 1 1 1 1) (VecMul ?b ?a) ?b) (ruler_207_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) ?b) => (VecMAC ?b (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_208_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC ?b (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) ?b) (ruler_209_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) ?b) => (VecMAC ?b (VecMul ?b ?a) (Vec 1 1 1 1)) (ruler_210_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC ?b (VecMul ?b ?a) (Vec 1 1 1 1)) => (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) ?b) (ruler_211_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (VecMul ?a ?b) (Vec 1 1 1 1) ?a) => (VecMAC (VecMul ?a ?b) ?a (Vec 1 1 1 1)) (ruler_212_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (VecMul ?a ?b) ?a (Vec 1 1 1 1)) => (VecMAC (VecMul ?a ?b) (Vec 1 1 1 1) ?a) (ruler_213_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (Vec 1 1 1 1) ?a (VecAdd ?a ?b)) => (VecMAC (Vec 1 1 1 1) (VecAdd ?a ?b) ?a) (ruler_214_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (Vec 1 1 1 1) (VecAdd ?a ?b) ?a) => (VecMAC (Vec 1 1 1 1) ?a (VecAdd ?a ?b)) (ruler_215_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (Vec 0 0 0 0) ?a (VecMul ?a ?b)) => (VecMAC (Vec 0 0 0 0) (VecMul ?a ?b) ?a) (ruler_216_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (Vec 0 0 0 0) (VecMul ?a ?b) ?a) => (VecMAC (Vec 0 0 0 0) ?a (VecMul ?a ?b)) (ruler_217_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (VecAdd ?a ?b) ?a (Vec 1 1 1 1)) => (VecMAC (VecAdd ?a ?b) (Vec 1 1 1 1) ?a) (ruler_218_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (VecAdd ?a ?b) (Vec 1 1 1 1) ?a) => (VecMAC (VecAdd ?a ?b) ?a (Vec 1 1 1 1)) (ruler_219_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (VecAdd ?b ?a) ?b (Vec 1 1 1 1)) => (VecMAC ?b (VecAdd ?b ?a) (Vec 1 1 1 1)) (ruler_220_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC ?b (VecAdd ?b ?a) (Vec 1 1 1 1)) => (VecMAC (VecAdd ?b ?a) ?b (Vec 1 1 1 1)) (ruler_221_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (VecAdd ?b ?a) ?b (Vec 1 1 1 1)) => (VecMAC ?b (Vec 1 1 1 1) (VecAdd ?b ?a)) (ruler_222_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC ?b (Vec 1 1 1 1) (VecAdd ?b ?a)) => (VecMAC (VecAdd ?b ?a) ?b (Vec 1 1 1 1)) (ruler_223_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?a) ?b) => (VecMAC (Vec 0 0 0 0) ?b (VecAdd ?b ?a)) (ruler_224_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMAC (Vec 0 0 0 0) ?b (VecAdd ?b ?a)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?a) ?b) (ruler_225_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMAC (VecAdd ?b ?a) (Vec 1 1 1 1) (Vec 0 0 0 0)) => (VecAdd ?b ?a) (ruler_226_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:1.61] (VecAdd ?b ?a) => (VecMAC (VecAdd ?b ?a) (Vec 1 1 1 1) (Vec 0 0 0 0)) (ruler_227_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMAC (VecAdd ?b ?a) (Vec 0 0 0 0) (Vec 1 1 1 1)) => (VecAdd ?b ?a) (ruler_228_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:1.61] (VecAdd ?b ?a) => (VecMAC (VecAdd ?b ?a) (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_229_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?a) (Vec 1 1 1 1)) => (VecAdd ?b ?a) (ruler_230_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:1.61] (VecAdd ?b ?a) => (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?a) (Vec 1 1 1 1)) (ruler_231_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMAC (Vec 0 0 0 0) (Vec 1 1 1 1) (VecAdd ?b ?a)) => (VecAdd ?b ?a) (ruler_232_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:1.61] (VecAdd ?b ?a) => (VecMAC (Vec 0 0 0 0) (Vec 1 1 1 1) (VecAdd ?b ?a)) (ruler_233_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMAC (Vec 0 0 0 0) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMul ?b ?a) (ruler_234_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:1.61] (VecMul ?b ?a) => (VecMAC (Vec 0 0 0 0) (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_235_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) (VecAdd ?b ?a)) => (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) ?b) (ruler_236_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) (VecAdd ?a ?b)) => (VecMAC (Vec 0 0 0 0) ?a (Vec 0 0 0 0)) (ruler_237_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMAC (Vec 0 0 0 0) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) ?b) (ruler_238_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) ?b) (ruler_239_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.21] (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?a) (Vec 1 1 1 1)) => (VecMAC (Vec 1 1 1 1) (Vec 1 1 1 1) (VecAdd ?b ?a)) (ruler_240_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.21] (VecMAC (Vec 1 1 1 1) (Vec 1 1 1 1) (VecAdd ?b ?a)) => (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?a) (Vec 1 1 1 1)) (ruler_241_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.21] (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?a) (Vec 1 1 1 1)) => (VecMAC (VecAdd ?b ?a) (Vec 1 1 1 1) (Vec 1 1 1 1)) (ruler_242_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.21] (VecMAC (VecAdd ?b ?a) (Vec 1 1 1 1) (Vec 1 1 1 1)) => (VecMAC (Vec 1 1 1 1) (VecAdd ?b ?a) (Vec 1 1 1 1)) (ruler_243_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.21] (VecMAC (Vec 0 0 0 0) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?b) (Vec 0 0 0 0)) (ruler_244_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.21] (VecMAC (Vec 0 0 0 0) (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?b) (Vec 0 0 0 0)) (ruler_245_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.00 ca:2.11] (VecMAC (VecMul ?a ?a) (Vec 0 0 0 0) (VecMul ?a ?b)) => (VecMAC (Vec 0 0 0 0) ?a ?a) (ruler_246_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.00 ca:2.11] (VecMAC (VecAdd ?b ?b) (Vec 0 0 0 0) (VecAdd ?b ?a)) => (VecMAC ?b ?b (Vec 1 1 1 1)) (ruler_247_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.00 ca:2.11] (VecMAC (VecAdd ?a ?a) (Vec 0 0 0 0) (VecAdd ?a ?b)) => (VecMAC ?a (Vec 1 1 1 1) ?a) (ruler_248_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:2.61] (VecMAC (VecMul ?a ?a) (VecMul ?a ?b) (Vec 1 1 1 1)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?b) ?a) (ruler_249_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.00 ca:2.61] (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?b) ?a) => (VecMAC (VecMul ?a ?a) (VecMul ?a ?b) (Vec 1 1 1 1)) (ruler_250_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:2.61] (VecMAC (VecMul ?a ?b) (Vec 1 1 1 1) (VecMul ?a ?a)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?b) ?a) (ruler_251_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.00 ca:2.61] (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?b) ?a) => (VecMAC (VecMul ?a ?b) (Vec 1 1 1 1) (VecMul ?a ?a)) (ruler_252_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.00 ca:2.61] (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?a) ?b) => (VecMAC (VecMul ?b ?b) (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_253_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:2.61] (VecMAC (VecMul ?b ?b) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?b ?a) ?b) (ruler_254_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.00 ca:2.61] (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?b) ?a) => (VecMAC (VecMul ?a ?b) (VecMul ?a ?a) (Vec 1 1 1 1)) (ruler_255_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:2.61] (VecMAC (VecMul ?a ?b) (VecMul ?a ?a) (Vec 1 1 1 1)) => (VecMAC (Vec 0 0 0 0) (VecAdd ?a ?b) ?a) (ruler_256_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?a ?b) (Vec 1 1 1 1) (VecAdd ?a ?a)) => (VecMAC (VecAdd ?a ?b) (VecAdd ?a ?a) (Vec 1 1 1 1)) (ruler_257_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?a ?b) (VecAdd ?a ?a) (Vec 1 1 1 1)) => (VecMAC (VecAdd ?a ?b) (Vec 1 1 1 1) (VecAdd ?a ?a)) (ruler_258_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?b ?a) (Vec 1 1 1 1) (VecAdd ?b ?b)) => (VecMAC (VecAdd ?b ?b) (VecAdd ?b ?a) (Vec 1 1 1 1)) (ruler_259_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?b ?b) (VecAdd ?b ?a) (Vec 1 1 1 1)) => (VecMAC (VecAdd ?b ?a) (Vec 1 1 1 1) (VecAdd ?b ?b)) (ruler_260_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?b ?a) (Vec 1 1 1 1) (VecAdd ?b ?b)) => (VecMAC (VecAdd ?b ?b) (Vec 1 1 1 1) (VecAdd ?b ?a)) (ruler_261_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecAdd ?b ?b) (Vec 1 1 1 1) (VecAdd ?b ?a)) => (VecMAC (VecAdd ?b ?a) (Vec 1 1 1 1) (VecAdd ?b ?b)) (ruler_262_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 1 1 1 1) (VecMul ?b ?a) (VecMul ?b ?b)) => (VecMAC (Vec 1 1 1 1) (VecMul ?b ?b) (VecMul ?b ?a)) (ruler_263_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 1 1 1 1) (VecMul ?b ?b) (VecMul ?b ?a)) => (VecMAC (Vec 1 1 1 1) (VecMul ?b ?a) (VecMul ?b ?b)) (ruler_264_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 0 0 0 0) (VecMul ?a ?a) (VecMul ?a ?b)) => (VecMAC (Vec 0 0 0 0) (VecMul ?a ?b) (VecMul ?a ?a)) (ruler_265_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (Vec 0 0 0 0) (VecMul ?a ?b) (VecMul ?a ?a)) => (VecMAC (Vec 0 0 0 0) (VecMul ?a ?a) (VecMul ?a ?b)) (ruler_266_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMAC (VecMul ?b ?a) (VecMul ?b ?a) (Vec 1 1 1 1)) (ruler_267_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMAC (VecMul ?b ?a) (VecMul ?b ?a) (Vec 1 1 1 1)) => (VecMAC (VecMul ?b ?a) (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_268_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.61] (VecMULS (Vec 1 1 1 1) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMULS (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_269_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.61] (VecMULS (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMULS (Vec 1 1 1 1) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_270_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.61] (VecMULS (Vec 0 0 0 0) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMULS (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1)) (ruler_271_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.61] (VecMULS (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1)) => (VecMULS (Vec 0 0 0 0) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_272_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.30 ca:1.76] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec 0 0 0 0)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_273_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.30 ca:1.76] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec 0 0 0 0)) (ruler_274_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.30 ca:1.76] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec 1 1 1 1)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_275_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.30 ca:1.76] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_276_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.00 ca:2.11] (VecMULS (Vec 0 0 0 0) ?a ?a) => (VecMULS (VecMinus ?a ?a) (VecMul ?a ?a) (Vec 1 1 1 1)) (ruler_277_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.00 ca:2.11] (VecMULS (VecMinus ?a ?a) (VecMul ?a ?a) (Vec 1 1 1 1)) => (VecMULS (Vec 0 0 0 0) ?a ?a) (ruler_278_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.66] (VecMULS (Vec 1 1 1 1) (Vec 1 1 1 1) (VecMul ?a ?a)) => (VecMULS (Vec 1 1 1 1) ?a ?a) (ruler_279_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.66] (VecMULS (Vec 1 1 1 1) ?a ?a) => (VecMULS (Vec 1 1 1 1) (Vec 1 1 1 1) (VecMul ?a ?a)) (ruler_280_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.91] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_281_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.91] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_282_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.30 ca:1.76] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec 0 0 0 0)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_283_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.30 ca:1.76] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0) (Vec 0 0 0 0)) (ruler_284_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.91] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_285_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.91] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1)) (ruler_286_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.30 ca:1.76] (VecMULS (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_287_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.30 ca:1.76] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMULS (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3) (Vec 0 0 0 0)) (ruler_288_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.30 ca:1.76] (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_289_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.30 ca:1.76] (VecMULS (Vec ?a0 ?a1 ?a2 ?a3) (Vec 1 1 1 1) (Vec ?a0 ?a1 ?a2 ?a3)) => (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) (Vec ?a0 ?a1 ?a2 ?a3)) (ruler_290_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.21] (VecMULS (Vec 1 1 1 1) ?a (Vec 1 1 1 1)) => (VecMULS (Vec 1 1 1 1) (Vec 1 1 1 1) ?a) (ruler_291_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:1.21] (VecMULS (Vec 1 1 1 1) (Vec 1 1 1 1) ?a) => (VecMULS (Vec 1 1 1 1) ?a (Vec 1 1 1 1)) (ruler_292_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMULS (Vec 1 1 1 1) (Vec 0 0 0 0) (VecMinus ?b ?a)) => (VecMULS (Vec 1 1 1 1) (Vec 0 0 0 0) ?b) (ruler_293_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:2.66] (VecMULS (VecMinus ?b ?b) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMULS (Vec 0 0 0 0) (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_294_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.90 ca:2.66] (VecMULS (Vec 0 0 0 0) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMULS (VecMinus ?b ?b) (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_295_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-0.90 ca:2.66] (VecMULS (Vec 0 0 0 0) (VecMinus ?b ?a) (Vec 1 1 1 1)) => (VecMULS (VecMinus ?b ?b) (VecMinus ?b ?a) (Vec 1 1 1 1)) (ruler_296_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:2.66] (VecMULS (VecMinus ?b ?b) (VecMinus ?b ?a) (Vec 1 1 1 1)) => (VecMULS (Vec 0 0 0 0) (VecMinus ?b ?a) (Vec 1 1 1 1)) (ruler_297_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.90 ca:2.16] (VecMULS (Vec 1 1 1 1) (VecMinus ?b ?b) (VecMinus ?b ?a)) => (VecMULS (Vec 1 1 1 1) ?b (Vec 0 0 0 0)) (ruler_298_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.90 ca:2.16] (VecMULS (Vec 1 1 1 1) (VecMinus ?b ?b) (VecMinus ?b ?a)) => (VecMULS (Vec 1 1 1 1) (Vec 0 0 0 0) ?b) (ruler_299_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.90 ca:2.16] (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?b) (VecMinus ?a ?a)) => (VecMULS (Vec 1 1 1 1) ?a (Vec 0 0 0 0)) (ruler_300_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.90 ca:2.16] (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?b) (VecMinus ?a ?a)) => (VecMULS (Vec 1 1 1 1) (Vec 0 0 0 0) ?a) (ruler_301_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.10 ca:2.16] (VecMULS (Vec 1 1 1 1) (VecMul ?a ?b) (Vec 0 0 0 0)) => (VecMULS (Vec 1 1 1 1) ?a (VecMinus ?a ?a)) (ruler_302_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.10 ca:2.16] (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?b) (Vec 0 0 0 0)) => (VecMULS (Vec 1 1 1 1) ?a (VecMinus ?a ?a)) (ruler_303_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMULS ?b (VecMinus ?b ?a) (Vec 0 0 0 0)) => (VecMULS ?b (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_304_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMULS ?b (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMULS ?b (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_305_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMULS ?b (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMULS ?b (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_306_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMULS ?b (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMULS ?b (Vec 1 1 1 1) (Vec 0 0 0 0)) (ruler_307_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMULS ?a (Vec 0 0 0 0) (VecMinus ?a ?b)) => (VecMULS ?a (Vec 0 0 0 0) (Vec 1 1 1 1)) (ruler_308_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMULS ?a (Vec 0 0 0 0) (VecMinus ?a ?b)) => (VecMULS ?a (Vec 1 1 1 1) (Vec 0 0 0 0)) (ruler_309_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMul ?b ?a) (VecMinus ?b ?a) (Vec 1 1 1 1)) => (VecMULS (VecMul ?b ?a) (Vec 1 1 1 1) (VecMinus ?b ?a)) (ruler_310_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMul ?b ?a) (Vec 1 1 1 1) (VecMinus ?b ?a)) => (VecMULS (VecMul ?b ?a) (VecMinus ?b ?a) (Vec 1 1 1 1)) (ruler_311_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMinus ?b ?a) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMULS (VecMinus ?b ?a) (VecMul ?b ?a) (Vec 1 1 1 1)) (ruler_312_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMinus ?b ?a) (VecMul ?b ?a) (Vec 1 1 1 1)) => (VecMULS (VecMinus ?b ?a) (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_313_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 0 0 0 0) (VecMul ?b ?a) (VecMinus ?b ?a)) => (VecMULS (Vec 0 0 0 0) (VecMinus ?b ?a) (VecMul ?b ?a)) (ruler_314_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 0 0 0 0) (VecMinus ?b ?a) (VecMul ?b ?a)) => (VecMULS (Vec 0 0 0 0) (VecMul ?b ?a) (VecMinus ?b ?a)) (ruler_315_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?b) (VecMul ?a ?a)) => (VecMULS (Vec 1 1 1 1) (VecMul ?a ?a) (VecMinus ?a ?b)) (ruler_316_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 1 1 1 1) (VecMul ?a ?a) (VecMinus ?a ?b)) => (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?b) (VecMul ?a ?a)) (ruler_317_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMinus ?a ?b) (Vec 1 1 1 1) (VecMul ?a ?a)) => (VecMULS (VecMinus ?a ?b) (VecMul ?a ?a) (Vec 1 1 1 1)) (ruler_318_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMinus ?a ?b) (VecMul ?a ?a) (Vec 1 1 1 1)) => (VecMULS (VecMinus ?a ?b) (Vec 1 1 1 1) (VecMul ?a ?a)) (ruler_319_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMinus ?b ?b) (VecMul ?b ?a) (Vec 1 1 1 1)) => (VecMULS (VecMinus ?b ?b) (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_320_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMinus ?b ?b) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMULS (VecMinus ?b ?b) (VecMul ?b ?a) (Vec 1 1 1 1)) (ruler_321_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMul ?b ?b) (Vec 1 1 1 1) (VecMinus ?b ?a)) => (VecMULS (VecMul ?b ?b) (VecMinus ?b ?a) (Vec 1 1 1 1)) (ruler_322_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMul ?b ?b) (VecMinus ?b ?a) (Vec 1 1 1 1)) => (VecMULS (VecMul ?b ?b) (Vec 1 1 1 1) (VecMinus ?b ?a)) (ruler_323_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 1 1 1 1) (VecMul ?b ?a) (VecMinus ?b ?a)) => (VecMULS (Vec 1 1 1 1) (VecMinus ?b ?a) (VecMul ?b ?a)) (ruler_324_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 1 1 1 1) (VecMinus ?b ?a) (VecMul ?b ?a)) => (VecMULS (Vec 1 1 1 1) (VecMul ?b ?a) (VecMinus ?b ?a)) (ruler_325_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 0 0 0 0) (VecMinus ?a ?b) (VecMul ?a ?a)) => (VecMULS (Vec 0 0 0 0) (VecMul ?a ?a) (VecMinus ?a ?b)) (ruler_326_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 0 0 0 0) (VecMul ?a ?a) (VecMinus ?a ?b)) => (VecMULS (Vec 0 0 0 0) (VecMinus ?a ?b) (VecMul ?a ?a)) (ruler_327_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 0 0 0 0) (VecMul ?a ?b) (VecMul ?a ?a)) => (VecMULS (Vec 0 0 0 0) (VecMul ?a ?a) (VecMul ?a ?b)) (ruler_328_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 0 0 0 0) (VecMul ?a ?a) (VecMul ?a ?b)) => (VecMULS (Vec 0 0 0 0) (VecMul ?a ?b) (VecMul ?a ?a)) (ruler_329_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 1 1 1 1) (VecMul ?b ?b) (VecMul ?b ?a)) => (VecMULS (Vec 1 1 1 1) (VecMul ?b ?a) (VecMul ?b ?b)) (ruler_330_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (Vec 1 1 1 1) (VecMul ?b ?a) (VecMul ?b ?b)) => (VecMULS (Vec 1 1 1 1) (VecMul ?b ?b) (VecMul ?b ?a)) (ruler_331_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMinus ?b ?b) (Vec 1 1 1 1) (VecMinus ?b ?a)) => (VecMULS (VecMinus ?b ?b) (VecMinus ?b ?a) (Vec 1 1 1 1)) (ruler_332_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMinus ?b ?b) (VecMinus ?b ?a) (Vec 1 1 1 1)) => (VecMULS (VecMinus ?b ?b) (Vec 1 1 1 1) (VecMinus ?b ?a)) (ruler_333_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMul ?b ?b) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMULS (VecMul ?b ?b) (VecMul ?b ?a) (Vec 1 1 1 1)) (ruler_334_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:3.11] (VecMULS (VecMul ?b ?b) (VecMul ?b ?a) (Vec 1 1 1 1)) => (VecMULS (VecMul ?b ?b) (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_335_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:2.66] (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?b) (VecMinus ?a ?a)) => (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?a) (Vec 1 1 1 1)) (ruler_336_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:2.61] (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?a) (VecMul ?a ?b)) => (VecMULS (Vec 1 1 1 1) ?a (VecMinus ?a ?a)) (ruler_337_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:2.61] (VecMULS (Vec 1 1 1 1) (VecMul ?a ?b) (VecMinus ?a ?a)) => (VecMULS (Vec 1 1 1 1) ?a (VecMinus ?a ?a)) (ruler_338_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:2.61] (VecMULS (VecMul ?a ?b) (VecMul ?a ?a) (Vec 1 1 1 1)) => (VecMULS (Vec 0 0 0 0) (VecMinus ?a ?b) ?a) (ruler_339_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.00 ca:2.61] (VecMULS (Vec 0 0 0 0) (VecMinus ?a ?b) ?a) => (VecMULS (VecMul ?a ?b) (VecMul ?a ?a) (Vec 1 1 1 1)) (ruler_340_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.00 ca:2.61] (VecMULS (Vec 0 0 0 0) (VecMinus ?a ?b) ?a) => (VecMULS (VecMul ?a ?b) (Vec 1 1 1 1) (VecMul ?a ?a)) (ruler_341_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:2.61] (VecMULS (VecMul ?a ?b) (Vec 1 1 1 1) (VecMul ?a ?a)) => (VecMULS (Vec 0 0 0 0) (VecMinus ?a ?b) ?a) (ruler_342_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:2.61] (VecMULS (Vec 1 1 1 1) (VecMinus ?b ?b) (VecMinus ?b ?a)) => (VecMULS (Vec 1 1 1 1) ?b (VecMinus ?b ?b)) (ruler_343_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:2.61] (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?b) (VecMinus ?a ?a)) => (VecMULS (Vec 1 1 1 1) ?a (VecMinus ?a ?a)) (ruler_344_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.21] (VecMULS (Vec 1 1 1 1) (Vec 1 1 1 1) (VecMinus ?b ?a)) => (VecMULS (Vec 1 1 1 1) (VecMinus ?b ?a) (Vec 1 1 1 1)) (ruler_345_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.21] (VecMULS (Vec 1 1 1 1) (VecMinus ?b ?a) (Vec 1 1 1 1)) => (VecMULS (Vec 1 1 1 1) (Vec 1 1 1 1) (VecMinus ?b ?a)) (ruler_346_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.10 ca:2.16] (VecMULS (Vec 0 0 0 0) (VecMinus ?b ?a) (Vec 0 0 0 0)) => (VecMULS (Vec 0 0 0 0) ?b (VecMinus ?b ?b)) (ruler_347_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.10 ca:2.16] (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) (VecMinus ?a ?b)) => (VecMULS (Vec 0 0 0 0) ?a (VecMinus ?a ?a)) (ruler_348_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMULS (Vec 0 0 0 0) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMULS (Vec 0 0 0 0) ?b (Vec 0 0 0 0)) (ruler_349_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMULS (Vec 0 0 0 0) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) ?b) (ruler_350_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) (VecMinus ?a ?b)) => (VecMULS (Vec 0 0 0 0) ?a (Vec 0 0 0 0)) (ruler_351_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.71] (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) (VecMinus ?b ?a)) => (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) ?b) (ruler_352_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.66] (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) (VecMinus ?a ?b)) => (VecMULS ?a (Vec 1 1 1 1) ?a) (ruler_353_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.66] (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) (VecMinus ?b ?a)) => (VecMULS ?b ?b (Vec 1 1 1 1)) (ruler_354_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:1.61] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (Vec 1 1 1 1) (Vec 0 0 0 0)) (ruler_355_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMULS (VecMinus ?b ?a) (Vec 1 1 1 1) (Vec 0 0 0 0)) => (VecMinus ?b ?a) (ruler_356_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS ?b (VecMinus ?b ?a) (Vec 0 0 0 0)) => (VecMULS ?b (Vec 1 1 1 1) (VecMinus ?b ?b)) (ruler_357_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS ?a (Vec 0 0 0 0) (VecMinus ?a ?b)) => (VecMULS ?a (Vec 1 1 1 1) (VecMinus ?a ?a)) (ruler_358_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (Vec 0 0 0 0) ?b (VecMinus ?b ?a)) => (VecMULS (Vec 0 0 0 0) (VecMinus ?b ?a) ?b) (ruler_359_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (Vec 0 0 0 0) (VecMinus ?b ?a) ?b) => (VecMULS (Vec 0 0 0 0) ?b (VecMinus ?b ?a)) (ruler_360_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS ?b (Vec 1 1 1 1) (VecMinus ?b ?a)) => (VecMULS ?b (VecMinus ?b ?a) (Vec 1 1 1 1)) (ruler_361_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS ?b (VecMinus ?b ?a) (Vec 1 1 1 1)) => (VecMULS ?b (Vec 1 1 1 1) (VecMinus ?b ?a)) (ruler_362_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (Vec 0 0 0 0) (VecMul ?a ?b) ?a) => (VecMULS (Vec 0 0 0 0) ?a (VecMul ?a ?b)) (ruler_363_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (Vec 0 0 0 0) ?a (VecMul ?a ?b)) => (VecMULS (Vec 0 0 0 0) (VecMul ?a ?b) ?a) (ruler_364_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?b) ?a) => (VecMULS (Vec 1 1 1 1) ?a (VecMinus ?a ?b)) (ruler_365_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (Vec 1 1 1 1) ?a (VecMinus ?a ?b)) => (VecMULS (Vec 1 1 1 1) (VecMinus ?a ?b) ?a) (ruler_366_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (VecMul ?a ?b) ?a (Vec 1 1 1 1)) => (VecMULS (VecMul ?a ?b) (Vec 1 1 1 1) ?a) (ruler_367_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (VecMul ?a ?b) (Vec 1 1 1 1) ?a) => (VecMULS (VecMul ?a ?b) ?a (Vec 1 1 1 1)) (ruler_368_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS ?b (VecMul ?b ?a) (Vec 1 1 1 1)) => (VecMULS ?b (Vec 1 1 1 1) (VecMul ?b ?a)) (ruler_369_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS ?b (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMULS ?b (VecMul ?b ?a) (Vec 1 1 1 1)) (ruler_370_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (VecMinus ?a ?b) (Vec 1 1 1 1) ?a) => (VecMULS (VecMinus ?a ?b) ?a (Vec 1 1 1 1)) (ruler_371_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (VecMinus ?a ?b) ?a (Vec 1 1 1 1)) => (VecMULS (VecMinus ?a ?b) (Vec 1 1 1 1) ?a) (ruler_372_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (Vec 1 1 1 1) ?b (VecMul ?b ?a)) => (VecMULS (Vec 1 1 1 1) (VecMul ?b ?a) ?b) (ruler_373_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.00 ca:2.11] (VecMULS (Vec 1 1 1 1) (VecMul ?b ?a) ?b) => (VecMULS (Vec 1 1 1 1) ?b (VecMul ?b ?a)) (ruler_374_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMULS ?b (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMULS ?b (Vec 0 0 0 0) (Vec 0 0 0 0)) (ruler_375_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.90 ca:1.66] (VecMULS ?b (Vec 0 0 0 0) (VecMinus ?b ?a)) => (VecMULS ?b (Vec 0 0 0 0) (Vec 0 0 0 0)) (ruler_376_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMULS ?b (VecMinus ?b ?a) (Vec 0 0 0 0)) => (VecMULS ?b (Vec 0 0 0 0) ?b) (ruler_377_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMULS ?b (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMULS ?b (Vec 0 0 0 0) ?b) (ruler_378_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMULS ?b (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMULS ?b (Vec 0 0 0 0) ?b) (ruler_379_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMULS ?a (Vec 0 0 0 0) (VecMinus ?a ?b)) => (VecMULS ?a ?a (Vec 0 0 0 0)) (ruler_380_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.00 ca:1.61] (VecMULS ?b (Vec 0 0 0 0) (VecMinus ?b ?a)) => (VecMULS ?b (Vec 0 0 0 0) ?b) (ruler_381_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?b ?a) (VecMul ?b ?a) (Vec 1 1 1 1)) => (VecMinus ?b ?b) (ruler_382_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?b) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMinus ?b ?b) (ruler_383_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (Vec 0 0 0 0) (VecMinus ?b ?b) (VecMul ?b ?a)) => (VecMinus ?b ?b) (ruler_384_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?b) (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMinus ?b ?b) (ruler_385_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (Vec 0 0 0 0) (VecMul ?a ?b) (VecMinus ?a ?a)) => (VecMinus ?a ?a) (ruler_386_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?b ?a) (Vec 1 1 1 1) (VecMul ?b ?a)) => (VecMinus ?b ?b) (ruler_387_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?a ?b) (VecMinus ?a ?a) (Vec 1 1 1 1)) => (VecMul ?a ?b) (ruler_388_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?a ?b) => (VecMULS (VecMul ?a ?b) (VecMinus ?a ?a) (Vec 1 1 1 1)) (ruler_389_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?a ?b) (Vec 1 1 1 1) (VecMinus ?a ?a)) => (VecMul ?a ?b) (ruler_390_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?a ?b) => (VecMULS (VecMul ?a ?b) (Vec 1 1 1 1) (VecMinus ?a ?a)) (ruler_391_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?b ?a) (Vec 0 0 0 0) (VecMinus ?b ?a)) => (VecMul ?b ?a) (ruler_392_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMULS (VecMul ?b ?a) (Vec 0 0 0 0) (VecMinus ?b ?a)) (ruler_393_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?a ?b) (Vec 0 0 0 0) (VecMinus ?a ?a)) => (VecMul ?a ?b) (ruler_394_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?a ?b) => (VecMULS (VecMul ?a ?b) (Vec 0 0 0 0) (VecMinus ?a ?a)) (ruler_395_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMULS (VecMul ?b ?a) (VecMinus ?b ?a) (Vec 0 0 0 0)) (ruler_396_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?b ?a) (VecMinus ?b ?a) (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_397_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMULS (VecMul ?b ?a) (VecMinus ?b ?b) (Vec 0 0 0 0)) (ruler_398_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?b ?a) (VecMinus ?b ?b) (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_399_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (VecMul ?b ?a) (Vec 0 0 0 0)) (ruler_400_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMinus ?b ?a) (ruler_401_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (VecMul ?b ?b) (Vec 0 0 0 0)) (ruler_402_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (VecMul ?b ?b) (Vec 0 0 0 0)) => (VecMinus ?b ?a) (ruler_403_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?a)) (ruler_404_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMinus ?b ?a) (ruler_405_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?b)) (ruler_406_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?b)) => (VecMinus ?b ?a) (ruler_407_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?a ?a) (VecMinus ?a ?b) (Vec 0 0 0 0)) => (VecMul ?a ?a) (ruler_408_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?a ?a) (Vec 0 0 0 0) (VecMinus ?a ?b)) => (VecMul ?a ?a) (ruler_409_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (Vec 0 0 0 0) (VecMinus ?a ?b) (VecMinus ?a ?a)) => (VecMinus ?a ?a) (ruler_410_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?b) (VecMinus ?b ?a) (Vec 0 0 0 0)) => (VecMinus ?b ?b) (ruler_411_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (Vec 1 1 1 1) (VecMinus ?b ?a)) => (VecMinus ?b ?b) (ruler_412_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (Vec 0 0 0 0) (VecMinus ?b ?b) (VecMinus ?b ?a)) => (VecMinus ?b ?b) (ruler_413_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?b) (Vec 0 0 0 0) (VecMinus ?b ?a)) => (VecMinus ?b ?b) (ruler_414_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (VecMinus ?b ?a) (Vec 1 1 1 1)) => (VecMinus ?b ?b) (ruler_415_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?a ?b) (Vec 0 0 0 0) (VecMul ?a ?a)) => (VecMul ?a ?b) (ruler_416_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?a ?b) => (VecMULS (VecMul ?a ?b) (Vec 0 0 0 0) (VecMul ?a ?a)) (ruler_417_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMULS (VecMul ?b ?a) (VecMul ?b ?a) (Vec 0 0 0 0)) (ruler_418_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?b ?a) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_419_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMULS (VecMul ?b ?a) (VecMul ?b ?b) (Vec 0 0 0 0)) (ruler_420_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?b ?a) (VecMul ?b ?b) (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_421_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMul ?b ?a) => (VecMULS (VecMul ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?a)) (ruler_422_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?b ?a) (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMul ?b ?a) (ruler_423_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?a ?b) (Vec 0 0 0 0) (VecMinus ?a ?a)) => (VecMinus ?a ?b) (ruler_424_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMinus ?a ?b) => (VecMULS (VecMinus ?a ?b) (Vec 0 0 0 0) (VecMinus ?a ?a)) (ruler_425_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (VecMinus ?b ?a) (Vec 0 0 0 0)) (ruler_426_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (VecMinus ?b ?a) (Vec 0 0 0 0)) => (VecMinus ?b ?a) (ruler_427_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (VecMinus ?b ?b) (Vec 0 0 0 0)) (ruler_428_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (VecMinus ?b ?b) (Vec 0 0 0 0)) => (VecMinus ?b ?a) (ruler_429_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (VecMinus ?b ?b) (Vec 1 1 1 1)) (ruler_430_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (VecMinus ?b ?b) (Vec 1 1 1 1)) => (VecMinus ?b ?a) (ruler_431_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (Vec 1 1 1 1) (VecMinus ?b ?b)) (ruler_432_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (Vec 1 1 1 1) (VecMinus ?b ?b)) => (VecMinus ?b ?a) (ruler_433_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-2.11 ca:2.05] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (Vec 0 0 0 0) (VecMinus ?b ?a)) (ruler_434_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMinus ?b ?a) (Vec 0 0 0 0) (VecMinus ?b ?a)) => (VecMinus ?b ?a) (ruler_435_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?a ?a) (VecMul ?a ?b) (Vec 0 0 0 0)) => (VecMul ?a ?a) (ruler_436_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:2.11 ca:2.05] (VecMULS (VecMul ?a ?a) (Vec 0 0 0 0) (VecMul ?a ?b)) => (VecMul ?a ?a) (ruler_437_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) (VecMul ?b ?a)) => (VecMinus ?b ?b) (ruler_438_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMULS (Vec 0 0 0 0) (VecMul ?b ?a) (Vec 0 0 0 0)) => (VecMinus ?b ?b) (ruler_439_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMULS (Vec 0 0 0 0) (VecMinus ?b ?a) (Vec 0 0 0 0)) => (VecMinus ?b ?b) (ruler_440_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMULS (Vec 0 0 0 0) (Vec 0 0 0 0) (VecMinus ?b ?a)) => (VecMinus ?b ?b) (ruler_441_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.21 ca:1.61] (VecMULS (VecMul ?b ?a) (Vec 0 0 0 0) (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_442_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.21 ca:1.61] (VecMul ?b ?a) => (VecMULS (VecMul ?b ?a) (Vec 0 0 0 0) (Vec 0 0 0 0)) (ruler_443_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMULS (VecMul ?a ?b) (Vec 0 0 0 0) ?a) => (VecMul ?a ?b) (ruler_444_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecMul ?a ?b) => (VecMULS (VecMul ?a ?b) (Vec 0 0 0 0) ?a) (ruler_445_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecMul ?b ?a) => (VecMULS (VecMul ?b ?a) ?b (Vec 0 0 0 0)) (ruler_446_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMULS (VecMul ?b ?a) ?b (Vec 0 0 0 0)) => (VecMul ?b ?a) (ruler_447_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) ?b (Vec 0 0 0 0)) (ruler_448_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMULS (VecMinus ?b ?a) ?b (Vec 0 0 0 0)) => (VecMinus ?b ?a) (ruler_449_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:-1.10 ca:1.55] (VecMinus ?b ?a) => (VecMULS (VecMinus ?b ?a) (Vec 0 0 0 0) ?b) (ruler_450_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:1.10 ca:1.55] (VecMULS (VecMinus ?b ?a) (Vec 0 0 0 0) ?b) => (VecMinus ?b ?a) (ruler_451_r)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) => (LitVec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) (litvec)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec 0 (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) => (LitVec 0 (Get ?a ?i1) (Get ?a ?i2) (Get ?a ?i3)) (litvec-0-0)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) 0 (Get ?a ?i2) (Get ?a ?i3)) => (LitVec (Get ?a ?i0) 0 (Get ?a ?i2) (Get ?a ?i3)) (litvec-0-1)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) (Get ?a ?i1) 0 (Get ?a ?i3)) => (LitVec (Get ?a ?i0) (Get ?a ?i1) 0 (Get ?a ?i3)) (litvec-0-2)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] [cd:0.40 ca:0.21] (Vec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) 0) => (LitVec (Get ?a ?i0) (Get ?a ?i1) (Get ?a ?i2) 0) (litvec-0-3)
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Using a fresh egraph for this phase
+[2024-02-29T19:28:10Z INFO  comp_gen::run] Making runner
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Time left: 179.987797375s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Using timeout: 179.987797375s
+[2024-02-29T19:28:10Z DEBUG comp_gen::run] Starting equality saturation
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 21, eclasses: 21
+      New: hc size 21, eclasses: 21
+      unions: 0, trimmed nodes: 0
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 0
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.004468084
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.000764625
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 113, eclasses: 37
+      New: hc size 116, eclasses: 36
+      unions: 1, trimmed nodes: 1
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.000272625
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=116, e=36
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 1
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.021792834
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.00276375
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.000s
+      Old: hc size 456, eclasses: 60
+      New: hc size 456, eclasses: 60
+      unions: 0, trimmed nodes: 6
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.000827875
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=456, e=60
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 2
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.10697275
+[2024-02-29T19:28:10Z INFO  egg::run] Apply time: 0.007851375
+[2024-02-29T19:28:10Z INFO  egg::egraph] REBUILT! in 0.001s
+      Old: hc size 1230, eclasses: 117
+      New: hc size 1252, eclasses: 113
+      unions: 4, trimmed nodes: 51
+[2024-02-29T19:28:10Z INFO  egg::run] Rebuild time: 0.002268625
+[2024-02-29T19:28:10Z INFO  egg::run] Size: n=1252, e=113
+[2024-02-29T19:28:10Z INFO  egg::run] 
+    Iteration 3
+[2024-02-29T19:28:10Z INFO  egg::run] Search time: 0.274728083
+[2024-02-29T19:28:11Z INFO  egg::run] Apply time: 0.020328041
+[2024-02-29T19:28:11Z INFO  egg::egraph] REBUILT! in 0.002s
+      Old: hc size 2941, eclasses: 216
+      New: hc size 3036, eclasses: 195
+      unions: 21, trimmed nodes: 385
+[2024-02-29T19:28:11Z INFO  egg::run] Rebuild time: 0.0050065
+[2024-02-29T19:28:11Z INFO  egg::run] Size: n=3036, e=195
+[2024-02-29T19:28:11Z INFO  egg::run] 
+    Iteration 4
+[2024-02-29T19:28:11Z INFO  egg::run] Search time: 0.595560916
+[2024-02-29T19:28:11Z INFO  egg::run] Apply time: 0.043115458
+[2024-02-29T19:28:11Z INFO  egg::egraph] REBUILT! in 0.005s
+      Old: hc size 5834, eclasses: 376
+      New: hc size 5928, eclasses: 346
+      unions: 30, trimmed nodes: 879
+[2024-02-29T19:28:11Z INFO  egg::run] Rebuild time: 0.009508666
+[2024-02-29T19:28:11Z INFO  egg::run] Size: n=5928, e=346
+[2024-02-29T19:28:11Z INFO  egg::run] 
+    Iteration 5
+[2024-02-29T19:28:12Z INFO  egg::run] Search time: 1.134862792
+[2024-02-29T19:28:12Z INFO  egg::run] Apply time: 0.085736875
+[2024-02-29T19:28:12Z INFO  egg::egraph] REBUILT! in 0.009s
+      Old: hc size 10726, eclasses: 663
+      New: hc size 11175, eclasses: 532
+      unions: 131, trimmed nodes: 2011
+[2024-02-29T19:28:12Z INFO  egg::run] Rebuild time: 0.016038417
+[2024-02-29T19:28:12Z INFO  egg::run] Size: n=11175, e=532
+[2024-02-29T19:28:12Z INFO  egg::run] 
+    Iteration 6
+[2024-02-29T19:28:15Z INFO  egg::run] Search time: 2.8023981669999998
+[2024-02-29T19:28:15Z INFO  egg::run] Apply time: 0.18152075
+[2024-02-29T19:28:15Z INFO  egg::egraph] REBUILT! in 0.012s
+      Old: hc size 18259, eclasses: 972
+      New: hc size 18575, eclasses: 877
+      unions: 95, trimmed nodes: 2268
+[2024-02-29T19:28:15Z INFO  egg::run] Rebuild time: 0.02281225
+[2024-02-29T19:28:15Z INFO  egg::run] Size: n=18575, e=877
+[2024-02-29T19:28:15Z INFO  egg::run] 
+    Iteration 7
+[2024-02-29T19:28:23Z INFO  egg::run] Search time: 7.969906417
+[2024-02-29T19:28:24Z INFO  egg::run] Apply time: 0.278103791
+[2024-02-29T19:28:24Z INFO  egg::egraph] REBUILT! in 0.021s
+      Old: hc size 30372, eclasses: 1657
+      New: hc size 30893, eclasses: 1516
+      unions: 141, trimmed nodes: 3427
+[2024-02-29T19:28:24Z INFO  egg::run] Rebuild time: 0.039338625
+[2024-02-29T19:28:24Z INFO  egg::run] Size: n=30893, e=1516
+[2024-02-29T19:28:24Z INFO  egg::run] 
+    Iteration 8
+[2024-02-29T19:28:46Z INFO  egg::run] Search time: 22.580950375
+[2024-02-29T19:28:47Z INFO  egg::run] Apply time: 0.485913917
+[2024-02-29T19:28:47Z INFO  egg::egraph] REBUILT! in 0.035s
+      Old: hc size 51620, eclasses: 2883
+      New: hc size 52382, eclasses: 2695
+      unions: 188, trimmed nodes: 4910
+[2024-02-29T19:28:47Z INFO  egg::run] Rebuild time: 0.067977542
+[2024-02-29T19:28:47Z INFO  egg::run] Size: n=52382, e=2695
+[2024-02-29T19:28:47Z INFO  egg::run] 
+    Iteration 9
+[2024-02-29T19:30:31Z INFO  egg::run] Search time: 67.632824417
+[2024-02-29T19:30:32Z INFO  egg::run] Apply time: 0.859368792
+[2024-02-29T19:30:32Z INFO  egg::egraph] REBUILT! in 0.064s
+      Old: hc size 89366, eclasses: 5189
+      New: hc size 90604, eclasses: 4868
+      unions: 321, trimmed nodes: 8032
+[2024-02-29T19:30:32Z INFO  egg::run] Rebuild time: 0.124015542
+[2024-02-29T19:30:32Z INFO  egg::run] Size: n=90604, e=4868
+[2024-02-29T19:30:32Z INFO  egg::run] Stopping: IterationLimit(10)
+[2024-02-29T19:30:32Z DEBUG comp_gen::run] Extracting best program
+[2024-02-29T19:30:33Z DEBUG comp_gen::run] Program is "(VecAdd\n  (VecMul\n    (LitVec\n      (Get\n        A\n        0)\n      (Get\n        A\n        0)\n      (Get\n        A\n        3)\n      (Get\n        A\n        3))\n    (LitVec\n      (Get\n        B\n        0)\n      (Get\n        B\n        1)\n      (Get\n        B\n        2)\n      (Get\n        B\n        3)))\n  (VecMul\n    (LitVec\n      (Get\n        A\n        1)\n      (Get\n        A\n        1)\n      (Get\n        A\n        2)\n      (Get\n        A\n        2))\n    (LitVec\n      (Get\n        B\n        2)\n      (Get\n        B\n        3)\n      (Get\n        B\n        0)\n      (Get\n        B\n        1))))"
+[2024-02-29T19:30:33Z DEBUG comp_gen::run] Program has not changed
+[2024-02-29T19:30:33Z DEBUG comp_gen::run] Egraph size: 90604
+[2024-02-29T19:30:33Z INFO  comp_gen::stats]   Runner report
+[2024-02-29T19:30:33Z INFO  comp_gen::stats]   =============
+[2024-02-29T19:30:33Z INFO  comp_gen::stats]     Phase: 'opt' with 421 rules
+[2024-02-29T19:30:33Z INFO  comp_gen::stats]     Stop reason: IterationLimit(10)
+[2024-02-29T19:30:33Z INFO  comp_gen::stats]     Iterations: 10
+[2024-02-29T19:30:33Z INFO  comp_gen::stats]     Cost: 3.0519999999999996 (old: 3.0519999999999996)
+[2024-02-29T19:30:33Z INFO  comp_gen::stats]     Time: 105.379996084
+[2024-02-29T19:30:33Z INFO  comp_gen::stats]     Egraph size: 65134 nodes, 4868 classes, 90604 memo
+[2024-02-29T19:30:33Z INFO  dios_lang] cost: 3.0519999999999996
+[2024-02-29T19:30:33Z DEBUG dios_lang] writing to "results/res.rkt"
+Reading input program from results
+Optimizing intermediate program
+Compiling to Tensilica backend

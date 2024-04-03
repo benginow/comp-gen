@@ -27,6 +27,26 @@ impl<L: SynthLanguage> egg::RewriteScheduler<L, SynthAnalysis> for MatchSchedule
     }
 }
 
+pub struct DebugScheduler;
+
+impl<L, N> egg::RewriteScheduler<L, N> for DebugScheduler
+where
+    L: egg::Language + std::fmt::Display + 'static,
+    N: egg::Analysis<L> + 'static,
+{
+    fn apply_rewrite(
+        &mut self,
+        _iteration: usize,
+        egraph: &mut EGraph<L, N>,
+        rewrite: &Rewrite<L, N>,
+        matches: Vec<egg::SearchMatches<L>>,
+    ) -> usize {
+        use log::debug;
+        // debug!("applying {rewrite:#?}");
+        rewrite.apply(egraph, &matches).len()
+    }
+}
+
 impl Scheduler {
     pub fn run_internal<L: SynthLanguage>(
         &self,
@@ -36,9 +56,10 @@ impl Scheduler {
     ) -> EGraph<L, SynthAnalysis> {
         let get_runner = |egraph: EGraph<L, SynthAnalysis>, limits: Limits| {
             let base_runner = Runner::default()
-                .with_scheduler(MatchScheduler {
-                    match_limit: limits.match_,
-                })
+                // .with_scheduler(MatchScheduler {
+                //     match_limit: limits.match_,
+                // })
+                .with_scheduler(DebugScheduler)
                 .with_node_limit(limits.node)
                 .with_iter_limit(limits.iter)
                 .with_time_limit(Duration::from_secs(600))
@@ -71,7 +92,8 @@ impl Scheduler {
                 let mut runner = get_runner(egraph.clone(), *limits)
                     .with_iter_limit(limits.iter)
                     .with_node_limit(limits.node)
-                    .run(rewrites);
+                    .run(rewrites)
+                    .with_scheduler(DebugScheduler);
                 runner.egraph.rebuild();
                 runner.egraph
             }
@@ -86,7 +108,7 @@ impl Scheduler {
                         .collect()),
                 );
 
-                let mut runner = get_runner(egraph.clone(), *limits);
+                let mut runner = get_runner(egraph.clone(), *limits).with_scheduler(DebugScheduler);
 
                 let max_limits = Limits {
                     iter: usize::MAX,
@@ -96,7 +118,7 @@ impl Scheduler {
 
                 for _ in 0..limits.iter {
                     // Sat
-                    runner = get_runner(runner.egraph, max_limits).run(&sat);
+                    runner = get_runner(runner.egraph, max_limits).run(&sat).with_scheduler(DebugScheduler);
 
                     // Other
                     runner = get_runner(
@@ -118,7 +140,8 @@ impl Scheduler {
                 let ids: Vec<Id> = egraph.classes().map(|c| c.id).collect();
 
                 let out = Self::Simple(*limits).run(egraph, ruleset);
-
+                println!("built egraph of current ruleset");
+                
                 // Build a map from id in out to all of the ids in egraph that are equivalent
                 let mut unions = HashMap::default();
                 for id in ids {

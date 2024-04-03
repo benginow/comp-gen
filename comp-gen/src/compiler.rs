@@ -90,9 +90,13 @@ where
     {
         let contents = std::fs::read_to_string(filename).unwrap();
         let data = json::parse(&contents).unwrap();
+        
 
         let mut rules = vec![];
         for (idx, eq) in data["eqs"].members().enumerate() {
+            println!("lhs is {}", eq["lhs"]);
+            println!("rhs is {}", eq["rhs"]);
+
             let lpat_raw: egg::Pattern<L> =
                 eq["lhs"].as_str().unwrap().parse().unwrap();
             let rpat_raw: egg::Pattern<L> =

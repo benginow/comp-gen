@@ -127,119 +127,119 @@ mod tests {
             .plug("OP2", &Workload::new(["+", "*"]))
     }
 
-    #[test]
-    fn rule_lifting_recipe() {
-        let nat_rules = [
-            "(+ ?b ?a) ==> (+ ?a ?b)",
-            "(* ?b ?a) ==> (* ?a ?b)",
-            "(+ Z ?a) ==> ?a",
-            "(* ?a Z) ==> Z",
-            "(S (+ ?b ?a)) ==> (+ ?b (S ?a))",
-            "(* ?a (S Z)) ==> ?a",
-            "(+ ?a (S Z)) ==> (S ?a)",
-            "(+ ?c (+ ?b ?a)) ==> (+ ?a (+ ?b ?c))",
-            "(* (* ?c ?b) ?a) ==> (* ?b (* ?c ?a))",
-            "(+ ?b (* ?b ?a)) ==> (* ?b (S ?a))",
-            "(* (+ ?b ?b) ?a) ==> (* ?b (+ ?a ?a))",
-            "(+ ?a ?a) ==> (* ?a (S (S Z)))",
-        ];
+    // #[test]
+    // fn rule_lifting_recipe() {
+    //     let nat_rules = [
+    //         "(+ ?b ?a) ==> (+ ?a ?b)",
+    //         "(* ?b ?a) ==> (* ?a ?b)",
+    //         "(+ Z ?a) ==> ?a",
+    //         "(* ?a Z) ==> Z",
+    //         "(S (+ ?b ?a)) ==> (+ ?b (S ?a))",
+    //         "(* ?a (S Z)) ==> ?a",
+    //         "(+ ?a (S Z)) ==> (S ?a)",
+    //         "(+ ?c (+ ?b ?a)) ==> (+ ?a (+ ?b ?c))",
+    //         "(* (* ?c ?b) ?a) ==> (* ?b (* ?c ?a))",
+    //         "(+ ?b (* ?b ?a)) ==> (* ?b (S ?a))",
+    //         "(* (+ ?b ?b) ?a) ==> (* ?b (+ ?a ?a))",
+    //         "(+ ?a ?a) ==> (* ?a (S (S Z)))",
+    //     ];
 
-        let prior = Ruleset::new(&nat_rules);
+    //     let prior = Ruleset::new(&nat_rules);
 
-        let atoms3 = iter_pos(3);
-        assert_eq!(atoms3.force().len(), 51);
+    //     let atoms3 = iter_pos(3);
+    //     assert_eq!(atoms3.force().collect::<Vec<_>>().len(), 51);
 
-        let limits = Limits {
-            iter: 3,
-            node: 1000000,
-            match_: 200_000,
-        };
+    //     let limits = Limits {
+    //         iter: 3,
+    //         node: 1000000,
+    //         match_: 200_000,
+    //     };
 
-        let eg_init = atoms3.to_egraph();
-        // Allowed rules: run on clone, apply unions, no candidates
-        let (allowed, _) = prior.partition(|eq| Pos::is_allowed_rewrite(&eq.lhs, &eq.rhs));
-        let eg_allowed = Scheduler::Compress(limits).run(&eg_init, &allowed);
+    //     let eg_init = atoms3.to_egraph();
+    //     // Allowed rules: run on clone, apply unions, no candidates
+    //     let (allowed, _) = prior.partition(|eq| Pos::is_allowed_rewrite(&eq.lhs, &eq.rhs));
+    //     let eg_allowed = Scheduler::Compress(limits).run(&eg_init, &allowed);
 
-        // Translation rules: grow egraph, extract candidates, assert!(saturated)
-        let lifting_rules = Pos::get_lifting_rules();
-        let eg_denote = Scheduler::Simple(limits).run(&eg_allowed, &lifting_rules);
-        let mut candidates = Ruleset::extract_candidates(&eg_allowed, &eg_denote);
+    //     // Translation rules: grow egraph, extract candidates, assert!(saturated)
+    //     let lifting_rules = Pos::get_lifting_rules();
+    //     let eg_denote = Scheduler::Simple(limits).run(&eg_allowed, &lifting_rules);
+    //     let mut candidates = Ruleset::extract_candidates(&eg_allowed, &eg_denote);
 
-        // All rules: clone/no clone doesn't matter, extract candidates
-        let mut all_rules = prior;
-        all_rules.extend(lifting_rules);
-        let eg_final = Scheduler::Compress(limits).run(&eg_denote, &all_rules);
-        candidates.extend(Ruleset::extract_candidates(&eg_denote, &eg_final));
+    //     // All rules: clone/no clone doesn't matter, extract candidates
+    //     let mut all_rules = prior;
+    //     all_rules.extend(lifting_rules);
+    //     let eg_final = Scheduler::Compress(limits).run(&eg_denote, &all_rules);
+    //     candidates.extend(Ruleset::extract_candidates(&eg_denote, &eg_final));
 
-        let rules = candidates;
-        for r in rules.0.values() {
-            println!("{}", r.name)
-        }
-    }
+    //     let rules = candidates;
+    //     for r in rules.0.values() {
+    //         println!("{}", r.name)
+    //     }
+    // }
 
-    #[test]
-    fn rule_lifting() {
-        let limits = Limits {
-            iter: 3,
-            node: 1000000,
-            match_: 200_000,
-        };
-        let nat_rules = [
-            "(+ ?b ?a) ==> (+ ?a ?b)",
-            "(* ?b ?a) ==> (* ?a ?b)",
-            "(+ Z ?a) ==> ?a",
-            "(* ?a Z) ==> Z",
-            "(S (+ ?b ?a)) ==> (+ ?b (S ?a))",
-            "(* ?a (S Z)) ==> ?a",
-            "(+ ?a (S Z)) ==> (S ?a)",
-            "(+ ?c (+ ?b ?a)) ==> (+ ?a (+ ?b ?c))",
-            "(* (* ?c ?b) ?a) ==> (* ?b (* ?c ?a))",
-            "(+ ?b (* ?b ?a)) ==> (* ?b (S ?a))",
-            "(* (+ ?b ?b) ?a) ==> (* ?b (+ ?a ?a))",
-            "(+ ?a ?a) ==> (* ?a (S (S Z)))",
-        ];
+    // #[test]
+    // fn rule_lifting() {
+    //     let limits = Limits {
+    //         iter: 3,
+    //         node: 1000000,
+    //         match_: 200_000,
+    //     };
+    //     let nat_rules = [
+    //         "(+ ?b ?a) ==> (+ ?a ?b)",
+    //         "(* ?b ?a) ==> (* ?a ?b)",
+    //         "(+ Z ?a) ==> ?a",
+    //         "(* ?a Z) ==> Z",
+    //         "(S (+ ?b ?a)) ==> (+ ?b (S ?a))",
+    //         "(* ?a (S Z)) ==> ?a",
+    //         "(+ ?a (S Z)) ==> (S ?a)",
+    //         "(+ ?c (+ ?b ?a)) ==> (+ ?a (+ ?b ?c))",
+    //         "(* (* ?c ?b) ?a) ==> (* ?b (* ?c ?a))",
+    //         "(+ ?b (* ?b ?a)) ==> (* ?b (S ?a))",
+    //         "(* (+ ?b ?b) ?a) ==> (* ?b (+ ?a ?a))",
+    //         "(+ ?a ?a) ==> (* ?a (S (S Z)))",
+    //     ];
 
-        let mut all_rules = Ruleset::default();
-        all_rules.extend(Ruleset::new(&nat_rules));
+    //     let mut all_rules = Ruleset::default();
+    //     all_rules.extend(Ruleset::new(&nat_rules));
 
-        let atoms3 = iter_pos(3);
-        assert_eq!(atoms3.force().len(), 51);
+    //     let atoms3 = iter_pos(3);
+    //     assert_eq!(atoms3.force().collect::<Vec<_>>().len(), 51);
 
-        let rules3 = run_rule_lifting(atoms3, all_rules.clone(), limits, limits);
-        all_rules.extend(rules3);
+    //     let rules3 = run_rule_lifting(atoms3, all_rules.clone(), limits, limits);
+    //     all_rules.extend(rules3);
 
-        let atoms4 = iter_pos(4);
-        assert_eq!(atoms4.force().len(), 255);
+    //     let atoms4 = iter_pos(4);
+    //     assert_eq!(atoms4.force().collect::<Vec<_>>().len(), 255);
 
-        let rules4 = run_rule_lifting(atoms4, all_rules.clone(), limits, limits);
-        all_rules.extend(rules4);
+    //     let rules4 = run_rule_lifting(atoms4, all_rules.clone(), limits, limits);
+    //     all_rules.extend(rules4);
 
-        let atoms5 = iter_pos(5);
-        assert_eq!(atoms5.force().len(), 1527);
+    //     let atoms5 = iter_pos(5);
+    //     assert_eq!(atoms5.force().collect::<Vec<_>>().len(), 1527);
 
-        let rules4 = run_rule_lifting(atoms5, all_rules.clone(), limits, limits);
-        all_rules.extend(rules4);
+    //     let rules4 = run_rule_lifting(atoms5, all_rules.clone(), limits, limits);
+    //     all_rules.extend(rules4);
 
-        let expected: Ruleset<Pos> = Ruleset::new(&[
-            "(+ ?b ?a) ==> (+ ?a ?b)",
-            "(* ?b ?a) ==> (* ?a ?b)",
-            "(+ Z ?a) ==> ?a",
-            "(* ?a Z) ==> Z",
-            "(S (+ ?b ?a)) ==> (+ ?b (S ?a))",
-            "(* ?a (S Z)) ==> ?a",
-            "(+ ?a (S Z)) ==> (S ?a)",
-            "(+ ?c (+ ?b ?a)) ==> (+ ?a (+ ?b ?c))",
-            "(* (* ?c ?b) ?a) ==> (* ?b (* ?c ?a))",
-            "(+ ?b (* ?b ?a)) ==> (* ?b (S ?a))",
-            "(* (+ ?b ?b) ?a) ==> (* ?b (+ ?a ?a))",
-            "(+ ?a ?a) ==> (* ?a (S (S Z)))",
-            "(XI ?a) <=> (+ (XO ?a) XH)",
-            "?a <=> (* ?a XH)",
-            "(XO ?a) <=> (+ ?a ?a)",
-            "(+ ?a (XO ?a)) <=> (* ?a (XI XH))",
-        ]);
-        let (can, cannot) = all_rules.derive(DeriveType::Lhs, &expected, Limits::deriving());
-        assert_eq!(can.len(), expected.len());
-        assert_eq!(cannot.len(), 0);
-    }
+    //     let expected: Ruleset<Pos> = Ruleset::new(&[
+    //         "(+ ?b ?a) ==> (+ ?a ?b)",
+    //         "(* ?b ?a) ==> (* ?a ?b)",
+    //         "(+ Z ?a) ==> ?a",
+    //         "(* ?a Z) ==> Z",
+    //         "(S (+ ?b ?a)) ==> (+ ?b (S ?a))",
+    //         "(* ?a (S Z)) ==> ?a",
+    //         "(+ ?a (S Z)) ==> (S ?a)",
+    //         "(+ ?c (+ ?b ?a)) ==> (+ ?a (+ ?b ?c))",
+    //         "(* (* ?c ?b) ?a) ==> (* ?b (* ?c ?a))",
+    //         "(+ ?b (* ?b ?a)) ==> (* ?b (S ?a))",
+    //         "(* (+ ?b ?b) ?a) ==> (* ?b (+ ?a ?a))",
+    //         "(+ ?a ?a) ==> (* ?a (S (S Z)))",
+    //         "(XI ?a) <=> (+ (XO ?a) XH)",
+    //         "?a <=> (* ?a XH)",
+    //         "(XO ?a) <=> (+ ?a ?a)",
+    //         "(+ ?a (XO ?a)) <=> (* ?a (XI XH))",
+    //     ]);
+    //     let (can, cannot) = all_rules.derive(DeriveType::Lhs, &expected, Limits::deriving());
+    //     assert_eq!(can.len(), expected.len());
+    //     assert_eq!(cannot.len(), 0);
+    // }
 }

@@ -3,6 +3,69 @@ use egg::{EGraph, ENodeOrVar, RecExpr};
 use super::*;
 use crate::{SynthAnalysis, SynthLanguage};
 use std::io::Write;
+use std::sync::{atomic, Mutex, RwLock};
+use lazy_static::lazy_static;
+use std::cell::RefCell;
+use std::sync::atomic::AtomicBool;
+static IS_CANON: AtomicBool = AtomicBool::new(true);
+
+impl IntoIterator for Workload {
+    type Item = Sexp;
+    type IntoIter = Box<dyn Iterator<Item = Sexp>>;
+
+    // normal representation
+    // fn into_iter(self) -> Self::IntoIter {
+    //     match self {
+    //         Workload::Set(v) => Box::new(v.into_iter()),
+    //         Workload::Plug(wkld, hole, pegs) => Box::new(
+    //             wkld.into_iter()
+    //                 .map(move |sexp| (sexp, hole.clone(), pegs.clone()))
+    //                 .map(|(sexp, hole, pegs)| {
+    //                     SexpSubstIter::new(sexp, hole, move || pegs.clone().into_iter())
+    //                 })
+    //                 .flatten(),
+    //         ),
+    //         Workload::Filter(filter, wkld) => {
+    //             Box::new(wkld.into_iter().filter(move |sexp| filter.test(sexp)))
+    //         }
+    //         Workload::Append(wklds) => {
+    //             Box::new(wklds.into_iter().map(|wkld| wkld.into_iter()).flatten())
+    //         }
+    //     }
+    // }
+    // canonical representation
+    fn into_iter(self) -> Self::IntoIter {
+        let mut is_canon = true;
+        if !IS_CANON.load(atomic::Ordering::Relaxed) {
+            is_canon = false;
+        }
+        match self {
+            Workload::Set(v) => Box::new(v.into_iter()),
+            Workload::Plug(wkld, hole, pegs) => Box::new(
+                wkld.into_iter()
+                    .map(move |sexp| (sexp, hole.clone(), pegs.clone()))
+                    .map(move |(sexp, hole, pegs)| 
+                    {
+                        if is_canon {
+                            Box::new(SexpSubstIterCanon::new(sexp, hole, move || {
+                                pegs.clone().into_iter() })) as Box<dyn Iterator<Item = sexp::Sexp>>
+                        }
+                        else {
+                            Box::new(SexpSubstIter::new(sexp, hole, move || {
+                                pegs.clone().into_iter() })) as Box<dyn Iterator<Item = sexp::Sexp>>
+                        }
+                    })
+                    .flatten(),
+            ),
+            Workload::Filter(filter, wkld) => {
+                Box::new(wkld.into_iter().filter(move |sexp| filter.test(sexp)))
+            }
+            Workload::Append(wklds) => {
+                Box::new(wklds.into_iter().map(|wkld| wkld.into_iter()).flatten())
+            }
+        }
+    }
+}
 
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub enum Workload {
@@ -31,6 +94,10 @@ impl Workload {
         )
     }
 
+    pub fn is_not_canon(&self) {
+        IS_CANON.store(false, atomic::Ordering::Relaxed);
+    }
+
     pub fn empty() -> Self {
         Self::Set(vec![])
     }
@@ -38,7 +105,7 @@ impl Workload {
     pub fn to_file(&self, filename: &str) {
         let mut file = std::fs::File::create(filename)
             .unwrap_or_else(|_| panic!("Failed to open '{}'", filename));
-        for name in &self.force() {
+        for name in self.clone().force() {
             writeln!(file, "{}", name).expect("Unable to write");
         }
     }
@@ -53,9 +120,21 @@ impl Workload {
         Self::Set(sexps)
     }
 
-    pub fn to_egraph<L: SynthLanguage>(&self) -> EGraph<L, SynthAnalysis> {
+    pub fn to_egraph_with_vars<L:SynthLanguage>(&self, vars: Vec<String>) -> EGraph<L, SynthAnalysis> { 
         let mut egraph = EGraph::default();
-        let sexps = self.force();
+        let sexps = self.clone().force();
+        L::initialize_vars(&mut egraph, &vars);
+
+        for sexp in sexps {
+            // println!("adding {:?}", sexp);
+            egraph.add_expr(&sexp.to_string().parse::<RecExpr<L>>().unwrap());
+        }
+        egraph
+    }
+
+    pub fn to_egraph<L: SynthLanguage>(&self) -> EGraph<L, SynthAnalysis> {
+        // let mut egraph = EGraph::default();
+        let sexps = self.clone().force();
 
         // Have to find all the variables first so that we can initialize
         // their cvecs, which might require doing a multi-way cross product
@@ -67,7 +146,8 @@ impl Workload {
         // can matter, so make sure we preserve the order in the workload.
         // TODO: why does this order matter?
         let mut vars: Vec<String> = vec![];
-        for sexp in sexps.iter() {
+        for sexp in sexps {
+            // println!("adding {:?}", sexp);
             let expr: RecExpr<L> = sexp.to_string().parse().unwrap();
             for node in expr.as_ref() {
                 if let ENodeOrVar::Var(v) = node.clone().to_enode_or_var() {
@@ -79,42 +159,99 @@ impl Workload {
                 }
             }
         }
-        L::initialize_vars(&mut egraph, &vars);
 
-        for sexp in sexps.iter() {
-            egraph.add_expr(&sexp.to_string().parse::<RecExpr<L>>().unwrap());
-        }
-        egraph
+        return self.to_egraph_with_vars(vars);
     }
 
-    pub fn force(&self) -> Vec<Sexp> {
+    pub fn force_original(&self) -> Vec<Sexp> {
         match self {
             Workload::Set(set) => set.clone(),
             Workload::Plug(wkld, name, pegs) => {
                 let mut res = vec![];
-                let pegs = pegs.force();
-                for sexp in wkld.force() {
+                let pegs = pegs.force_original();
+                for sexp in wkld.force_original() {
                     res.extend(sexp.plug(name, &pegs));
                 }
                 res
             }
             Workload::Filter(f, workload) => {
-                let mut set = workload.force();
+                let mut set = workload.force_original();
                 set.retain(|sexp| f.test(sexp));
                 set
             }
             Workload::Append(workloads) => {
                 let mut set = vec![];
                 for w in workloads {
-                    set.extend(w.force());
+                    set.extend(w.force_original());
                 }
                 set
             }
         }
     }
 
+    pub(crate) fn substitute_inner(name: std::string::String, peg: Sexp, hole: Sexp) -> Vec<Sexp> {
+        match hole {
+            Sexp::Atom(s) if s == name => vec![peg],
+            Sexp::Atom(s) => vec![Sexp::Atom(s)],
+            Sexp::List(sexps) => 
+            {
+                // idk if this actually works
+                sexps.iter().flat_map(|x| {
+                    let cloned_peg = peg.clone();
+                    let cloned_name = name.clone();
+                    let cloned_x = x.clone();
+                    Self::substitute_inner(cloned_name, cloned_peg, cloned_x)})
+                    .collect::<Vec<_>>()
+            }
+        }
+    }
+
+    pub(crate) fn substitute(name: std::string::String, peg: Sexp, hole: Sexp) -> Sexp {
+        let inner = Self::substitute_inner(name, peg, hole);
+        if inner.len() ==  1 {
+            inner[0].clone()
+        }
+        else {
+            Sexp::List(inner)
+        }
+    }
+
+    // need some way to indicate to into_iter that we want the canonical version of sexpsubstiter
+    // pub fn force_canon(self) -> Box<dyn Iterator<Item = Sexp>> {
+    //     self.into_iter()
+    // }
+
+    pub fn force(self) -> Box<dyn Iterator<Item = Sexp>> {
+        self.into_iter()
+        // match self {
+        //     Workload::Set(set) => Box::new(set.clone().into_iter()),
+        //     Workload::Plug(wkld, name, pegs) => {
+        //         // iterate over each peg and apply in that manner
+        //         let pegs = pegs.force();
+        //         let iterator = pegs.map(move|peg| (*wkld.clone(),name.clone(),peg)).map(
+        //             |(wkld, name, peg)| {
+        //                 wkld.force().map(move |expr| {
+        //                     Self::substitute(name.clone(), peg.clone(), expr)
+        //                 })
+        //             }
+        //         ).flatten();
+        //         return Box::new(iterator);
+        //     }
+        //     Workload::Filter(f, workload) => {
+        //         let set = workload.force().filter_map(move |sexp| {
+        //             f.test(&sexp).then(|| sexp)
+        //         });
+        //         return Box::new(set);
+        //     }
+        //     Workload::Append(workloads) => {
+        //         let set= workloads.into_iter().flat_map(move |thing| {thing.force()});
+        //         return Box::new(set);
+        //     }
+        // }
+    }
+
     pub fn pretty_print(&self) {
-        for t in self.force() {
+        for t in self.clone().force() {
             println!("{}", t);
         }
     }
@@ -185,13 +322,22 @@ mod test {
     use super::*;
 
     #[test]
-    fn filter_optimization() {
-        let wkld = Workload::new(["x"]);
+    fn plug_test() {
+        let wkld = Workload::new(["(x y)"]);
         let pegs = Workload::new(["a", "b", "c"]);
         let plugged = wkld
-            .plug("x", &pegs)
-            .filter(Filter::MetricLt(Metric::Atoms, 2));
-        assert_eq!(plugged.force().len(), 3);
+            .plug("x", &pegs).plug("y", &pegs).filter(Filter::MetricLt(Metric::Atoms, 3)).force().collect::<Vec<_>>();
+        println!("{plugged:#?}");
+    }
+
+    #[test]
+    fn filter_optimization() {
+        let wkld = Workload::new(["(x x)"]);
+        let pegs = Workload::new(["a", "b", "c"]);
+        let plugged = wkld.plug("x", &pegs)
+            .filter(Filter::MetricLt(Metric::Atoms, 3));
+        println!("{plugged:#?}");
+        assert_eq!(plugged.force_original().len(), 9);
     }
 
     #[test]
@@ -210,7 +356,7 @@ mod test {
         ])
         .force();
 
-        assert_eq!(actual3, expected3);
+        assert_eq!(actual3.collect::<Vec<_>>(), expected3.collect::<Vec<_>>());
 
         let actual4 = iter_metric(base_lang(3), "EXPR", Metric::Atoms, 4)
             .filter(Filter::Contains("VAR".parse().unwrap()))
@@ -243,7 +389,7 @@ mod test {
         ])
         .force();
 
-        assert_eq!(actual4, expected4);
+        assert_eq!(actual4.collect::<Vec<_>>(), expected4.collect::<Vec<_>>());
     }
 
     #[test]
@@ -255,7 +401,7 @@ mod test {
             "1", "2", "(1 1)", "(1 2)", "(2 1)", "(2 2)", "(1 1 1)", "(1 1 2)", "(1 2 1)",
             "(1 2 2)", "(2 1 1)", "(2 1 2)", "(2 2 1)", "(2 2 2)",
         ]);
-        let actual = w1.plug("x", &w2).force();
+        let actual = w1.plug("x", &w2).force().collect::<Vec<_>>();
         for t in expected.force() {
             assert!(actual.contains(&t));
         }
@@ -271,7 +417,7 @@ mod test {
 
         let wkld = w1.clone().append(w2.clone());
         let wkld = wkld.append(w3.clone());
-        assert_eq!(wkld.force().len(), 6);
+        assert_eq!(wkld.clone().force().collect::<Vec<_>>().len(), 6);
         assert!(matches!(wkld, Workload::Set(_)));
 
         let wkld = w3.clone().append(w4.clone());
@@ -301,3 +447,4 @@ mod test {
         }
     }
 }
+

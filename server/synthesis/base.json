@@ -13,18 +13,26 @@
   "unops": [
     "sqrt",
     "sgn",
-    "neg"
+    "neg",
+    "VecSqrt",
+    "VecSgn",
+    "VecNeg"
   ],
   "binops": [
     "/",
     "+",
     "*",
     "-",
-    "~*"
+    "VecDiv",
+    "VecAdd",
+    "VecMul",
+    "VecMinus"
   ],
   "triops": [
     "mac",
-    "muls"
+    "muls",
+    "VecMAC",
+    "VecMULS"
   ],
   "use_scalar": true,
   "use_vector": true,

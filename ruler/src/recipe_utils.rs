@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::{time::Instant, io::Write};
 
 use crate::{
     enumo::{Filter, Metric, Ruleset, Scheduler, Workload},
@@ -33,21 +33,57 @@ fn run_workload_internal<L: SynthLanguage>(
     fast_match: bool,
     allow_empty: bool,
 ) -> Ruleset<L> {
-    let t = Instant::now();
+    use std::time::Instant;
+    use std::fs::*;
+    use std::fs::File;
 
+    // let file_path = "timings.txt";
+
+    // Create OpenOptions with the append flag
+    let mut options = OpenOptions::new();
+    options.append(true);
+
+    // Open the file with write access and append flag
+    // let mut file = match options.open(file_path) {
+    //     Ok(file) => file,
+    //     Err(e) => {
+    //         // Handle the error
+    //         panic!("Error opening file: {}", e);
+    //     }
+    // };
+    // let mut file = File::open("timings.txt").unwrap();
+
+    let t = Instant::now();
+    println!("workload is {:#?}", workload);
     let egraph = workload.to_egraph::<L>();
-    let compressed = Scheduler::Compress(prior_limits).run(&egraph, &prior);
+    // let elapsed = t.elapsed();
+    // let info = format!("time taken to convert workload to egraph {elapsed:?}");
+    // write!(file, "1 time taken to convert workload to egraph {elapsed:?}\n").unwrap();
 
     
+    // let now = Instant::now();
+    let compressed = Scheduler::Compress(prior_limits).run(&egraph, &prior);
+    // let elapsed = now.elapsed();
+    // write elapsed time to a file
+    // write!(file, "2 time taken to compress egraph {elapsed:?}\n").unwrap();
+
+    // println!("Compression time: {:.2?}", elapsed);
+
+    // let now = Instant::now();
     let mut candidates = if fast_match {
         Ruleset::fast_cvec_match(&compressed)
     } else {
         Ruleset::cvec_match(&compressed)
     };
+    // let elapsed = now.elapsed();
+    // write!(&file, "3 time taken to cvec match {elapsed:?}\n").unwrap();
 
     let num_prior = prior.len();
-    crate::logger::log_rules(&candidates, Some("candidates_ruler/"), "candidates1");
+    let now = Instant::now();
     let (chosen, _) = candidates.minimize(prior, Scheduler::Compress(minimize_limits));
+    // let elapsed = now.elapsed();
+    // write!(file, "4 time taken to minimize chandidates {elapsed:?}\n").unwrap();
+
     let time = t.elapsed().as_secs_f64();
 
     if chosen.is_empty() && !allow_empty {
@@ -173,6 +209,19 @@ pub fn recursive_rules<L: SynthLanguage>(
     }
 }
 
+// pub fn base_lang(n: usize) -> Workload {
+//     let mut vals = vec!["VAR".to_string(), "VAL".to_string()];
+//     for i in 1..(n + 1) {
+//         let mut str = "".to_string();
+//         for j in 0..i {
+//             let e = (format!(" EXPR{}", j));
+//             str = format!("{}{}", str, e);
+//         }
+//         let s = format!("(OP{}{})", i, str);
+//         vals.push(s);
+//     }
+//     Workload::new(vals)
+// }
 pub fn base_lang(n: usize) -> Workload {
     let mut vals = vec!["VAR".to_string(), "VAL".to_string()];
     for i in 1..(n + 1) {
@@ -193,76 +242,76 @@ mod test {
     fn iter_metric_test() {
         let lang = base_lang(2);
         let atoms1 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 1).force();
-        assert_eq!(atoms1.len(), 2);
+        assert_eq!(atoms1.collect::<Vec<_>>().len(), 2);
 
         let atoms2 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 2).force();
-        assert_eq!(atoms2.len(), 4);
+        assert_eq!(atoms2.collect::<Vec<_>>().len(), 4);
 
         let atoms3 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 3).force();
-        assert_eq!(atoms3.len(), 10);
+        assert_eq!(atoms3.collect::<Vec<_>>().len(), 10);
 
         let atoms4 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 4).force();
-        assert_eq!(atoms4.len(), 24);
+        assert_eq!(atoms4.collect::<Vec<_>>().len(), 24);
 
         let atoms5 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 5).force();
-        assert_eq!(atoms5.len(), 66);
+        assert_eq!(atoms5.collect::<Vec<_>>().len(), 66);
 
         let atoms6 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 6).force();
-        assert_eq!(atoms6.len(), 188);
+        assert_eq!(atoms6.collect::<Vec<_>>().len(), 188);
 
         let atoms6 = iter_metric(lang.clone(), "EXPR", Metric::Atoms, 7).force();
-        assert_eq!(atoms6.len(), 570);
+        assert_eq!(atoms6.collect::<Vec<_>>().len(), 570);
 
         let depth1 = iter_metric(lang.clone(), "EXPR", Metric::Depth, 1).force();
-        assert_eq!(depth1.len(), 2);
+        assert_eq!(depth1.collect::<Vec<_>>().len(), 2);
 
         let depth2 = iter_metric(lang.clone(), "EXPR", Metric::Depth, 2).force();
-        assert_eq!(depth2.len(), 8);
+        assert_eq!(depth2.collect::<Vec<_>>().len(), 8);
 
         let depth3 = iter_metric(lang.clone(), "EXPR", Metric::Depth, 3).force();
-        assert_eq!(depth3.len(), 74);
+        assert_eq!(depth3.collect::<Vec<_>>().len(), 74);
 
         let depth4 = iter_metric(lang.clone(), "EXPR", Metric::Depth, 4).force();
-        assert_eq!(depth4.len(), 5552);
+        assert_eq!(depth4.collect::<Vec<_>>().len(), 5552);
 
         let lists1 = iter_metric(lang.clone(), "EXPR", Metric::Lists, 1).force();
-        assert_eq!(lists1.len(), 8);
+        assert_eq!(lists1.collect::<Vec<_>>().len(), 8);
 
         let lists2 = iter_metric(lang.clone(), "EXPR", Metric::Lists, 2).force();
-        assert_eq!(lists2.len(), 38);
+        assert_eq!(lists2.collect::<Vec<_>>().len(), 38);
 
         let lists3 = iter_metric(lang.clone(), "EXPR", Metric::Lists, 3).force();
-        assert_eq!(lists3.len(), 224);
+        assert_eq!(lists3.collect::<Vec<_>>().len(), 224);
     }
 
     #[test]
     fn iter_metric_fast() {
         // This test will not finish if the pushing monotonic filters through plugs optimization is not working.
         let three = iter_metric(base_lang(3), "EXPR", Metric::Atoms, 3);
-        assert_eq!(three.force().len(), 10);
+        assert_eq!(three.force().collect::<Vec<_>>().len(), 10);
 
         let four = iter_metric(base_lang(3), "EXPR", Metric::Atoms, 4);
-        assert_eq!(four.force().len(), 32);
+        assert_eq!(four.force().collect::<Vec<_>>().len(), 32);
 
         let five = iter_metric(base_lang(3), "EXPR", Metric::Atoms, 5);
-        assert_eq!(five.force().len(), 106);
+        assert_eq!(five.force().collect::<Vec<_>>().len(), 106);
 
         let six = iter_metric(base_lang(3), "EXPR", Metric::Atoms, 6);
-        assert_eq!(six.force().len(), 388);
+        assert_eq!(six.force().collect::<Vec<_>>().len(), 388);
     }
 
     #[test]
     fn base_lang_test() {
-        assert_eq!(base_lang(0).force().len(), 2);
-        assert_eq!(base_lang(1).force().len(), 3);
-        assert_eq!(base_lang(2).force().len(), 4);
-        assert_eq!(base_lang(3).force().len(), 5);
+        assert_eq!(base_lang(0).force().collect::<Vec<_>>().len(), 2);
+        assert_eq!(base_lang(1).force().collect::<Vec<_>>().len(), 3);
+        assert_eq!(base_lang(2).force().collect::<Vec<_>>().len(), 4);
+        assert_eq!(base_lang(3).force().collect::<Vec<_>>().len(), 5);
     }
 
     #[test]
     fn empty_plug() {
         let wkld =
             iter_metric(base_lang(3), "EXPR", Metric::Atoms, 6).plug("OP3", &Workload::empty());
-        assert_eq!(wkld.force().len(), 188);
+        assert_eq!(wkld.force().collect::<Vec<_>>().len(), 188);
     }
 }

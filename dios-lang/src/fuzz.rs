@@ -9,7 +9,7 @@ use itertools::Itertools;
 
 use crate::{
     lang,
-    synthesis::{split_into_halves, vecs_eq},
+    util::{split_into_halves}
 };
 
 pub trait FuzzEquals: ruler::SynthLanguage {
@@ -29,6 +29,7 @@ impl FuzzEquals for lang::VecLang {
         // TODO: hard coded again, use whatever value the synthesizer was seeded with 
         log::debug!("FUZZING, returning false");
         return false;
+        
         use rand_pcg::Lcg64Xsh32;
         let mut rng = Lcg64Xsh32::new(0,0);
 

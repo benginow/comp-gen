@@ -1,0 +1,1540 @@
+[
+  {
+    "num_rules": 24,
+    "time generated": "2024-02-07 12:56:13.135317 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- 0 1)",
+        "rhs": "(neg 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 1)",
+        "rhs": "(- 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(sgn 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(neg 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(sgn 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(+ 0 0)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 24,
+    "time generated": "2024-02-07 13:16:08.696839 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- 0 1)",
+        "rhs": "(neg 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 1)",
+        "rhs": "(- 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(sgn 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(neg 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(sgn 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(+ 0 0)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 24,
+    "time generated": "2024-02-07 22:17:10.863751 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- 0 1)",
+        "rhs": "(neg 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 1)",
+        "rhs": "(- 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(sgn 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(neg 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(sgn 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(+ 0 0)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 24,
+    "time generated": "2024-02-07 22:32:54.632690 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- 0 1)",
+        "rhs": "(neg 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 1)",
+        "rhs": "(- 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(sgn 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(neg 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(sgn 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(+ 0 0)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 24,
+    "time generated": "2024-02-08 08:00:20.634750 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- 0 1)",
+        "rhs": "(neg 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 1)",
+        "rhs": "(- 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(sgn 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(neg 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(sgn 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(+ 0 0)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 24,
+    "time generated": "2024-02-13 13:58:27.130455 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- 0 1)",
+        "rhs": "(neg 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 1)",
+        "rhs": "(- 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(sgn 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(neg 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(sgn 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(+ 0 0)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 16,
+    "time generated": "2024-03-07 06:12:08.263141 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 0 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 16,
+    "time generated": "2024-03-07 06:22:56.931485 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 0 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 16,
+    "time generated": "2024-03-07 06:25:26.218136 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 0 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 16,
+    "time generated": "2024-03-07 06:29:08.367531 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 0 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 16,
+    "time generated": "2024-03-07 06:35:58.699849 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 0 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 16,
+    "time generated": "2024-03-07 06:36:44.477245 -06:00",
+    "run name": "categorizing_vector_rules",
+    "eqs": [
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 0 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 24,
+    "time generated": "2024-03-18 15:43:48.675083 -05:00",
+    "run name": "ruleset_3_attempt_1",
+    "eqs": [
+      {
+        "lhs": "(- 0 1)",
+        "rhs": "(neg 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 1)",
+        "rhs": "(- 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(sgn 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(neg 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(sgn 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(+ 0 0)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 24,
+    "time generated": "2024-03-18 20:02:56.958818 -05:00",
+    "run name": "ruleset_3_attempt_1",
+    "eqs": [
+      {
+        "lhs": "(- 0 1)",
+        "rhs": "(neg 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 1)",
+        "rhs": "(- 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(+ 0 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(- 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- 1 1)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 0)",
+        "rhs": "(- ?a ?a)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a ?a)",
+        "rhs": "(* ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(* ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(+ ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ ?a 0)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(- ?a 0)",
+        "rhs": "(/ ?a 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(/ ?a 1)",
+        "rhs": "(- ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(sgn 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(neg 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(neg 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(sgn 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(sgn 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(* 1 1)",
+        "rhs": "1",
+        "bidirectional": false
+      },
+      {
+        "lhs": "1",
+        "rhs": "(* 1 1)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(+ 0 0)",
+        "rhs": "0",
+        "bidirectional": false
+      },
+      {
+        "lhs": "0",
+        "rhs": "(+ 0 0)",
+        "bidirectional": false
+      }
+    ]
+  }
+]

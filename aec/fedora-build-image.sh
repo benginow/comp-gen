@@ -91,7 +91,7 @@ buildah config --cmd /usr/bin/start-server.sh $cont
 buildah config \
         --created-by "sgpthomas" \
         --author "sgt@cs.utexas.edu" \
-        --label org.opencontainers.image.source="https://github.com/sgpthomas/comp-gen" \
+        --label org.opencontainers.image.source="https://github.com/benginow/comp-gen" \
         $cont
 
 buildah commit $cont isaria-aec

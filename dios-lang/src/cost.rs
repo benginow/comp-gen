@@ -3,8 +3,11 @@ use comp_gen::FromPattern;
 use itertools::Itertools;
 
 use crate::lang::VecLang;
+use crate::desugared_lang::VecLangDesugared;
 
 pub type DiosRwrite = egg::Rewrite<VecLang, ()>;
+pub type DiosRwriteDesugared = egg::Rewrite<VecLangDesugared, ()>;
+
 
 #[derive(Clone, Debug)]
 pub struct VecCostFn {
@@ -63,6 +66,184 @@ impl VecCostFn {
         }
     }
 }
+
+#[derive(Clone, Debug)]
+pub struct VecCostFnDesugared {
+    literal: f64,
+    structure: f64,
+    vec: f64,
+    op: f64,
+    op_proportional: bool,
+    vec_op: f64,
+    vec_proportional: bool,
+    vec_return_early: bool,
+    vec_exact_literal_match: bool,
+}
+
+impl VecCostFnDesugared {
+    pub fn dios() -> Self {
+        VecCostFnDesugared {
+            literal: 0.001,
+            structure: 0.1,
+            vec: 100.0,
+            op: 2.,
+            op_proportional: true,
+            vec_op: 1.,
+            vec_proportional: false,
+            vec_return_early: false,
+            vec_exact_literal_match: false,
+        }
+    }
+}
+
+impl egg::CostFunction<VecLangDesugared> for VecCostFnDesugared {
+    type Cost = f64;
+    fn cost<C>(&mut self, enode: &VecLangDesugared, mut costs: C) -> Self::Cost
+    where
+        C: FnMut(egg::Id) -> Self::Cost,
+    {
+        // const LITERAL: f64 = 0.001;
+        // const STRUCTURE: f64 = 0.1;
+        // const VEC_OP: f64 = 1.;
+        // let op_cost: f64 = if self.original {
+        //     2. // original
+        // } else {
+        //     10.
+        // };
+        // const BIG: f64 = 100.0;
+        let op_cost = match enode {
+            // You get literals for extremely cheap
+            VecLangDesugared::Const(..) => self.literal,
+            VecLangDesugared::Symbol(..) => self.literal,
+            VecLangDesugared::Get(..) => self.literal,
+
+            // And list structures for quite cheap
+            VecLangDesugared::List(..) => self.structure,
+            VecLangDesugared::Concat(..) => self.structure,
+
+            // Vectors are cheap if they have literal values
+            VecLangDesugared::Vec(vals) => {
+                // For now, workaround to determine if children are num, symbol,
+                // or get
+                let non_literals = if self.vec_exact_literal_match {
+                    vals.iter().any(|&x| costs(x) != self.literal)
+                } else {
+                    vals.iter().any(|&x| costs(x) > 3. * self.literal)
+                };
+                if non_literals {
+                    if self.vec_proportional {
+                        self.vec
+                            * vals.iter().fold(0., |acc, e| costs(*e) + acc)
+                    } else {
+                        self.vec
+                    }
+                } else {
+                    let cost =
+                        self.structure * (vals.iter().unique().count() as f64);
+                    // we don't want to count the cost of loading the literals separately
+                    // the cost of the vec is the cost of the whole thing
+                    if self.vec_return_early {
+                        return cost + 1.0;
+                    }
+                    cost
+                }
+            }
+            VecLangDesugared::LitVec(..) => {
+                if self.vec_return_early {
+                    return self.literal;
+                }
+                self.literal
+            }
+
+            // But scalar and vector ops cost something
+            VecLangDesugared::Add(vals) => {
+                self.op
+                    * (if self.op_proportional {
+                        vals.len() as f64 - 1.
+                    } else {
+                        1.
+                    })
+            }
+            VecLangDesugared::Mul(vals) => {
+                self.op
+                    * (if self.op_proportional {
+                        vals.len() as f64 - 1.
+                    } else {
+                        1.
+                    })
+            }
+            VecLangDesugared::Minus(vals) => {
+                self.op
+                    * (if self.op_proportional {
+                        vals.len() as f64 - 1.
+                    } else {
+                        1.
+                    })
+            }
+            VecLangDesugared::Div(vals) => {
+                self.op
+                    * (if self.op_proportional {
+                        vals.len() as f64 - 1.
+                    } else {
+                        1.
+                    })
+            }
+
+            VecLangDesugared::VecAdd(..) => self.vec_op,
+            VecLangDesugared::VecMinus(..) => self.vec_op,
+            VecLangDesugared::VecMul(..) => self.vec_op,
+            VecLangDesugared::VecDiv(..) => self.vec_op,
+            VecLangDesugared::VecSum(..) => self.vec_op,
+
+            VecLangDesugared::Shfl(..) => self.vec_op,
+        };
+        enode.fold(op_cost, |sum, id| sum + costs(id))
+    }
+
+}
+
+impl comp_gen::CostMetrics<VecLangDesugared, ()> for VecCostFnDesugared {
+    fn cost_differential(&mut self, r: &DiosRwriteDesugared) -> f64 {
+        if let (Some(lhs), Some(rhs)) =
+            (r.searcher.get_pattern_ast(), r.applier.get_pattern_ast())
+        {
+            let lexp: egg::RecExpr<VecLangDesugared> = VecLangDesugared::from_pattern(lhs);
+            let rexp: egg::RecExpr<VecLangDesugared> = VecLangDesugared::from_pattern(rhs);
+            // let mut costfn = VecCostFn {};
+            self.cost_rec(&lexp) - self.cost_rec(&rexp)
+        } else {
+            match r.name.as_str() {
+                // "litvec" => 0.099,
+                // "+_binop_or_zero_vec" => 102.8,
+                // "*_binop_or_zero_vec" => 102.8,
+                // "-_binop_or_zero_vec" => 102.8,
+                // "vec-mac" => 106.7,
+                _ => panic!("rule: {:?}", r),
+            }
+        }
+    }
+
+    fn cost_average(&mut self, r: &DiosRwriteDesugared) -> f64 {
+        if let (Some(lhs), Some(rhs)) =
+            (r.searcher.get_pattern_ast(), r.applier.get_pattern_ast())
+        {
+            let lexp: egg::RecExpr<VecLangDesugared> = VecLangDesugared::from_pattern(lhs);
+            let rexp: egg::RecExpr<VecLangDesugared> = VecLangDesugared::from_pattern(rhs);
+            // let mut costfn = VecCostFn {};
+            (self.cost_rec(&lexp) + self.cost_rec(&rexp)) / 2.
+        } else {
+            match r.name.as_str() {
+                // "litvec" => 100.,
+                // "+_binop_or_zero_vec" => 50.,
+                // "*_binop_or_zero_vec" => 50.,
+                // "-_binop_or_zero_vec" => 50.,
+                // "vec-mac" => 100.,
+                _ => panic!("rule: {:?}", r),
+            }
+        }
+    }
+}
+
 
 impl egg::CostFunction<VecLang> for VecCostFn {
     type Cost = f64;

@@ -1,12 +1,167 @@
-use std::str::FromStr;
-
+use std::{str::FromStr, iter::FromIterator};
+use std::{collections::VecDeque, fmt::Display};
 use super::*;
+
+// =========================== CANON ONLY ITERATOR ===========================
+
+#[derive(Clone, Debug)]
+pub struct SexpSubstIterCanon<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I, 
+{
+    needle: String,
+    // spawns a new iterator for the pegs -> this function needs to be modified s.t. it takes the current element and truncates
+    spawn_iterator: F,
+    // stack contains a sexp and an interator
+    stack: VecDeque<(Sexp, I, usize)>,
+}
+
+impl<I, F> SexpSubstIterCanon<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I,
+{
+    pub(crate) fn new<S: ToString>(inital_sexp: Sexp, needle: S, spawn_iterator: F) -> Self {
+        let initial_iter = spawn_iterator();
+        SexpSubstIterCanon {
+            needle: needle.to_string(),
+            spawn_iterator,
+            stack: VecDeque::from([(inital_sexp, initial_iter, 0)]),
+        }
+    }
+}
+
+impl<I, F> Iterator for SexpSubstIterCanon<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I,
+{
+    type Item = Sexp;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        use itertools::Itertools;
+
+        if let Some((parent_sexp, mut parent_iter, idx)) = self.stack.pop_front() {
+            // if there is juice left in the iterator
+            if let Some(next_item) = parent_iter.next() {
+
+                // try to go deeper one layer by replacing the first instance of the
+                // needle with the item we got from the iterator
+                if let Some(child_sexp) = parent_sexp.replace_first(&self.needle, &next_item) {
+                    // there might be more juice in the parent_iter,
+                    // so push it back on the stack so that we try
+                    // to process it again
+                    self.stack.push_front((parent_sexp, parent_iter, idx+1));
+
+                    // next we want to spawn a new iterator representing one layer
+                    // deeper in the search. we want to make sure that this item
+                    // is the next item processed on the stack so that we perform
+                    // a depth-first traversal of the tree.
+                    // how can we truncate spawn_iterator s.t. it starts at a certain index?
+                    let child_iter = (self.spawn_iterator)().dropping(idx);
+                    self.stack.push_front((child_sexp, child_iter, idx));
+
+                    self.next()
+                } else {
+                    // otherwise (no needle), we are at a leaf and all instances
+                    // of the needle are fully instantiated. we can yield this
+                    // item from the iterator
+                    Some(parent_sexp)
+                }
+            } else {
+                // we are done with this layer of the tree. continue processing
+                // the next item on the stack
+                self.next()
+            }
+        } else {
+            None
+        }
+    }
+}
+
+// =========================== NON-CANON ITERATOR ===========================
+
+
+#[derive(Clone, Debug)]
+pub struct SexpSubstIter<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I,
+{
+    needle: String,
+    spawn_iterator: F,
+    stack: VecDeque<(Sexp, I)>,
+}
+
+impl<I, F> SexpSubstIter<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I,
+{
+    pub(crate) fn new<S: ToString>(inital_sexp: Sexp, needle: S, spawn_iterator: F) -> Self {
+        let initial_iter = spawn_iterator();
+        SexpSubstIter {
+            needle: needle.to_string(),
+            spawn_iterator,
+            stack: VecDeque::from([(inital_sexp, initial_iter)]),
+        }
+    }
+}
+
+impl<I, F> Iterator for SexpSubstIter<I, F>
+where
+    I: Iterator<Item = Sexp>,
+    F: Fn() -> I,
+{
+    type Item = Sexp;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some((parent_sexp, mut parent_iter)) = self.stack.pop_front() {
+            // println!("a");
+            // if there is juice left in the iterator
+            if let Some(next_item) = parent_iter.next() {
+                // try to go deeper one layer by replacing the first instance of the
+                // needle with the item we got from the iterator
+                if let Some(child_sexp) = parent_sexp.replace_first(&self.needle, &next_item) {
+                    // there might be more juice in the parent_iter,
+                    // so push it back on the stack so that we try
+                    // to process it again
+                    self.stack.push_front((parent_sexp, parent_iter));
+
+                    // next we want to spawn a new iterator representing one layer
+                    // deeper in the search. we want to make sure that this item
+                    // is the next item processed on the stack so that we perform
+                    // a depth-first traversal of the tree.
+                    let child_iter = (self.spawn_iterator)();
+                    self.stack.push_front((child_sexp, child_iter));
+
+                    self.next()
+                } else {
+                    // otherwise (no needle), we are at a leaf and all instances
+                    // of the needle are fully instantiated. we can yield this
+                    // item from the iterator
+                    Some(parent_sexp)
+                }
+            } else {
+                // we are done with this layer of the tree. continue processing
+                // the next item on the stack
+                self.next()
+            }
+        } else {
+            None
+        }
+    }
+}
 
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub enum Sexp {
     Atom(String),
     List(Vec<Self>),
 }
+
+// trait ClonableIterator: Iterator + Clone {}
+// impl<I> ClonableIterator for I where I: Iterator + Clone {}
 
 impl FromStr for Sexp {
     type Err = String;
@@ -35,6 +190,24 @@ impl std::fmt::Display for Sexp {
 }
 
 impl Sexp {
+    fn first(&mut self, needle: &str) -> Option<&mut Self> {
+        match self {
+            Sexp::Atom(a) if a == needle => Some(self),
+            Sexp::Atom(_) => None,
+            Sexp::List(list) => list.into_iter().find_map(|s| s.first(needle)),
+        }
+    }
+
+    pub(crate) fn replace_first(&self, needle: &str, new: &Sexp) -> Option<Self> {
+        let mut copy = self.clone();
+        if let Some(ptr) = copy.first(needle) {
+            *ptr = new.clone();
+            Some(copy)
+        } else {
+            None
+        }
+    }
+
     fn from_symbolic_expr(sexp: symbolic_expressions::Sexp) -> Self {
         match sexp {
             symbolic_expressions::Sexp::String(s) => Self::Atom(s),
@@ -96,8 +269,32 @@ impl Sexp {
                 .multi_cartesian_product()
                 .map(Sexp::List)
                 .collect(),
-        }
+        } 
     }
+
+    // change this to the substitute function 
+    // pub(crate) fn plug(&self, name: &str, pegs: Box<Workload>) -> Box<dyn Iterator<Item = Sexp>> {
+
+    //     match self {
+    //         Sexp::Atom(s) if s == name => {
+    //             return Box::new(pegs.into_iter());
+    //         },
+    //         Sexp::Atom(_) => { 
+    //             return Box::new(vec![self.clone()].into_iter()); 
+    //         },
+    //         Sexp::List(sexps) => {
+
+    //             let v = sexps.clone()
+    //             .into_iter()
+    //             .map(move |sexp| (sexp, name.clone(), pegs))
+    //                 .map(|(sexp, name, pegs)| {
+    //                     SexpSubstIter::new(sexp, name, move || pegs.into_iter())
+    //                 })
+    //             .flatten();
+    //             return Box::new(v);
+    //         }
+    //     }
+    // }
 
     pub(crate) fn measure(&self, metric: Metric) -> usize {
         match self {
@@ -113,6 +310,8 @@ impl Sexp {
         }
     }
 }
+
+
 
 #[cfg(test)]
 mod test {
@@ -186,7 +385,7 @@ mod test {
     #[test]
     fn plug() {
         let x = "x".parse::<Sexp>().unwrap();
-        let pegs = Workload::new(["1", "2", "3"]).force();
+        let pegs = Workload::new(["1", "2", "3"]).force().collect::<Vec<_>>();
         let expected = vec![x.clone()];
         let actual = x.plug("a", &pegs);
         assert_eq!(actual, expected);
@@ -197,14 +396,49 @@ mod test {
     }
 
     #[test]
-    fn plug_cross_product() {
-        let term = "(x x)";
-        let pegs = Workload::new(["1", "2", "3"]).force();
+    fn play_with_iterators() {
+        let x = "(x x)".parse::<Sexp>().unwrap();
+        let pegs = Workload::new(["1", "2", "3"]).force().collect::<Vec<_>>();
         let expected = Workload::new([
             "(1 1)", "(1 2)", "(1 3)", "(2 1)", "(2 2)", "(2 3)", "(3 1)", "(3 2)", "(3 3)",
+        ]).force();
+
+
+        // now, lets do the peg thing but with iterators only
+         
+        let actual: Vec<Sexp> = x.plug("x", &pegs);
+        println!("x is {x:?}");
+        println!("actual is {actual:?}");
+        println!("expected is {:?}", expected.collect::<Vec<_>>());
+        // we have an iterator over the pegs, which will be an iterator over sexps
+    }
+
+    #[test]
+    fn plug_cross_product() {
+        let term = Workload::new(["(x x)"]);
+        let pegs = Workload::new(["1", "2", "3"]);
+        let actual = Workload::Plug(Box::new(term), "x".to_string(), Box::new(pegs)).force().collect::<Vec<_>>();
+        // .force().collect::<Vec<_>>();
+        let expected = Workload::new([
+            "(1 1)", "(1 2)", "(1 3)", "(2 2)", "(2 3)", "(3 3)",
         ])
-        .force();
+        .force().collect::<Vec<_>>();
+        // let actual = "(x x)".parse::<Sexp>().unwrap().plug("x", &Workload::new(["1", "2", "3"]).force().collect::<Vec<_>>());
+        println!("expected: {expected:?} \nactual: {actual:?}");
+        assert_eq!(actual, expected);
+    }
+
+    // only run this when in canon mode
+    #[test]
+    fn plug_cross_product_canon() {
+        let term = "(x x)";
+        let pegs = Workload::new(["1", "2", "3"]).force().collect::<Vec<_>>();
+        let expected = Workload::new([
+            "(1 1)", "(1 2)", "(1 3)", "(2 2)", "(2 3)", "(3 3)",
+        ])
+        .force().collect::<Vec<_>>();
         let actual = term.parse::<Sexp>().unwrap().plug("x", &pegs);
+        println!("expected: {expected:?} \nactual: {actual:?}");
         assert_eq!(actual, expected);
     }
 
@@ -213,11 +447,12 @@ mod test {
         let wkld = Workload::new(["(a b)", "(a)", "(b)"]);
         let a_s = Workload::new(["1", "2", "3"]);
         let b_s = Workload::new(["x", "y"]);
-        let actual = wkld.plug("a", &a_s).plug("b", &b_s).force();
+        // let actual = wkld.clone().plug("a", &a_s).plug("b", &b_s).force();
+        let actual: Vec<Sexp> = wkld.plug("a", &a_s).plug("b", &b_s).force().collect::<Vec<_>>();
         let expected = Workload::new([
             "(1 x)", "(1 y)", "(2 x)", "(2 y)", "(3 x)", "(3 y)", "(1)", "(2)", "(3)", "(x)", "(y)",
         ])
-        .force();
+        .force().collect::<Vec<_>>();
         assert_eq!(actual, expected)
     }
 
@@ -259,9 +494,9 @@ mod test {
             "(+ a (+ b c))",
         ])
         .force();
-        for (test, expected) in inputs.iter().zip(expecteds.iter()) {
+        for (test, expected) in inputs.zip(expecteds) {
             assert_eq!(
-                &test.canon(vec!["a".into(), "b".into(), "c".into()].as_ref()),
+                test.canon(vec!["a".into(), "b".into(), "c".into()].as_ref()),
                 expected
             );
         }

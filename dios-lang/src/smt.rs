@@ -6,202 +6,7 @@ use egg::*;
 use log::{debug, warn};
 use z3::ast::Ast;
 
-use crate::{fuzz::FuzzEquals, lang};
-
-pub trait TypeEquals: ruler::SynthLanguage {
-    type T: Eq;
-    /// Return the type of `expr` in the domain `Self::T`.
-    /// Returns None if the expr is ill-formed.
-    fn get_type(expr: &egg::Pattern<Self>) -> Option<Self::T>;
-
-    /// Check if `lhs` and `rhs` have the same type. Requires that both
-    /// sides by well-formed.
-    fn type_equals(lhs: &egg::Pattern<Self>, rhs: &egg::Pattern<Self>) -> bool {
-        if let (Some(lhs_type), Some(rhs_type)) =
-            (Self::get_type(lhs), Self::get_type(rhs))
-        {
-            lhs_type == rhs_type
-        } else {
-            false
-        }
-    }
-}
-
-#[derive(Eq, Clone, Copy, Debug)]
-pub enum VecLangType {
-    Vector,
-    Scalar,
-    Variable,
-}
-
-impl PartialEq for VecLangType {
-    fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            // if either side is a variable, then true
-            // JB: this is not true. this implies that "(VecNeg (VecNeg ?a))" = "?a" = "(neg (neg ?a))"
-            // however, it would be nice to have rules in the form of "?a" = "(neg (neg ?a))"
-            (VecLangType::Variable, VecLangType::Variable) => true,
-            (VecLangType::Variable, VecLangType::Scalar) | (VecLangType::Scalar, VecLangType::Variable) => true,
-
-            // if they are the same, true
-            (VecLangType::Vector, VecLangType::Vector)
-            | (VecLangType::Scalar, VecLangType::Scalar) => true,
-
-            // otherwise false
-            _ => false,
-        }
-    }
-}
-
-impl VecLangType {
-    fn join(
-        &self,
-        b: &VecLangType,
-        default: VecLangType,
-    ) -> Option<VecLangType> {
-        match (self, b) {
-            // same type goes to same type -- could be cute and do op overloading but didn't
-            // == didn't work for some reason originally
-            (VecLangType::Variable, VecLangType::Variable) => Some(default),
-            (VecLangType::Scalar, VecLangType::Scalar) => Some(VecLangType::Scalar),
-            (VecLangType::Vector, VecLangType::Vector) => Some(VecLangType::Vector),
-
-            // if one side is a variable, copy the type from the defined value
-            (VecLangType::Vector, _) | (_, VecLangType::Vector) => {
-                Some(VecLangType::Vector)
-            }
-            (VecLangType::Scalar, _) | (_, VecLangType::Scalar) => {
-                Some(VecLangType::Scalar)
-            }
-        }
-    }
-}
-
-impl TypeEquals for lang::VecLang {
-    type T = VecLangType;
-
-    fn get_type(expr: &egg::Pattern<Self>) -> Option<Self::T> {
-        // This is tracking the type of the expression so far
-        let mut types: Vec<Option<VecLangType>> = vec![];
-
-        for node in Self::instantiate(expr).as_ref().iter() {
-            match node {
-                // unops
-                lang::VecLang::Sgn([x])
-                | lang::VecLang::Sqrt([x])
-                | lang::VecLang::Neg([x]) => {
-                    types.push(types[usize::from(*x)].and_then(|t| match t {
-                        VecLangType::Vector => None,
-                        VecLangType::Scalar => Some(t),
-                        VecLangType::Variable => Some(VecLangType::Scalar),
-                    }))
-                }
-                lang::VecLang::VecNeg([x])
-                | lang::VecLang::VecSqrt([x])
-                | lang::VecLang::VecSgn([x]) => {
-                    types.push(types[usize::from(*x)].and_then(|t| match t {
-                        VecLangType::Vector => Some(t),
-                        VecLangType::Scalar => None,
-                        VecLangType::Variable => Some(VecLangType::Vector),
-                    }))
-                }
-
-                // binops
-                lang::VecLang::Add([x, y])
-                | lang::VecLang::Mul([x, y])
-                | lang::VecLang::Minus([x, y])
-                | lang::VecLang::Div([x, y])
-                | lang::VecLang::Or([x, y])
-                | lang::VecLang::And([x, y])
-                | lang::VecLang::SqrtSgn([x, y])
-                | lang::VecLang::Lt([x, y]) => {
-                    let type_x = &types[usize::from(*x)];
-                    let type_y = &types[usize::from(*y)];
-                    let t = type_x.and_then(|xt| {
-                        type_y.and_then(|yt| xt.join(&yt, VecLangType::Scalar))
-                    });
-                    types.push(t);
-                }
-
-                lang::VecLang::Concat([x, y])
-                | lang::VecLang::VecAdd([x, y])
-                | lang::VecLang::VecMinus([x, y])
-                | lang::VecLang::VecMul([x, y])
-                | lang::VecLang::VecDiv([x, y])
-                | lang::VecLang::VecSqrtSgn([x, y])
-                | lang::VecLang::VecMulSgn([x, y]) => {
-                    let type_x = &types[usize::from(*x)];
-                    let type_y = &types[usize::from(*y)];
-                    let t = type_x.and_then(|xt| {
-                        type_y.and_then(|yt| xt.join(&yt, VecLangType::Vector))
-                    });
-                    types.push(t);
-                }
-
-                lang::VecLang::Get([_x, _y]) => todo!(),
-                lang::VecLang::Ite([_x, _y, _z]) => todo!(),
-
-                // triops
-                lang::VecLang::VecMAC([x, y, z])
-                | lang::VecLang::VecMULS([x,y,z]) => {
-                    let type_x = &types[usize::from(*x)];
-                    let type_y = &types[usize::from(*y)];
-                    let type_z = &types[usize::from(*z)];
-                    let t = type_x.and_then(|xt| {
-                        type_y.and_then(|yt| {
-                            xt.join(&yt, VecLangType::Vector).and_then(|xyt| {
-                                type_z.and_then(|zt| {
-                                    xyt.join(&zt, VecLangType::Vector)
-                                })
-                            })
-                        })
-                    });
-
-                    types.push(t)
-                }
-
-                // converts types to scalar, triop
-                lang::VecLang::VecSum([x,y,z]) => {
-                    let type_x = &types[usize::from(*x)];
-                    let type_y = &types[usize::from(*y)];
-                    let type_z = &types[usize::from(*z)];
-                    let t = type_x.and_then(|xt| {
-                        type_y.and_then(|yt| {
-                            type_z.and_then(|zt| {
-                                match (xt, yt, zt) {
-                                    (VecLangType::Vector, _, _) | (_, VecLangType::Vector, _) | (_, _, VecLangType::Vector) => None,
-                                    (VecLangType::Scalar, VecLangType::Scalar, VecLangType::Scalar) => Some(VecLangType::Scalar),
-                                    _ => Some(VecLangType::Variable),
-                                }
-                            })
-                        })
-                    });
-                    types.push(t)
-                    // JB: this is what it was before adding width
-                    //     VecLangType::Vector => Some(VecLangType::Scalar),
-                    //     VecLangType::Scalar => None,
-                    //     VecLangType::Variable => Some(VecLangType::Scalar),
-                }
-
-                // constants
-                lang::VecLang::List(_) | lang::VecLang::Vec(_) | lang::VecLang::LitVec(_) => {
-                    types.push(Some(VecLangType::Vector))
-                }
-                lang::VecLang::Const(_) => {
-                    types.push(Some(VecLangType::Scalar))
-                }
-                lang::VecLang::Symbol(_) => {
-                    types.push(Some(VecLangType::Variable))
-                }
-            };
-        }
-        if let Some(x) = types.pop() {
-            x
-        } else {
-            None
-        }
-    }
-}
+use crate::{fuzz::FuzzEquals, lang, desugared_lang};
 
 pub trait SmtEquals: ruler::SynthLanguage {
     fn smt_equals(
@@ -262,6 +67,71 @@ impl SmtEquals for lang::VecLang {
             warn!("Couldn't translate {lhs} or {rhs} to smt");
             Self::fuzz_equals(lhs, rhs, true)
         }
+    }
+}
+
+
+impl SmtEquals for desugared_lang::VecLangDesugared {
+    fn smt_equals(
+        // synth: &mut ruler::Synthesizer<Self, ruler::Init>,
+        lhs: &egg::Pattern<Self>,
+        rhs: &egg::Pattern<Self>,
+    ) -> bool {
+        // if the expressions dont have the same type, they can't be equal
+        // abort now
+
+        let mut cfg = z3::Config::new();
+        cfg.set_timeout_msec(10000);
+        let ctx = z3::Context::new(&cfg);
+        let mut solver = z3::Solver::new(&ctx);
+
+        let sqrt_fun: z3::FuncDecl = z3::FuncDecl::new(
+            &ctx,
+            "sqrt",
+            &[&z3::Sort::int(&ctx)],
+            &z3::Sort::int(&ctx),
+        );
+
+        let left =
+            egg_to_z3_desugared(&ctx, &mut solver, &Self::instantiate(lhs), &sqrt_fun);
+        let right =
+            egg_to_z3_desugared(&ctx, &mut solver, &Self::instantiate(rhs), &sqrt_fun);
+
+        // if we can translate egg to z3 for both lhs, and rhs, then
+        // run the z3 solver. otherwise fallback to fuzz_equals
+        use std::iter::zip;
+        let mut smt = true;
+        for (l, r) in zip(left, right) {
+            if let (Some(lexpr), Some(rexpr)) = (&l, &r) {
+
+                // check to see if lexpr is NOT equal to rexpr.
+                // if we can't find a counter example to this
+                // then we know that they are equal.
+                solver.assert(&lexpr._eq(rexpr).not());
+    
+                smt &= match solver.check() {
+                    z3::SatResult::Unsat => {debug!("z3 check {} != {}", lexpr, rexpr);
+                    debug!("z3 result: {}", true);
+                    true
+                },
+                    z3::SatResult::Unknown | z3::SatResult::Sat => false,
+                };
+
+                if !smt {
+                    println!("no");
+                    return smt;
+                }
+                
+                // smt = smt
+            } else {
+                println!("no");
+                warn!("Couldn't translate {lhs} or {rhs} to smt");
+                warn!("Quitting for now, returning false");
+                return false;
+                // Self::fuzz_equals(lhs, rhs, true)
+            }
+        }
+        smt
     }
 }
 
@@ -513,4 +383,270 @@ mod test
         let rhs_type = lang::VecLang::get_type(rhs).unwrap();
         assert!(lhs_type != rhs_type);
     }
+}
+
+/// Translate an egg::RecExpr into an equivalent z3 expression.
+/// This only works for operations on integers for now.
+pub fn egg_to_z3_desugared<'a>(
+    ctx: &'a z3::Context,
+    _solver: &mut z3::Solver,
+    expr: &egg::RecExpr<desugared_lang::VecLangDesugared>,
+    _sqrt_fun: &'a z3::FuncDecl,
+) -> Vec<Option<z3::ast::Int<'a>>> {
+    use num::ToPrimitive;
+
+    println!("solving: {:?}", expr.clone().pretty(4));
+    // This translate works by walking through the RecExpr vector
+    // in order, and translating just that node. We push this
+    // translation into a buffer as we go. Any time we need to
+    // reference a child, we can look up the corresponding index
+    // in the buffer. This works because we have the guarantee that
+    // some element i in RecExpr only ever refers to elements j < i.
+    // By the time we need them, we will have already translated them.
+
+    let mut buf: Vec<z3::ast::Int> = vec![];
+
+    for node in expr.as_ref().iter() {
+        match node {
+            desugared_lang::VecLangDesugared::Const(desugared_lang::Value::Int(i)) => {
+                buf.push(z3::ast::Int::from_i64(ctx, *i as i64))
+            }
+            desugared_lang::VecLangDesugared::Symbol(v) => {
+                buf.push(z3::ast::Int::new_const(ctx, v.to_string()))
+            }
+            desugared_lang::VecLangDesugared::Add([x, y]) => {
+                let x_int = &buf[usize::from(*x)];
+                let y_int = &buf[usize::from(*y)];
+                buf.push(x_int + y_int);
+            }
+            desugared_lang::VecLangDesugared::Mul([x, y]) => {
+                let x_int = &buf[usize::from(*x)];
+                let y_int = &buf[usize::from(*y)];
+                buf.push(x_int * y_int);
+            }
+            desugared_lang::VecLangDesugared::Minus([x, y]) => {
+                let x_int = &buf[usize::from(*x)];
+                let y_int = &buf[usize::from(*y)];
+                buf.push(x_int - y_int);
+            }
+            desugared_lang::VecLangDesugared::Div([x, y]) => {
+                let x_int = &buf[usize::from(*x)];
+                let y_int = &buf[usize::from(*y)];
+                // let zero = z3::ast::Int::from_i64(ctx, 0);
+                // solver.assert(&y_int._eq(&zero).not());
+                buf.push(x_int / y_int);
+            }
+            // an attempt to support vector operators.
+            // I think I should just be able to map them
+            // on to their scalar counter parts.
+            // lang::VecLang::Add([x, y]) => {
+            //     let x_int = &buf[usize::from(*x)];
+            //     let y_int = &buf[usize::from(*y)];
+            //     buf.push(x_int + y_int);
+            // }
+            &desugared_lang::VecLangDesugared::Shfl([x, y]) => {
+                if buf.len() <= usize::from(x) + 4 {
+                    return vec![None];
+                }
+                if buf.len() <= usize::from(y) + 4 {
+                    return vec![None];
+                }
+                let shuffle = vec![buf[usize::from(x)].clone(),
+                                            buf[usize::from(x)+1].clone(),
+                                            buf[usize::from(x)+2].clone(),
+                                            buf[usize::from(x)+3].clone()];
+                let indices = vec![buf[usize::from(y)].clone(),
+                                            buf[usize::from(y)+1].clone(),
+                                            buf[usize::from(y)+2].clone(),
+                                            buf[usize::from(y)+3].clone()];
+                for idx in indices.clone() {
+                    if let Some(x) = idx.as_u64() {
+                        if x >= 4 {
+                            println!("indexing outside of buffer in shfl");
+                            return vec![None];
+                        }
+                    }
+                    else {
+                        println!("uh oh");
+                        return vec![None];
+                    }
+                }
+                buf.push(shuffle[indices[0].as_u64().unwrap().to_usize().unwrap()].clone());
+                buf.push(shuffle[indices[1].as_u64().unwrap().to_usize().unwrap()].clone());
+                buf.push(shuffle[indices[2].as_u64().unwrap().to_usize().unwrap()].clone());
+                buf.push(shuffle[indices[3].as_u64().unwrap().to_usize().unwrap()].clone());
+            }
+            desugared_lang::VecLangDesugared::VecAdd([x, y]) => {
+                // println!("length of buf is: {}", buf.len());
+                // println!("usize is: {}", usize::from(*x));
+                // println!("usize is: {}", usize::from(*y));
+                // println!("at the beginning of adding vector: {buf:?}");
+
+                if buf.len() <= usize::from(*x) + 4 {
+                    return vec![None];
+                }
+                if buf.len() <= usize::from(*y) + 4 {
+                    return vec![None];
+                }
+
+                // a part of me believes that this may not work given that 
+                // idk how id is set? may not be the starting point necessarily.. hm
+                let x_int0 = buf[usize::from(*x)].clone();
+                let x_int1 = buf[usize::from(*x)+1].clone();
+                let x_int2 = buf[usize::from(*x)+2].clone();
+                let x_int3 = buf[usize::from(*x)+3].clone();
+                let y_int0 = buf[usize::from(*y)].clone();
+                let y_int1 = buf[usize::from(*y)+1].clone();
+                let y_int2 = buf[usize::from(*y)+2].clone();
+                let y_int3 = buf[usize::from(*y)+3].clone();
+                buf.push(x_int0 + y_int0);
+                buf.push(x_int1 + y_int1);
+                buf.push(x_int2 + y_int2);
+                buf.push(x_int3 + y_int3);
+                println!("at the end of adding vector: {buf:?}");
+
+            }
+            desugared_lang::VecLangDesugared::VecMinus([x, y]) => {
+                // println!("length of buf is: {}", buf.len());
+                // println!("usize is: {}", usize::from(*x));
+                // println!("usize is: {}", usize::from(*y));
+                // println!("at the beginning of adding vector: {buf:?}");
+
+                if buf.len() <= usize::from(*x) + 4 {
+                    return vec![None];
+                }
+                if buf.len() <= usize::from(*y) + 4 {
+                    return vec![None];
+                }
+
+                let x_int0 = buf[usize::from(*x)].clone();
+                let x_int1 = buf[usize::from(*x)+1].clone();
+                let x_int2 = buf[usize::from(*x)+2].clone();
+                let x_int3 = buf[usize::from(*x)+3].clone();
+                let y_int0 = buf[usize::from(*y)].clone();
+                let y_int1 = buf[usize::from(*y)+1].clone();
+                let y_int2 = buf[usize::from(*y)+2].clone();
+                let y_int3 = buf[usize::from(*y)+3].clone();
+                buf.push(x_int0 - y_int0);
+                buf.push(x_int1 - y_int1);
+                buf.push(x_int2 - y_int2);
+                buf.push(x_int3 - y_int3);
+                println!("at the end of adding vector: {buf:?}");
+
+            }
+            desugared_lang::VecLangDesugared::VecMul([x, y]) => {
+                // println!("length of buf is: {}", buf.len());
+                // println!("usize is: {}", usize::from(*x));
+                // println!("usize is: {}", usize::from(*y));
+                // println!("at the beginning of adding vector: {buf:?}");
+
+                if buf.len() <= usize::from(*x) + 4 {
+                    return vec![None];
+                }
+                if buf.len() <= usize::from(*y) + 4 {
+                    return vec![None];
+                }
+
+                let x_int0 = buf[usize::from(*x)].clone();
+                let x_int1 = buf[usize::from(*x)+1].clone();
+                let x_int2 = buf[usize::from(*x)+2].clone();
+                let x_int3 = buf[usize::from(*x)+3].clone();
+                let y_int0 = buf[usize::from(*y)].clone();
+                let y_int1 = buf[usize::from(*y)+1].clone();
+                let y_int2 = buf[usize::from(*y)+2].clone();
+                let y_int3 = buf[usize::from(*y)+3].clone();
+                buf.push(x_int0 * y_int0);
+                buf.push(x_int1 * y_int1);
+                buf.push(x_int2 * y_int2);
+                buf.push(x_int3 * y_int3);
+                println!("at the end of adding vector: {buf:?}");
+
+            }
+            desugared_lang::VecLangDesugared::VecDiv([x, y]) => {
+                // println!("length of buf is: {}", buf.len());
+                // println!("usize is: {}", usize::from(*x));
+                // println!("usize is: {}", usize::from(*y));
+                // println!("at the beginning of adding vector: {buf:?}");
+
+                if buf.len() < usize::from(*x) + 4 {
+                    return vec![None];
+                }
+                if buf.len() < usize::from(*y) + 4 {
+                    return vec![None];
+                }
+
+                let x_int0 = buf[usize::from(*x)].clone();
+                let x_int1 = buf[usize::from(*x)+1].clone();
+                let x_int2 = buf[usize::from(*x)+2].clone();
+                let x_int3 = buf[usize::from(*x)+3].clone();
+                let y_int0 = buf[usize::from(*y)].clone();
+                let y_int1 = buf[usize::from(*y)+1].clone();
+                let y_int2 = buf[usize::from(*y)+2].clone();
+                let y_int3 = buf[usize::from(*y)+3].clone();
+                buf.push(x_int0 / y_int0);
+                buf.push(x_int1 / y_int1);
+                buf.push(x_int2 / y_int2);
+                buf.push(x_int3 / y_int3);
+                println!("at the end of adding vector: {buf:?}");
+
+            }
+            // JB: changed vecwidth here
+            desugared_lang::VecLangDesugared::Vec(inner) if inner.len() == 4 => {
+                // println!("adding vector, inner is {inner:?}");
+                println!("at the beginning of adding vector: {buf:?}");
+                let x = inner[0];
+                let y = inner[1];
+                let z = inner[2];
+                let w = inner[3];
+                let x_int = buf[usize::from(x)].clone();
+                let y_int = buf[usize::from(y)].clone();
+                let z_int = buf[usize::from(z)].clone();
+                let w_int = buf[usize::from(w)].clone();
+                buf.push(x_int);
+                buf.push(y_int);
+                buf.push(z_int);
+                buf.push(w_int);
+                println!("at the end of adding vector: {buf:?}");
+
+            }
+            desugared_lang::VecLangDesugared::LitVec(inner) if inner.len() == 4 => {
+                let x = inner[0];
+                let y = inner[1];
+                let z = inner[2];
+                let w = inner[3];
+                let x_int = buf[usize::from(x)].clone();
+                let y_int = buf[usize::from(y)].clone();
+                let z_int = buf[usize::from(z)].clone();
+                let w_int = buf[usize::from(w)].clone();
+                buf.push(x_int);
+                buf.push(y_int);
+                buf.push(z_int);
+                buf.push(w_int);
+            }
+            &desugared_lang::VecLangDesugared::VecSum([x]) => {
+                if usize::from(x) + 4 > buf.len() {
+                    println!("quitting sum");
+                    return vec![None];
+                }
+                let x_int0 = buf[usize::from(x)].clone();
+                let x_int1 = buf[usize::from(x)+1].clone();
+                let x_int2 = buf[usize::from(x)+2].clone();
+                let x_int3 = buf[usize::from(x)+3].clone();
+                buf.push(x_int0 + x_int1 + x_int2 + x_int3);
+                buf.push(z3::ast::Int::from_i64(ctx, 0));
+                buf.push(z3::ast::Int::from_i64(ctx, 0));
+                buf.push(z3::ast::Int::from_i64(ctx, 0));
+            }
+            // unsupported operations
+            // return early
+            desugared_lang::VecLangDesugared::Const(_)
+            | desugared_lang::VecLangDesugared::List(_)
+            | desugared_lang::VecLangDesugared::Get(_)
+            | desugared_lang::VecLangDesugared::Vec(_)
+            | desugared_lang::VecLangDesugared::LitVec(_)
+            | desugared_lang::VecLangDesugared::Concat(_) => return vec![None],
+        }
+    }
+    // return the last element
+    buf.into_iter().map(|x| Some(x)).collect()
 }

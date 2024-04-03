@@ -51,12 +51,14 @@ where
 
         // gather rules that pass the filter
         let mut cost_fn = self.cost_fn.clone();
+        // debug!("all rules are: {:?}", self.rules.clone());
         let rules = self
             .rules
             .iter()
             .filter(|r| (phase.select)(cost_fn.all(r)))
             .cloned()
             .collect::<Vec<_>>();
+        
         info!("Using {} rules", rules.len());
         info!("{}", "=".repeat(msg.len()));
 
@@ -159,11 +161,13 @@ where
         let extractor =
             egg::Extractor::new(&runner.egraph, self.cost_fn.clone());
         let (cost, mut prog) = extractor.find_best(runner.roots[0]);
+        debug!("Program is {:?}", prog.clone().pretty(4));
         // if the cost hasn't changed, just return the old program
         // this ensures that "unimportant changes" (i.e changes not captured by the cost function)
         // don't affect the cycle estimate results due to random reordering of expressions
         if old_cost == cost {
-            prog = old_prog;
+            prog = old_prog.clone();
+            debug!("Program has not changed");
         }
 
         debug!("Egraph size: {}", runner.egraph.total_size());
