@@ -72,22 +72,5 @@
         "bidirectional": false
       }
     ]
-  },
-  {
-    "num_rules": 2,
-    "time generated": "2023-11-09 11:55:16.879111 -06:00",
-    "run name": "widened vector lanes to 3",
-    "eqs": [
-      {
-        "lhs": "0",
-        "rhs": "(neg 0)",
-        "bidirectional": false
-      },
-      {
-        "lhs": "(neg 0)",
-        "rhs": "0",
-        "bidirectional": false
-      }
-    ]
   }
 ]

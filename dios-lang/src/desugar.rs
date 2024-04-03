@@ -95,25 +95,17 @@ impl Desugar for lang::VecAst {
             lang::VecAst::Neg(inner) => {
                 lang::VecAst::Neg(Box::new(inner.desugar(n_lanes)))
             }
-            lang::VecAst::VecAdd(a, b,c,x,y,z) => lang::VecAst::VecAdd(
-                Box::new(a.desugar(n_lanes)),
-                Box::new(b.desugar(n_lanes)),
-                Box::new(c.desugar(n_lanes)),
-                Box::new(x.desugar(n_lanes)),
-                Box::new(y.desugar(n_lanes)),
-                Box::new(z.desugar(n_lanes)),
+            lang::VecAst::VecAdd(left, right) => lang::VecAst::VecAdd(
+                Box::new(left.desugar(n_lanes)),
+                Box::new(right.desugar(n_lanes)),
             ),
             lang::VecAst::VecMul(left, right) => lang::VecAst::VecMul(
                 Box::new(left.desugar(n_lanes)),
                 Box::new(right.desugar(n_lanes)),
             ),
-            lang::VecAst::VecMinus(a,b,c,x,y,z) => lang::VecAst::VecMinus(
-                Box::new(a.desugar(n_lanes)),
-                Box::new(b.desugar(n_lanes)),
-                Box::new(c.desugar(n_lanes)),
-                Box::new(x.desugar(n_lanes)),
-                Box::new(y.desugar(n_lanes)),
-                Box::new(z.desugar(n_lanes)),
+            lang::VecAst::VecMinus(left, right) => lang::VecAst::VecMinus(
+                Box::new(left.desugar(n_lanes)),
+                Box::new(right.desugar(n_lanes)),
             ),
             lang::VecAst::VecDiv(left, right) => lang::VecAst::VecDiv(
                 Box::new(left.desugar(n_lanes)),
@@ -127,10 +119,8 @@ impl Desugar for lang::VecAst {
                 Box::new(left.desugar(n_lanes)),
                 Box::new(right.desugar(n_lanes)),
             ),
-            lang::VecAst::VecNeg(a,b,c) => {
-                lang::VecAst::VecNeg(Box::new(a.desugar(n_lanes)),
-                Box::new(b.desugar(n_lanes)),
-                Box::new(c.desugar(n_lanes)),)
+            lang::VecAst::VecNeg(inner) => {
+                lang::VecAst::VecNeg(Box::new(inner.desugar(n_lanes)))
             }
             lang::VecAst::VecSqrt(inner) => {
                 lang::VecAst::VecSqrt(Box::new(inner.desugar(n_lanes)))
@@ -227,25 +217,17 @@ impl AlphaRenamable for lang::VecAst {
                 Box::new(x.rename(suffix)),
                 Box::new(y.rename(suffix)),
             ),
-            lang::VecAst::VecAdd(a,b,c,x,y,z) => lang::VecAst::VecAdd(
-                Box::new(a.rename(suffix)),
-                Box::new(b.rename(suffix)),
-                Box::new(c.rename(suffix)),
+            lang::VecAst::VecAdd(x, y) => lang::VecAst::VecAdd(
                 Box::new(x.rename(suffix)),
                 Box::new(y.rename(suffix)),
-                Box::new(z.rename(suffix)),
             ),
             lang::VecAst::VecMul(x, y) => lang::VecAst::VecMul(
                 Box::new(x.rename(suffix)),
                 Box::new(y.rename(suffix)),
             ),
-            lang::VecAst::VecMinus(a,b,c,x,y,z) => lang::VecAst::VecMinus(
-                Box::new(a.rename(suffix)),
-                Box::new(b.rename(suffix)),
-                Box::new(c.rename(suffix)),
+            lang::VecAst::VecMinus(x, y) => lang::VecAst::VecMinus(
                 Box::new(x.rename(suffix)),
                 Box::new(y.rename(suffix)),
-                Box::new(z.rename(suffix)),
             ),
             lang::VecAst::VecDiv(x, y) => lang::VecAst::VecDiv(
                 Box::new(x.rename(suffix)),
@@ -259,10 +241,8 @@ impl AlphaRenamable for lang::VecAst {
                 Box::new(x.rename(suffix)),
                 Box::new(y.rename(suffix)),
             ),
-            lang::VecAst::VecNeg(x,y,z) => {
-                lang::VecAst::VecNeg(Box::new(x.rename(suffix)),
-                Box::new(y.rename(suffix)),
-                Box::new(z.rename(suffix)),)
+            lang::VecAst::VecNeg(x) => {
+                lang::VecAst::VecNeg(Box::new(x.rename(suffix)))
             }
             lang::VecAst::VecSqrt(x) => {
                 lang::VecAst::VecSqrt(Box::new(x.rename(suffix)))
@@ -294,3 +274,4 @@ impl AlphaRenamable for lang::VecAst {
         }
     }
 }
+
