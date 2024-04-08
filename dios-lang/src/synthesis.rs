@@ -258,38 +258,3 @@ pub fn run(
 
     Ok(rules)
 }
-
-mod test {
-    // use crate::synthesis::Ruleset;
-    use crate::lang::VecLang;
-    use egg::EGraph;
-    use crate::synthesis::*;
-
-    #[test]
-    fn broken_rules() {
-        let rules: Ruleset<VecLang> = Ruleset::from_file("broken.rules");
-        let scheduler = Scheduler::Simple(ruler::Limits::synthesis());
-        let vals = ["0", "1"].to_vec();
-        let vars = ["a", "b", "c", "d", "e", "f"].to_vec();
-        let ops: Vec<Vec<String>> = [["sqrt",
-        "sgn",
-        "neg",
-        "VecSgn",
-        "VecSqrt",
-        "VecNeg",
-        "Vec"
-  ].to_vec(), [ "/",
-  "+",
-  "*",
-  "-",
-  "VecAdd",
-  "VecMinus",
-  "VecMul",
-  "VecDiv"].to_vec(), ["VecMAC",
-  "VecMULS"].to_vec()].to_vec().iter().map(|x| x.iter().map(|y| y.to_string()).collect()).collect();
-        let mut workload = iter_dios(3, 6, vals.clone(), vars.clone(), ops.clone()).filter(Filter::MetricEq(Metric::Atoms, 6)).filter(Filter::Canon(vars.iter().map(|x| x.to_string()).collect()));;
-        let egraph: EGraph<lang::VecLang, SynthAnalysis> = scheduler.run(&workload.to_egraph(), &rules);
-
-    }
-}
-

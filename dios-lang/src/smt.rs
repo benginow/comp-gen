@@ -24,11 +24,6 @@ impl SmtEquals for lang::VecLang {
     ) -> bool {
         // if the expressions dont have the same type, they can't be equal
         // abort now
-        let type_check = Self::type_equals(lhs, rhs);
-        // debug!("type check: {lhs} = {rhs}: {type_check}");
-        if !type_check {
-            return false;
-        }
 
         let mut cfg = z3::Config::new();
         cfg.set_timeout_msec(10000);
@@ -273,12 +268,6 @@ pub fn egg_to_z3<'a>(
                 let x_int = &buf[usize::from(*x)];
                 buf.push(-x_int);
             }
-            lang::VecLang::VecSum([x, y, z]) => {
-                let x_int = &buf[usize::from(*x)];
-                let y_int = &buf[usize::from(*y)];
-                let z_int = &buf[usize::from(*z)];
-                buf.push(x_int + y_int + z_int);
-            }
             lang::VecLang::VecMAC([acc, x, y]) => {
                 let acc_int = &buf[usize::from(*acc)];
                 let x_int = &buf[usize::from(*x)];
@@ -356,33 +345,6 @@ pub fn egg_to_z3<'a>(
     }
     // return the last element
     buf.pop()
-}
-
-mod test 
-{
-    use std::str::FromStr;
-    use crate::lang;
-
-    #[test]
-    fn type_equals_works(){
-        use crate::smt::TypeEquals;
-        use crate::lang::VecLang;
-        use egg::Pattern;
-        
-        let lhs = &Pattern::from_str("(/ ?b (sqrt ?a))").unwrap();
-        let rhs = &Pattern::from_str("(VecDiv ?b (VecSqrt ?a))").unwrap();
-        let lhs_type = lang::VecLang::get_type(lhs);
-        let rhs_type = lang::VecLang::get_type(rhs);
-        assert!(lhs_type != rhs_type);
-
-        // variable
-        let lhs = &Pattern::from_str("?a").unwrap();
-        //vector
-        let rhs = &Pattern::from_str("(VecNeg (VecNeg ?a))").unwrap();
-        let lhs_type = lang::VecLang::get_type(lhs).unwrap();
-        let rhs_type = lang::VecLang::get_type(rhs).unwrap();
-        assert!(lhs_type != rhs_type);
-    }
 }
 
 /// Translate an egg::RecExpr into an equivalent z3 expression.
