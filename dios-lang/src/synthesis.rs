@@ -119,6 +119,7 @@ fn arity_shorting(depth: usize, values: Workload, variable_names: Workload, oper
     // not sure what happens with val here -> tbd
     let final_workload = truncated_workload
                             .plug("EXPR",&one_less_workload);
+
     final_workload
 }
 
@@ -135,7 +136,7 @@ fn seed() -> ruler::enumo::Ruleset<lang::VecLang> {
 
 
 fn generate_workload(depth: usize, vals: Workload, vars: Workload,  filters: Vec<Filter>, ops: Vec<Vec<String>>, arity_truncation: bool, is_canon: bool) -> Workload {
-    let workload = if arity_truncation {
+    let workload = if arity_truncation && ops.len() >= 3 {
         println!("calling arity truncation for {ops:?}");
         arity_shorting(depth, vals, vars, ops)
     }
@@ -146,7 +147,7 @@ fn generate_workload(depth: usize, vals: Workload, vars: Workload,  filters: Vec
     if !is_canon {
         workload.is_not_canon();
     }
-    println!("workload: {:?}", workload.clone());
+    // debug!("Workload is: {:#?}", workload.clone().force().collect::<Vec<_>>());
     workload
 }
 
