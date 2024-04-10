@@ -101,7 +101,14 @@ pub fn vecs_eq(lvec: &CVec<lang::VecLang>, rvec: &CVec<lang::VecLang>) -> bool {
 
 fn arity_shorting(depth: usize, values: Workload, variable_names: Workload, operations: Vec<Vec<String>>) -> Workload {
     // there will ops up to triops here -> if this changes, this code needs to change
-    let one_less_workload = iter_dios_lt(depth-1, values.clone(), variable_names.clone(), &mut vec![], operations[0..operations.len() - 1].to_vec());
+    let iter_depth = {
+    if depth <= 2{
+         depth
+    }
+    else {
+        depth - 1
+    }};
+    let one_less_workload = iter_dios_lt(iter_depth, values.clone(), variable_names.clone(), &mut vec![], operations[0..operations.len() - 1].to_vec());
 
     // for example, 
     // let mut triop_workload = Workload::new(["EXPR", "(OP1 EXPR)", "(OP2 EXPR)", "(OP3 EXPR EXPR EXPR)"]);
