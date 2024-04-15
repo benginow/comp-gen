@@ -80,7 +80,10 @@ fn run_workload_internal<L: SynthLanguage>(
 
     let num_prior = prior.len();
     let now = Instant::now();
+    println!("minimizing candidates");
     let (chosen, _) = candidates.minimize(prior, Scheduler::Compress(minimize_limits));
+    let elapsed = now.elapsed();
+    println!("minimizing candidates took {elapsed:?}");
     // let elapsed = now.elapsed();
     // write!(file, "4 time taken to minimize chandidates {elapsed:?}\n").unwrap();
 

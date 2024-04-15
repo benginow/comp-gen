@@ -12,7 +12,7 @@ use std::path::PathBuf;
 use std::thread::JoinHandle;
 
 use crate::{lang, synth, Res};
-use crate::util::{generate_rules, handpicked, handpicked_thinner, iter_dios_lt, vals, vars};
+use crate::util::{generate_rules, handpicked, handpicked_thinner, iter_dios_lt, iter_dios_eq, vals, vars};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct DiosConstant {
@@ -142,7 +142,7 @@ fn generate_workload(depth: usize, vals: Workload, vars: Workload,  filters: Vec
     }
     else {
         println!("calling iter dios for {ops:?}");
-        iter_dios_lt(depth, vals, vars, &mut filters.clone(), ops)
+        iter_dios_eq(depth, vals, vars, &mut filters.clone(), ops)
     };
     if !is_canon {
         workload.is_not_canon();
@@ -212,11 +212,15 @@ fn ruleset_gen(rules: &mut Ruleset<lang::VecLang>,
                 vec![]
             }
         };
-        let workload: ruler::enumo::Workload = generate_workload(depth, vals.clone(), vars.clone(), filters, operation_set, arity_truncation, canon_force);
-        println!("depth is {depth}");
+        for i in 2..depth {
+            let workload: ruler::enumo::Workload = generate_workload(depth, vals.clone(), vars.clone(), filters.clone(), operation_set.clone(), arity_truncation, canon_force);
+            println!("depth is {i}");
+            let generated_rules = run_workload(workload, (*rules).clone(), ruler::Limits::synthesis(), ruler::Limits::synthesis(), true);
+            rules.extend(generated_rules)
+        }
+        
 
-        let generated_rules = run_workload(workload, (*rules).clone(), ruler::Limits::synthesis(), ruler::Limits::synthesis(), true);
-        rules.extend(generated_rules)
+        
     }
 }
 

@@ -163,10 +163,10 @@ pub(crate) fn iter_dios_eq(depth: usize, values: Workload, variable_names: Workl
 // sets of hand-picked rules
 pub(crate) fn handpicked_thinner() -> Vec<(Vec<Vec<String>>, usize)> {
     // start with scalar
-    let scalar = vec![vec!["sgn", "sqrt", "neg"], vec!["*", "/", "-", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let scalar = vec![vec!["sqrt", "sgn", "neg"], vec!["*", "/", "-", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
     // depth 4
-    let unary_ops: Vec<Vec<String>>  = vec![vec!["Vec", "VecSgn", "sgn", "VecSqrt", "sqrt", "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let unary_ops: Vec<Vec<String>>  = vec![vec!["Vec", "VecSgn", "sgn", "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_binary_mul = vec![vec!["Vec"], vec!["VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_binary_add = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_binary_add_mul = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMul", "*"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
@@ -182,10 +182,10 @@ pub(crate) fn handpicked_thinner() -> Vec<(Vec<Vec<String>>, usize)> {
 
 pub(crate) fn handpicked() -> Vec<(Vec<Vec<String>>, usize)> {
     // start with scalar
-    let scalar = vec![vec!["sgn", "sqrt", "neg"], vec!["*", "/", "-", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let scalar = vec![vec!["sqrt", "sgn", "neg"], vec!["*", "/", "-", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
     // depth 4
-    let unary_ops: Vec<Vec<String>>  = vec![vec!["Vec", "VecSgn", "sgn", "VecSqrt", "sqrt", "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let unary_ops: Vec<Vec<String>>  = vec![vec!["Vec", "VecSgn", "sgn",  "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let binary_ops = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-", "VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     // // depth 3
     let unary_binary: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn", "VecNeg", "neg"], vec!["VecAdd", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();

@@ -366,6 +366,8 @@ impl<L: SynthLanguage> Ruleset<L> {
     // TODO: Figure out what to do with this- it doesn't match the definition
     // of cvec matching from the paper, but it is faster.
     pub fn fast_cvec_match(egraph: &EGraph<L, SynthAnalysis>) -> Ruleset<L> {
+        let time_start = std::time::Instant::now();
+
         println!(
             "starting fast cvec match with {} eclasses",
             egraph.number_of_classes()
@@ -390,6 +392,11 @@ impl<L: SynthLanguage> Ruleset<L> {
                 }
             }
         }
+        println!(
+            "fast cvec match finished in {} ms",
+            time_start.elapsed().as_millis()
+        );
+
         candidates
     }
 
@@ -461,13 +468,29 @@ impl<L: SynthLanguage> Ruleset<L> {
     }
 
     pub fn minimize(&mut self, prior: Ruleset<L>, scheduler: Scheduler) -> (Self, Self) {
+        use std::time::Duration;
+        use std::time::Instant;
+
         let mut invalid: Ruleset<L> = Default::default();
         let mut chosen = prior.clone();
         let step_size = 1;
+
+        let time_limit = Duration::new(900, 0);
+        let beginning = Instant::now();
         while !self.is_empty() {
+            let loop_block_start = Instant::now();
+            if (loop_block_start - beginning > time_limit){
+                break;
+            }
             let selected = self.select(step_size, &mut invalid);
+            let selection_time = Instant::now();
+            println!("selecting took {:?}", selection_time - loop_block_start);
             chosen.extend(selected.clone());
             self.shrink(&chosen, scheduler);
+            let shrink_time = Instant::now();
+            println!("extending and shrinking took {:?}", shrink_time - selection_time);
+
+
         }
         // Return only the new rules
         chosen.remove_all(prior);
