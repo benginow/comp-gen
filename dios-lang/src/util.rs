@@ -166,6 +166,7 @@ pub(crate) fn handpicked_thinner() -> Vec<(Vec<Vec<String>>, usize)> {
     let scalar = vec![vec!["sgn", "sqrt", "neg"], vec!["*", "/", "-", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
     // depth 4
+    let unary_ops: Vec<Vec<String>>  = vec![vec!["Vec", "VecSgn", "sgn", "VecSqrt", "sqrt", "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_binary_mul = vec![vec!["Vec"], vec!["VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_binary_add = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_binary_add_mul = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMul", "*"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
