@@ -31,8 +31,6 @@
       "Shfl"
     ],
     "triops": [
-      "mac",
-      "muls",
       "VecMAC",
       "VecMULS"
     ],

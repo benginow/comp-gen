@@ -89,12 +89,12 @@ buildah config --cmd /usr/bin/start-server.sh $cont
 
 # specify some metadata
 buildah config \
-        --created-by "sgpthomas" \
-        --author "sgt@cs.utexas.edu" \
+        --created-by "benginow" \
+        --author "benginow@cs.utexas.edu" \
         --label org.opencontainers.image.source="https://github.com/benginow/comp-gen" \
         $cont
 
 buildah commit $cont isaria-aec
 buildah rm $cont
 
-podman push isaria-aec ghcr.io/sgpthomas/isaria-aec:latest
+# podman push isaria-aec ghcr.io/benginow/isaria-aec:latest

@@ -29,8 +29,6 @@
     "VecMinus"
   ],
   "triops": [
-    "mac",
-    "muls",
     "VecMAC",
     "VecMULS"
   ],

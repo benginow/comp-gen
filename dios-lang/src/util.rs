@@ -172,9 +172,9 @@ pub(crate) fn handpicked_thinner() -> Vec<(Vec<Vec<String>>, usize)> {
     let related_binary_add_mul = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMul", "*"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     
     // depth 3
-    let unary_binary: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn", "VecNeg", "neg"], vec!["VecAdd", "+", "VecMinus", "-"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus", "VecAdd"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let unary_binary: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn", "VecNeg", "neg"], vec!["VecAdd", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "+"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     vec![(scalar, 3), (unary_ops, 3), (related_binary_add, 3), (related_binary_mul, 3), (related_binary_add_mul, 3), (unary_binary, 3), (related_muls, 2), (related_mac, 2)]
 
 }
@@ -186,12 +186,14 @@ pub(crate) fn handpicked() -> Vec<(Vec<Vec<String>>, usize)> {
     // depth 4
     let unary_ops: Vec<Vec<String>>  = vec![vec!["Vec", "VecSgn", "sgn", "VecSqrt", "sqrt", "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let binary_ops = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-", "VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    // depth 3
-    let unary_binary: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn", "VecNeg", "neg"], vec!["VecAdd", "+", "VecMinus", "-"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus", "VecAdd"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    // // depth 3
+    let unary_binary1: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn"], vec!["VecAdd", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let unary_binary2: Vec<Vec<String>> = vec![vec!["Vec", "VecNeg", "neg"], vec!["VecAdd", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
-    vec![(scalar, 3), (unary_ops, 3), (binary_ops, 3), (unary_binary, 3), (related_muls, 2), (related_mac, 2)]
-    // vec![(binary_ops, 3), (unary_binary, 3), (related_muls, 2), (related_mac, 2)]
+    let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "+"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+
+    vec![(scalar, 3), (unary_ops, 3), (binary_ops, 3), (unary_binary1, 3), (unary_binary2, 3), (related_muls, 2), (related_mac, 2)]
+    // vec![(related_muls, 2), (related_mac, 2)]
 
 }

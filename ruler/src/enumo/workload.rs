@@ -39,6 +39,8 @@ impl IntoIterator for Workload {
         if !IS_CANON.load(atomic::Ordering::Relaxed) {
             is_canon = false;
         }
+        // println!("is canon is: {is_canon}");
+        // std::process::exit(0);
         match self {
             Workload::Set(v) => Box::new(v.into_iter()),
             Workload::Plug(wkld, hole, pegs) => Box::new(
@@ -46,7 +48,8 @@ impl IntoIterator for Workload {
                     .map(move |sexp| (sexp, hole.clone(), pegs.clone()))
                     .map(move |(sexp, hole, pegs)| 
                     {
-                        if is_canon {
+                        // if we are plugging values, allow them to not be in order
+                        if is_canon && !(hole.contains("VAL")) {
                             Box::new(SexpSubstIterCanon::new(sexp, hole, move || {
                                 pegs.clone().into_iter() })) as Box<dyn Iterator<Item = sexp::Sexp>>
                         }
@@ -134,6 +137,8 @@ impl Workload {
 
     pub fn to_egraph<L: SynthLanguage>(&self) -> EGraph<L, SynthAnalysis> {
         // let mut egraph = EGraph::default();
+        use core::time::Duration;
+        use std::time::Instant;
         let sexps = self.clone().force();
 
         // Have to find all the variables first so that we can initialize
@@ -146,7 +151,15 @@ impl Workload {
         // can matter, so make sure we preserve the order in the workload.
         // TODO: why does this order matter?
         let mut vars: Vec<String> = vec![];
+        // JB: this is hard coded, 20 minutes
+        let time_limit = Duration::new(1200, 0);
+        let beginning = Instant::now();
         for sexp in sexps {
+            let duration = Instant::now() - beginning;
+            if duration >= time_limit {
+                println!("time limit reached");
+                break;
+            }
             // println!("adding {:?}", sexp);
             let expr: RecExpr<L> = sexp.to_string().parse().unwrap();
             for node in expr.as_ref() {

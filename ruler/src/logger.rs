@@ -221,14 +221,15 @@ fn get_derivability<L: SynthLanguage>(
 pub fn log_rules<L: SynthLanguage>(
     ruleset: &Ruleset<L>,
     filepath: Option<&str>,
-    name: String
+    name: String,
+    time_taken: Duration
 ) {
     add_json_to_file(json!({
         "num_rules": ruleset.len(),
         "time generated": chrono::Local::now().to_string(),
         "run name": name,
-        "eqs": ruleset.to_json_vec_lhs_rhs(),
-        
+        "time": time_taken,
+        "eqs": ruleset.to_json_vec_lhs_rhs(),        
     }), filepath);
 }
 

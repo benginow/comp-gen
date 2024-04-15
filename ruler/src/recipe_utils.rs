@@ -87,6 +87,7 @@ fn run_workload_internal<L: SynthLanguage>(
     let time = t.elapsed().as_secs_f64();
 
     if chosen.is_empty() && !allow_empty {
+        // log::debug!("Didn't learn any rules");
         panic!("Didn't learn any rules!");
     }
 

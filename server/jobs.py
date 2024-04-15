@@ -1235,10 +1235,6 @@ def alpha_beta_ablation(
                 memlimit=memlimit,
             )
 
-# @job()
-# def synthesize_with_synth_configs()
-    
-
 
 @job()
 def estimate(args=["performance"], after=None, memlimit=220, **_):
