@@ -1,0 +1,744 @@
+[
+  {
+    "num_rules": 26,
+    "time generated": "2024-04-10 19:26:27.146085 -05:00",
+    "run name": "desugared rules",
+    "eqs": [
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b 0) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d ?c 0 ?b) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d 0 ?c ?b) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 1 3 2))",
+        "rhs": "(Shfl (Vec ?d ?c 0 ?b) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 3 2 1))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 0 3 2 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 3 2 1))",
+        "rhs": "(Shfl (Vec ?d 0 ?c ?b) (Vec 0 3 2 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 1 2 3 0))",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 26,
+    "time generated": "2024-04-10 19:33:55.879833 -05:00",
+    "run name": "desugared rules",
+    "eqs": [
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b 0) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d ?c 0 ?b) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d 0 ?c ?b) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 1 3 2))",
+        "rhs": "(Shfl (Vec ?d ?c 0 ?b) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 3 2 1))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 0 3 2 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 3 2 1))",
+        "rhs": "(Shfl (Vec ?d 0 ?c ?b) (Vec 0 3 2 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 1 2 3 0))",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 26,
+    "time generated": "2024-04-10 19:37:44.965343 -05:00",
+    "run name": "desugared rules",
+    "eqs": [
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b 0) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d ?c 0 ?b) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d 0 ?c ?b) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 1 3 2))",
+        "rhs": "(Shfl (Vec ?d ?c 0 ?b) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 3 2 1))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 0 3 2 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 3 2 1))",
+        "rhs": "(Shfl (Vec ?d 0 ?c ?b) (Vec 0 3 2 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 1 2 3 0))",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 26,
+    "time generated": "2024-04-10 19:50:21.547771 -05:00",
+    "run name": "desugared rules",
+    "eqs": [
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b 0) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d ?c 0 ?b) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d 0 ?c ?b) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 1 3 2))",
+        "rhs": "(Shfl (Vec ?d ?c 0 ?b) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 3 2 1))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 0 3 2 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 3 2 1))",
+        "rhs": "(Shfl (Vec ?d 0 ?c ?b) (Vec 0 3 2 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 1 2 3 0))",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 26,
+    "time generated": "2024-04-10 19:54:59.720900 -05:00",
+    "run name": "desugared rules",
+    "eqs": [
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b 0) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d ?c 0 ?b) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d 0 0 0) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d 0 ?c ?b) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a ?d) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 1 3 2))",
+        "rhs": "(Shfl (Vec ?d ?c 0 ?b) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 3 2 1))",
+        "rhs": "(Shfl (Vec 0 ?d ?c ?b) (Vec 0 3 2 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 3 2 1))",
+        "rhs": "(Shfl (Vec ?d 0 ?c ?b) (Vec 0 3 2 1))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec 0 0 ?d ?c) (Vec 1 2 3 0))",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 10,
+    "time generated": "2024-04-10 20:22:10.476148 -05:00",
+    "run name": "desugared rules",
+    "eqs": [
+      {
+        "lhs": "(Vec ?c ?b ?a 0)",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Vec ?c ?b ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      }
+    ]
+  }
+]

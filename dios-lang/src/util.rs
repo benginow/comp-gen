@@ -59,11 +59,14 @@ pub(crate) fn sum_workload_depth() -> usize {
 }
 
 pub(crate) fn generate_rules(workload: &Workload, prior_rules: &mut Ruleset<desugared_lang::VecLangDesugared>, run_name: &str, vec_ops: bool, depth: usize) {
+    use std::time::Instant;
+    let beginning = Instant::now();
     let rules = {
             run_workload(workload.clone(), (*prior_rules).clone(), Limits::synthesis(), Limits::synthesis(), true)
     };
     let file_str = match vec_ops { true=>"vec", false=>"non-vec" };
-    log_rules(&rules, Some((format!("candidates/depth_{}_ruleset_{}.json", depth, file_str)).as_str()), run_name.to_string());
+    let duration = Instant::now() -  beginning;
+    log_rules(&rules, Some((format!("candidates/depth_{}_ruleset_{}.json", depth, file_str)).as_str()), run_name.to_string(), duration);
     
     (*prior_rules).extend(rules)
 }
@@ -83,7 +86,9 @@ pub(crate) fn permutation_vectors() -> Vec<String> {
 pub(crate) fn interesting_vectors(scalar_ops: Vec<Vec<String>>) -> Workload {
     let scalar_wkld = scalar_exprs(scalar_ops);
     let vectors: Vec<String> = vec!["(Vec a b c d)", "(Vec a b c 0)", "(Vec a b 0 c)", "(Vec a 0 b c)", "(Vec 0 a b c)", "(Vec 0 0 a b)", "(Vec a b 0 0)", "(Vec a 0 0 0)", "(Vec EXPR VAR VAR VAR)"].into_iter().map(|x| x.to_string()).collect();
+    // let vectors: Vec<String> = vec!["(Vec a b c d)", "(Vec a b c 0)", "(Vec a b 0 c)", "(Vec a 0 b c)", "(Vec 0 a b c)", "(Vec 0 0 a b)", "(Vec a b 0 0)", "(Vec a 0 0 0)"].into_iter().map(|x| x.to_string()).collect();
     let vector_filler: Workload = Workload::new(vectors.clone()).plug("EXPR", &scalar_wkld).plug("VAR", &vars());
+    // let vector_filler: Workload = Workload::new(vectors);
     vector_filler
 }
 
@@ -102,6 +107,7 @@ pub(crate) fn scalar_exprs(scalar_ops: Vec<Vec<String>>) -> Workload {
     let vals = vals();
     let vars = vars();
     let mut filters: Vec<Filter> = vec![];
+    println!("scalar ops are {scalar_ops:?}");
     let scalar_wkld = iter_dios_lt(3,vals,vars, &mut filters, scalar_ops);
     scalar_wkld
 }
@@ -149,7 +155,7 @@ pub(crate) fn iter_dios_lt(depth: usize, values: Workload, variable_names: Workl
 
 // will generate only equal to depth
 pub(crate) fn iter_dios_eq(depth: usize, values: Workload, variable_names: Workload, filters: &mut Vec<Filter>, operations: Vec<Vec<String>>) -> Workload {
-    let eq = Filter::MetricEq(Metric::Depth, depth+1);
+    let eq = Filter::MetricEq(Metric::Depth, depth);
     filters.push(eq);
     iter_dios(depth, values, variable_names, filters.clone(), operations)
 }
@@ -169,7 +175,7 @@ pub(crate) fn handpicked_thinner() -> Vec<(Vec<Vec<String>>, usize)> {
     let unary_binary: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn", "VecNeg", "neg"], vec!["VecAdd", "+", "VecMinus", "-"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus", "VecAdd"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    vec![(scalar, 3), (unary_ops, 4), (related_binary_add, 4), (related_binary_mul, 4), (related_binary_add_mul, 4), (unary_binary, 3), (related_muls, 3), (related_mac, 3)]
+    vec![(scalar, 3), (unary_ops, 3), (related_binary_add, 3), (related_binary_mul, 3), (related_binary_add_mul, 3), (unary_binary, 3), (related_muls, 2), (related_mac, 2)]
 
 }
 
@@ -185,5 +191,7 @@ pub(crate) fn handpicked() -> Vec<(Vec<Vec<String>>, usize)> {
     let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus", "VecAdd"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "VecMinus"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
-    vec![(scalar, 3), (unary_ops, 4), (binary_ops, 4), (unary_binary, 3), (related_muls, 3), (related_mac, 3)]
+    vec![(scalar, 3), (unary_ops, 3), (binary_ops, 3), (unary_binary, 3), (related_muls, 2), (related_mac, 2)]
+    // vec![(binary_ops, 3), (unary_binary, 3), (related_muls, 2), (related_mac, 2)]
+
 }

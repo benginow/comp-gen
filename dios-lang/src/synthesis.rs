@@ -227,9 +227,14 @@ pub fn run(
     _chkpt_path: Option<PathBuf>,
 ) -> Res<ruler::enumo::Ruleset<lang::VecLang>>
 {
+    use core::time::Duration;
+    use std::time::Instant;
+
     let run_name = synth_config.name.clone();
     log::info!("running with config: {dios_config:#?}");
     log::info!("running with synth config: {:#?}", synth_config.clone());
+
+    let beginning = Instant::now();
 
     // add all seed rules
     let mut seed_rules : ruler::enumo::Ruleset<lang::VecLang> = ruler::enumo::Ruleset::default();
@@ -262,7 +267,9 @@ pub fn run(
     // let rules = 
     ruleset_gen(&mut rules, operations, vals, vars, synth_config.arity_shorting, synth_config.operation_matching, synth_config.canon_force);
 
-    ruler::logger::log_rules(&rules, Some("rulesets/ruleset.json"), run_name);
+
+    let time_taken = Instant::now() - beginning;
+    ruler::logger::log_rules(&rules, Some("rulesets/ruleset.json"), run_name, time_taken);
 
     Ok(rules)
 }

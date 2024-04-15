@@ -24,5 +24,9 @@ pub fn workload_shfl(ops: Vec<Vec<String>>) -> Workload
     let shuffles = permutation_vectors();
     let vector_exprs = interesting_vectors(scalar_ops);
 
+    println!("shfl workload");
+    println!("shuffles: {shuffles:?}");
+    println!("vector exprs: {:?}", vector_exprs.clone().force().collect::<Vec<_>>());
+
     Workload::new(["(Shfl EXPR SHUFFLES)"]).plug("SHUFFLES", &Workload::new(shuffles)).plug("EXPR", &vector_exprs)
 }

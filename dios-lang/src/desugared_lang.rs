@@ -339,7 +339,7 @@ impl SynthLanguage for desugared_lang::VecLangDesugared {
                 .into_iter()
                 .map(|acc| acc.map(desugared_lang::Value::List))
                 .collect::<Vec<_>>(),
-            desugared_lang::VecLangDesugared::Vec(l) => l
+            desugared_lang::VecLangDesugared::Vec(l) => {let thing = l
                 .iter()
                 .fold(vec![Some(vec![]); cvec_len], |mut acc, item| {
                     acc.iter_mut().zip(get(item)).for_each(|(mut v, i)| {
@@ -353,7 +353,10 @@ impl SynthLanguage for desugared_lang::VecLangDesugared {
                 })
                 .into_iter()
                 .map(|acc| acc.map(desugared_lang::Value::Vec))
-                .collect::<Vec<_>>(),
+                .collect::<Vec<_>>();
+            println!("vector, {thing:?}");
+            thing
+            },
             desugared_lang::VecLangDesugared::LitVec(l) => l
                 .iter()
                 .fold(vec![Some(vec![]); cvec_len], |mut acc, item| {
@@ -460,21 +463,49 @@ impl SynthLanguage for desugared_lang::VecLangDesugared {
                 val
         },
             desugared_lang::VecLangDesugared::Shfl([l, r]) => {
+                use std::iter::zip;
+
                 let shuffle_vec = map!(get, l => {
-                    desugared_lang::Value::int1(l, |l| desugared_lang::Value::Int(l))
+                    desugared_lang::Value::vec1(l, |l| Some(desugared_lang::Value::Vec(l.to_vec())))
                 });
                 let indices = map!(get, r => {
-                    desugared_lang::Value::int1(r, |r| desugared_lang::Value::Int(r))
+                    desugared_lang::Value::vec1(r, |r| Some(desugared_lang::Value::Vec(r.to_vec())))
                 });
-                let mut shuffled = vec![];
-                for index in indices {
-                    if let Some(desugared_lang::Value::Int(idx)) = index {
-                        let idx = idx as usize;
-                        shuffled.push(shuffle_vec[idx].clone());
-                    }
+                println!("indices are: {:?}", indices.clone());
+                println!("shuffle vec is: {:?}", shuffle_vec.clone());
 
+                let mut all_shuffled = vec![];
+                for (indics, shuffle) in zip(indices, shuffle_vec)
+                {
+                    if let Some(desugared_lang::Value::Vec(indics)) = indics {
+                        if let Some(desugared_lang::Value::Vec(shuffle)) = shuffle {
+                            let mut shuffled = vec![];
+                            for index in indics {
+                                if let desugared_lang::Value::Int(idx) = index {
+                                    let idx = idx as usize;
+                                    shuffled.push(shuffle[idx].clone());
+                                }
+                                else {
+                                    all_shuffled.push(None);
+                                    break;
+                                }
+                            }
+                            all_shuffled.push(Some(desugared_lang::Value::Vec(shuffled)));
+                        }
+                        else {
+                            all_shuffled.push(None);
+                        }
+                    }
+                    else {
+                        all_shuffled.push(None);
+                    }
+                    
                 }
-                shuffled
+                
+                
+                println!("shuffled is: {:?}", all_shuffled.clone());
+                
+                all_shuffled
             }
             desugared_lang::VecLangDesugared::Symbol(_) => vec![],
         }

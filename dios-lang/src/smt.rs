@@ -609,6 +609,6 @@ pub fn egg_to_z3_desugared<'a>(
             | desugared_lang::VecLangDesugared::Concat(_) => return vec![None],
         }
     }
-    // return the last elementz
+    // return the last element
     buf.into_iter().map(|x| Some(x)).collect()
 }
