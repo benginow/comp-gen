@@ -80,6 +80,10 @@ impl<L: SynthLanguage> Analysis<L> for SynthAnalysis {
         let mut merge_b = false;
         let cost_fn = |x: &RecExpr<L>| ExtractableAstSize.cost_rec(x);
 
+        let recexpr_x = to.clone().simplest;
+        let recexpr_y = from.clone().simplest;
+        // println!("recexpers are {} and {}", recexpr_x, recexpr_y);
+
         if !to.cvec.is_empty() && !from.cvec.is_empty() {
             for i in 0..to.cvec.len() {
                 match (to.cvec[i].clone(), from.cvec[i].clone()) {

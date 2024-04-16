@@ -54,7 +54,6 @@ fn run_workload_internal<L: SynthLanguage>(
     // let mut file = File::open("timings.txt").unwrap();
 
     let t = Instant::now();
-    println!("workload is {:#?}", workload);
     let egraph = workload.to_egraph::<L>();
     // let elapsed = t.elapsed();
     // let info = format!("time taken to convert workload to egraph {elapsed:?}");
@@ -77,7 +76,7 @@ fn run_workload_internal<L: SynthLanguage>(
     };
     // let elapsed = now.elapsed();
     // write!(&file, "3 time taken to cvec match {elapsed:?}\n").unwrap();
-
+    println!("number of candidates is {}", candidates.len());
     let num_prior = prior.len();
     let now = Instant::now();
     println!("minimizing candidates");
@@ -90,8 +89,10 @@ fn run_workload_internal<L: SynthLanguage>(
     let time = t.elapsed().as_secs_f64();
 
     if chosen.is_empty() && !allow_empty {
-        // log::debug!("Didn't learn any rules");
-        panic!("Didn't learn any rules!");
+        println!("Didn't learn any rules");
+        log::debug!("Didn't learn any rules");
+
+        // panic!("Didn't learn any rules!");
     }
 
     println!(

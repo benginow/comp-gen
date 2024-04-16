@@ -101,9 +101,10 @@ pub fn vecs_eq(lvec: &CVec<lang::VecLang>, rvec: &CVec<lang::VecLang>) -> bool {
 
 fn arity_shorting(depth: usize, values: Workload, variable_names: Workload, operations: Vec<Vec<String>>) -> Workload {
     // there will ops up to triops here -> if this changes, this code needs to change
+    println!("calling arity shorting, depth {depth}");
     let iter_depth = {
     if depth <= 2{
-         depth
+        depth
     }
     else {
         depth - 1
@@ -119,7 +120,7 @@ fn arity_shorting(depth: usize, values: Workload, variable_names: Workload, oper
     // not sure what happens with val here -> tbd
     let final_workload = truncated_workload
                             .plug("EXPR",&one_less_workload);
-
+    // println!("wkld: {:?}", final_workload.clone().force().collect::<Vec<_>>());
     final_workload
 }
 
@@ -136,6 +137,7 @@ fn seed() -> ruler::enumo::Ruleset<lang::VecLang> {
 
 
 fn generate_workload(depth: usize, vals: Workload, vars: Workload,  filters: Vec<Filter>, ops: Vec<Vec<String>>, arity_truncation: bool, is_canon: bool) -> Workload {
+    println!("generating workload, depth {depth}");
     let workload = if arity_truncation && ops.len() >= 3 {
         println!("calling arity truncation for {ops:?}");
         arity_shorting(depth, vals, vars, ops)
@@ -144,6 +146,8 @@ fn generate_workload(depth: usize, vals: Workload, vars: Workload,  filters: Vec
         println!("calling iter dios for {ops:?}");
         iter_dios_eq(depth, vals, vars, &mut filters.clone(), ops)
     };
+
+    // println!("@workload is {:#?}", workload.clone().force().collect::<Vec<_>>());
     if !is_canon {
         workload.is_not_canon();
     }
@@ -203,7 +207,7 @@ fn ruleset_gen(rules: &mut Ruleset<lang::VecLang>,
 
     for (operation_set, depth) in operation_iterations {
         let contains_vector_ops = operation_set.iter().flatten().any(|x| x.contains("Vec"));
-        let filters = { 
+        let filters = {
             if contains_vector_ops {
                 vec![Filter::Contains("Vec".parse().unwrap())]
             }
@@ -212,14 +216,12 @@ fn ruleset_gen(rules: &mut Ruleset<lang::VecLang>,
                 vec![]
             }
         };
-        for i in 2..depth {
+        for i in 2..(depth+1) {
+            println!("learning rules for opset {operation_set:?} for depth {i}");
             let workload: ruler::enumo::Workload = generate_workload(depth, vals.clone(), vars.clone(), filters.clone(), operation_set.clone(), arity_truncation, canon_force);
-            println!("depth is {i}");
             let generated_rules = run_workload(workload, (*rules).clone(), ruler::Limits::synthesis(), ruler::Limits::synthesis(), true);
             rules.extend(generated_rules)
         }
-        
-
         
     }
 }

@@ -13,7 +13,7 @@ pub fn workload_sum(ops: Vec<Vec<String>>) -> Workload {
     let mut filters = vec![Filter::Contains("Vec".parse().unwrap())];
     // feel free to change depth as needed
     let wkld = iter_dios_lt(sum_workload_depth(),vals(), vars, &mut filters, vector_ops);
-    println!("Workload is: {:#?}", wkld.clone().force().collect::<Vec<_>>());
+    // println!("Workload is: {:#?}", wkld.clone().force().collect::<Vec<_>>());
     wkld
 }
 
