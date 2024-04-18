@@ -125,7 +125,7 @@ pub(crate) fn extract_vector_operations(operations: Vec<Vec<String>>) -> (Vec<Ve
 
 pub(crate) fn iter_dios(depth: usize, values: Workload, variable_names: Workload, filters: Vec<Filter>, operations: Vec<Vec<String>>) -> Workload {
     println!("depth is {depth}");
-    let mut workload = iter_metric(base_lang(operations.len()), "EXPR", Metric::Depth, depth);
+    let mut workload = iter_metric(base_lang(operations.len()), "EXPR", Metric::Depth, depth+1);
     
     // JB: put this back when doing vecsum only!
     // append(Workload::new(["(VecSum (Vec EXPR VAL VAL VAL))"]));;
@@ -138,9 +138,14 @@ pub(crate) fn iter_dios(depth: usize, values: Workload, variable_names: Workload
         workload = workload.plug(format!("OP{}", i+1), &Workload::new(operation_layer.clone()));
     }
 
+    // println!("workload pre filter: {:#?}", workload.clone().force().collect::<Vec<_>>());
+    // println!("filters are {:?}", filters.clone());
+
     for filter in filters {
         workload = workload.filter(filter);
     }
+    // println!("workload post filter: {:#?}", workload.clone().force().collect::<Vec<_>>());
+
     info!("Workload is {:?}", workload.clone());
 
     workload

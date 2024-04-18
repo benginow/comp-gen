@@ -216,9 +216,10 @@ fn ruleset_gen(rules: &mut Ruleset<lang::VecLang>,
                 vec![]
             }
         };
-        for i in 2..(depth+1) {
-            println!("learning rules for opset {operation_set:?} for depth {i}");
-            let workload: ruler::enumo::Workload = generate_workload(depth, vals.clone(), vars.clone(), filters.clone(), operation_set.clone(), arity_truncation, canon_force);
+        for i in 2..=depth {
+            println!("learning rules for opset {operation_set:?} for depth {i}, depth is {depth}");
+            let workload: ruler::enumo::Workload = generate_workload(i, vals.clone(), vars.clone(), filters.clone(), operation_set.clone(), arity_truncation, canon_force);
+            // println!("@wkld: {:#?}", workload.clone().force().collect::<Vec<_>>());
             let generated_rules = run_workload(workload, (*rules).clone(), ruler::Limits::synthesis(), ruler::Limits::synthesis(), true);
             rules.extend(generated_rules)
         }

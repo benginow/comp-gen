@@ -1,0 +1,32 @@
+{
+  "(+ ?a ?b) ==> (+ ?b ?a)": {
+    "lhs": "(+ ?a ?b)",
+    "rhs": "(+ ?b ?a)",
+    "bidirectional": false
+  },
+  "(* ?a ?b) ==> (* ?b ?a)": {
+    "lhs": "(* ?a ?b)",
+    "rhs": "(* ?b ?a)",
+    "bidirectional": false
+  },
+  "(VecAdd ?a ?b) ==> (VecAdd ?b ?a)": {
+    "lhs": "(VecAdd ?a ?b)",
+    "rhs": "(VecAdd ?b ?a)",
+    "bidirectional": false
+  },
+  "(VecMul ?a ?b) ==> (VecMul ?b ?a)": {
+    "lhs": "(VecMul ?a ?b)",
+    "rhs": "(VecMul ?b ?a)",
+    "bidirectional": false
+  },
+  "(VecAdd (Vec ?b) (Vec ?a)) ==> (Vec (+ ?b ?a))": {
+    "lhs": "(VecAdd (Vec ?b) (Vec ?a))",
+    "rhs": "(Vec (+ ?b ?a))",
+    "bidirectional": false
+  },
+  "(VecDiv (Vec ?b) (Vec ?a)) ==> (Vec (/ ?b ?a))": {
+    "lhs": "(VecDiv (Vec ?b) (Vec ?a))",
+    "rhs": "(Vec (/ ?b ?a))",
+    "bidirectional": false
+  }
+}

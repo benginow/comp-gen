@@ -1,0 +1,14 @@
+{
+  "date": "Apr08-1148",
+  "name": "synthesis-60000",
+  "owner": "root@benginows-air.lan",
+  "memory_limit": 220,
+  "timeout": 300000,
+  "command": "./run.sh",
+  "after": null,
+  "metadata": {
+    "timeout": 60000,
+    "eqsat_iter_limit": 3,
+    "eqsat_timeout": 60
+  }
+}
