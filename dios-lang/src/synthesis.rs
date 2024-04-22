@@ -130,7 +130,9 @@ fn seed() -> ruler::enumo::Ruleset<lang::VecLang> {
         "(* ?a ?b) ==> (* ?b ?a)",
         "(VecAdd ?a ?b) ==> (VecAdd ?b ?a)",
         "(VecMul ?a ?b) ==> (VecMul ?b ?a)",
+        "(Vec (+ ?b ?a)) ==> (VecAdd (Vec ?b) (Vec ?a))",
         "(VecAdd (Vec ?b) (Vec ?a)) ==> (Vec (+ ?b ?a))", 
+        "(Vec (/ ?b ?a)) ==> (VecDiv (Vec ?b) (Vec ?a)) ",
         "(VecDiv (Vec ?b) (Vec ?a)) ==> (Vec (/ ?b ?a))"]
     )
 }
@@ -147,7 +149,7 @@ fn generate_workload(depth: usize, vals: Workload, vars: Workload,  filters: Vec
         iter_dios_eq(depth, vals, vars, &mut filters.clone(), ops)
     };
 
-    // println!("@workload is {:#?}", workload.clone().force().collect::<Vec<_>>());
+    println!("@workload is {:#?}", workload.clone().force().collect::<Vec<_>>());
     if !is_canon {
         workload.is_not_canon();
     }
@@ -223,7 +225,6 @@ fn ruleset_gen(rules: &mut Ruleset<lang::VecLang>,
             let generated_rules = run_workload(workload, (*rules).clone(), ruler::Limits::synthesis(), ruler::Limits::synthesis(), true);
             rules.extend(generated_rules)
         }
-        
     }
 }
 

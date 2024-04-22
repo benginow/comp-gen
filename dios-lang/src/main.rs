@@ -216,6 +216,8 @@ fn compile(opts: CompileOpts) -> Res<()> {
     // add rules to compiler
     compiler.with_init_node(lang::VecLang::Const(lang::Value::Int(0)));
 
+    compiler.add_external_rules(&PathBuf::from("testing_rulesets/sum_and_shufl_rules.json"));
+
     // add predesugared rules
     if opts.pre_desugared {
         compiler.add_external_rules(&opts.rules);
@@ -265,15 +267,16 @@ fn compile(opts: CompileOpts) -> Res<()> {
 }
 
 fn main() -> Res<()> {
-    let _ = env_logger::builder().try_init();
+    // let _ = env_logger::builder().try_init();
 
-    let args: Cmdline = argh::from_env();
+    // let args: Cmdline = argh::from_env();
 
-    match args.nested {
-        Commands::Synth(opts) => synth(opts),
-        Commands::Compile(opts) => compile(opts),
-    }
-    
+    // match args.nested {
+    //     Commands::Synth(opts) => synth(opts),
+    //     Commands::Compile(opts) => compile(opts),
+    // }
+    println!("{:#?}", desugared_synthesis::run());
+    Ok(())
 }
 
 
@@ -305,7 +308,7 @@ mod shuffle_tests {
         compiler.with_init_node(desugared_lang::VecLangDesugared::Const(desugared_lang::Value::Int(0)));
 
         // add predesugared rules
-        compiler.add_external_rules(&PathBuf::from("sum_and_shufl_rules.json"));
+        compiler.add_external_rules(&PathBuf::from("testing_rulesets/sum_and_shufl_rules.json"));
 
         // add litvec rules
         compiler

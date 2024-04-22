@@ -82,13 +82,26 @@ pub(crate) fn permutation_vectors() -> Vec<String> {
     shuffles.iter().map(|x| x.to_string()).collect()
 }
 
+pub (crate) fn vectors() -> Workload {
+    let variables: Vec<String> = vec!["a", "b", "c", "d", "0", "1"].into_iter().map(|x| x.to_string()).collect();
+    let vec: Vec<String> = vec!["(Vec VAR VAR VAR)"].into_iter().map(|x| x.to_string()).collect();
+    let workload = Workload::new(vec).plug("VAR",&Workload::new(variables));
+    // hmm..
+    // workload.is_not_canon();
+    workload
+}
+
 // if you dont want the exprs, don't pass anything in for scalar ops
-pub(crate) fn interesting_vectors(scalar_ops: Vec<Vec<String>>) -> Workload {
-    let scalar_wkld = scalar_exprs(scalar_ops);
-    let vectors: Vec<String> = vec!["(Vec a b c d)", "(Vec a b c 0)", "(Vec a b 0 c)", "(Vec a 0 b c)", "(Vec 0 a b c)", "(Vec 0 0 a b)", "(Vec a b 0 0)", "(Vec a 0 0 0)", "(Vec EXPR VAR VAR VAR)"].into_iter().map(|x| x.to_string()).collect();
-    // let vectors: Vec<String> = vec!["(Vec a b c d)", "(Vec a b c 0)", "(Vec a b 0 c)", "(Vec a 0 b c)", "(Vec 0 a b c)", "(Vec 0 0 a b)", "(Vec a b 0 0)", "(Vec a 0 0 0)"].into_iter().map(|x| x.to_string()).collect();
-    let vector_filler: Workload = Workload::new(vectors.clone()).plug("EXPR", &scalar_wkld).plug("VAR", &vars());
-    // let vector_filler: Workload = Workload::new(vectors);
+pub(crate) fn interesting_vectors_sum(_scalar_ops: Vec<Vec<String>>) -> Workload {
+    let vectors: Vec<String> = vec!["(Vec a b c d)", "(Vec (+ a b) 0 c d)", "(Vec (+ a c) b 0 d)", "(Vec (+ a d) b c 0)", "(Vec a b c 0)", "(Vec a b 0 c)", "(Vec a 0 b c)", "(Vec 0 a b c)", "(Vec 0 0 a b)", "(Vec a b 0 0)", "(Vec a 0 0 0)"].into_iter().map(|x| x.to_string()).collect();
+
+    Workload::new(vectors)
+}
+
+pub(crate) fn interesting_vectors_shfl(_scalar_ops: Vec<Vec<String>>) -> Workload {
+    let vectors: Vec<String> = vec!["(Vec a b c d)", "(Vec c b a d)", "(Vec a d c b)", "(Vec b a c d)", "(Vec a b d c)", "(Vec d b c a)", "(Vec d a b c)", "(Vec a b c 0)", "(Vec a b 0 c)", "(Vec a 0 b c)", "(Vec 0 a b c)", "(Vec 0 0 a b)", "(Vec a b 0 0)", "(Vec a 0 0 0)"].into_iter().map(|x| x.to_string()).collect();
+    let vector_filler: Workload = Workload::new(vectors.clone());
+    println!("vector filler is {vector_filler:?}");
     vector_filler
 }
 
@@ -126,9 +139,6 @@ pub(crate) fn extract_vector_operations(operations: Vec<Vec<String>>) -> (Vec<Ve
 pub(crate) fn iter_dios(depth: usize, values: Workload, variable_names: Workload, filters: Vec<Filter>, operations: Vec<Vec<String>>) -> Workload {
     println!("depth is {depth}");
     let mut workload = iter_metric(base_lang(operations.len()), "EXPR", Metric::Depth, depth+1);
-    
-    // JB: put this back when doing vecsum only!
-    // append(Workload::new(["(VecSum (Vec EXPR VAL VAL VAL))"]));;
 
     workload = workload
     .plug("VAL", &values)
@@ -138,13 +148,9 @@ pub(crate) fn iter_dios(depth: usize, values: Workload, variable_names: Workload
         workload = workload.plug(format!("OP{}", i+1), &Workload::new(operation_layer.clone()));
     }
 
-    // println!("workload pre filter: {:#?}", workload.clone().force().collect::<Vec<_>>());
-    // println!("filters are {:?}", filters.clone());
-
     for filter in filters {
         workload = workload.filter(filter);
     }
-    // println!("workload post filter: {:#?}", workload.clone().force().collect::<Vec<_>>());
 
     info!("Workload is {:?}", workload.clone());
 
@@ -167,22 +173,24 @@ pub(crate) fn iter_dios_eq(depth: usize, values: Workload, variable_names: Workl
 
 // sets of hand-picked rules
 pub(crate) fn handpicked_thinner() -> Vec<(Vec<Vec<String>>, usize)> {
-    // start with scalar
-    // let scalar = vec![vec!["sqrt", "sgn", "neg"], vec!["*", "/", "-", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    // // start with scalar
+    let scalar = vec![vec!["sqrt", "sgn", "neg"], vec!["*", "/", "-", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
 
     // depth 4
-    // let unary_ops: Vec<Vec<String>>  = vec![vec!["Vec", "VecSgn", "sgn", "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    // let related_binary_mul = vec![vec!["Vec"], vec!["VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    // let related_binary_add = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    // let related_binary_add_mul = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMul", "*"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let unary_ops: Vec<Vec<String>>  = vec![vec!["Vec", "VecSgn", "sgn", "VecNeg", "neg"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_binary_mul = vec![vec!["Vec"], vec!["VecMul", "*", "VecDiv", "/"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_binary_add = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMinus", "-"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    let related_binary_add_mul = vec![vec!["Vec"], vec!["VecAdd", "+", "VecMul", "*"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     
     // depth 3
-    let unary_binary1: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn"], vec!["VecAdd", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    let unary_binary2: Vec<Vec<String>> = vec![vec!["Vec", "VecNeg", "neg"], vec!["VecAdd", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();    
+    
     let related_muls: Vec<Vec<String>> = vec![vec!["Vec"], vec!["VecMul", "VecMinus"], vec!["VecMULS"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
     let related_mac = vec![vec!["Vec"], vec!["VecMul", "VecAdd", "+"], vec!["VecMAC"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
-    // vec![(scalar, 3), (unary_ops, 3), (related_binary_add, 3), (related_binary_mul, 3), (related_binary_add_mul, 3), (unary_binary1, 3), (unary_binary2, 3), (related_muls, 2), (related_mac, 2)]
-    vec![(unary_binary1, 3), (unary_binary2, 3), (related_muls, 2), (related_mac, 2)]
+    vec![(scalar, 3), (unary_ops, 3), (related_binary_add, 3), (related_binary_mul, 3), (related_binary_add_mul, 3), (related_muls, 2), (related_mac, 2)]
+    // vec![(unary_binary1, 3), (unary_binary2, 3), (related_muls, 2), (related_mac, 2)]
+
+    // let unary_binary1: Vec<Vec<String>> = vec![vec!["Vec", "VecSgn", "sgn"], vec!["VecAdd", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();
+    // let unary_binary2: Vec<Vec<String>> = vec![vec!["Vec", "VecNeg", "neg"], vec!["VecAdd", "+"]].iter().map(|x| x.iter().map(|&x| String::from(x)).collect()).collect();    
 
 }
 

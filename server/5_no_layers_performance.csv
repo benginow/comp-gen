@@ -1,0 +1,27 @@
+[Errno 2] No such file or directory: 'completed/2d-conv_3x3_2x2/Apr17-2334-0XVS1/results/cycles.csv'
+[Errno 2] No such file or directory: 'completed/2d-conv_3x3_3x3/Apr18-0024-DY9XI/results/cycles.csv'
+[Errno 2] No such file or directory: 'completed/2d-conv_3x5_3x3/Apr18-0114-A6Z8B/results/cycles.csv'
+[Errno 2] No such file or directory: 'completed/2d-conv_4x4_3x3/Apr18-0205-9CE5P/results/cycles.csv'
+[Errno 2] No such file or directory: 'completed/2d-conv_8x8_3x3/Apr18-0255-EJIOW/results/cycles.csv'
+[Errno 2] No such file or directory: 'completed/2d-conv_10x10_4x4/Apr18-0630-3T3ZV/results/cycles.csv'
+[Errno 2] No such file or directory: 'completed/2d-conv_16x16_2x2/Apr18-0635-CTRVQ/results/cycles.csv'
+[Errno 2] No such file or directory: 'completed/mat-mul_2x2_2x2/Apr18-0836-1VCDS/results/cycles.csv'
+[Errno 2] No such file or directory: 'completed/mat-mul_2x3_3x3/Apr18-0926-56M88/results/cycles.csv'
+[Errno 2] No such file or directory: 'completed/mat-mul_3x3_3x3/Apr18-1016-E3C9L/results/cycles.csv'
+[Errno 2] No such file or directory: 'completed/q-prod/Apr18-1651-WUECU/results/cycles.csv'
+     kernel benchmark       params               exp ruleset  timeout  hard_timeout cycles                cost  compile_time  extraction_time  eqsat_time   total_time       max_ram_used  pre_iterations  compile_iterations  opt_iter
+0   compgen   2d-conv      3x3_2x2  Apr17-2334-0XVS1       5      180          3000   None   56582.11600000001   3004.081338              0.0    0.006262  3004.081338      8.82080078125               2                   0         0
+1   compgen   2d-conv      3x3_3x3  Apr18-0024-DY9XI       5      180          3000   None          138419.989   3004.060126              0.0    0.015412  3004.060126  6.620063781738281               2                   0         0
+2   compgen   2d-conv      3x5_3x3  Apr18-0114-A6Z8B       5      180          3000   None          237432.711   3003.973389              0.0    0.025449  3003.973389  9.967464447021484               2                   0         0
+3   compgen   2d-conv      4x4_3x3  Apr18-0205-9CE5P       5      180          3000   None          254608.064   3003.916693              0.0    0.027156  3003.916693  6.699604034423828               2                   0         0
+4   compgen   2d-conv      8x8_3x3  Apr18-0255-EJIOW       5      180          3000   None         1006329.668   3003.886141              0.0  146.146096  3003.886141  9.448471069335938               4                   2         0
+5   compgen   2d-conv    10x10_3x3  Apr18-0540-2V6D2       5      180          3000   1786         1584282.516    190.231357              0.0  185.586426   190.231357          99.312725               2                   2         0
+6   compgen   2d-conv    10x10_4x4  Apr18-0630-3T3ZV       5      180          3000   None         3000703.646   3003.605103              0.0   69.560429  3003.605103  5.271476745605469               6                   4         0
+7   compgen   2d-conv    16x16_2x2  Apr18-0635-CTRVQ       5      180          3000   None  1777218.0470000014    295.352646              0.0    0.206061   295.352646             killed               2                   0         0
+8   compgen   mat-mul      2x2_2x2  Apr18-0836-1VCDS       5      180          3000   None  12124.848000000002   3003.351263              0.0    0.001702  3003.351263     7.369384765625               2                   0         0
+9   compgen   mat-mul      2x3_3x3  Apr18-0926-56M88       5      180          3000   None            30311.21   3003.263051              0.0    0.004262  3003.263051     7.305419921875               2                   0         0
+10  compgen   mat-mul      3x3_3x3  Apr18-1016-E3C9L       5      180          3000   None  37388.865000000005   3003.208675              0.0   60.176744  3003.208675     7.285400390625               4                   2         0
+11  compgen   mat-mul      4x4_4x4  Apr18-1019-NPOVP       5      180          3000     90          113159.084    130.136629              0.0  121.098005   130.136629          81.218018               2                   2         2
+12  compgen   mat-mul      8x8_8x8  Apr18-1020-SD81E       5      180          3000    941   969911.7719999999     50.052082              0.0   48.669521    50.052082          18.955868               2                   2         2
+13  compgen   mat-mul  10x10_10x10  Apr18-1020-6DJQT       5      180          3000   1922  1919608.4000000006     35.035281              0.0   35.603831    35.035281           3.026371               2                   2         2
+14  compgen    q-prod            0  Apr18-1651-WUECU       5      180          3000   None  104056.25899999998   3002.592967              0.0    0.008635  3002.592967     1.889892578125               2                   0         0

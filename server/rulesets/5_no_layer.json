@@ -22,9 +22,19 @@
       "enable_checkpointing": false
     },
     "time": 0.0,
-    "num_rules": 762,
+    "num_rules": 764,
     "smt_unknown": 0,
     "eqs": [
+      {
+        "lhs": "(Vec (/ ?b ?a))",
+        "rhs": "(VecDiv (Vec ?b) (Vec ?a))",
+        "bidirectional": false
+      },
+    {
+        "lhs": "(Vec (+ ?b ?a))",
+        "rhs": "(VecAdd (Vec ?b) (Vec ?a))",
+        "bidirectional": false
+    },
         {
           "lhs": "(+ ?a ?b)",
           "rhs": "(+ ?b ?a)",

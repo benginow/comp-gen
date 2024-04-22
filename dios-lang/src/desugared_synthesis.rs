@@ -51,13 +51,14 @@ pub fn run(
 
     // // hard coded for now
     // let unops = vec!["VecSum"].iter().map(|x| x.to_string()).collect();
-    let unops = vec!["Shfl"].iter().map(|x| x.to_string()).collect();
-    let binops: Vec<String> = vec!["+", "-", "*", "/", "VecAdd", "VecMinus", "VecMul", "VecDiv"].iter().map(|x| x.to_string()).collect();
+    // let unops = vec!["Shfl"].iter().map(|x| x.to_string()).collect();
+    // let binops: Vec<String> = vec!["+", "-", "*", "/", "VecAdd", "VecMinus", "VecMul", "VecDiv"].iter().map(|x| x.to_string()).collect();
 
     // let ops = vec![unops, binops.clone()];
     // let mut rules = sum_rules(ops, run_name);
 
-    let ops = vec![unops, binops];
+    // let ops = vec![unops, binops];
+    let ops = vec![vec![],vec![]];
     let rules = shfl_rules(ops, run_name);
 
     // rules.extend(shfl_rules);

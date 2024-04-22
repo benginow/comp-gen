@@ -1807,5 +1807,361 @@
         "bidirectional": false
       }
     ]
+  },
+  {
+    "num_rules": 10,
+    "time generated": "2024-04-20 11:24:51.068904 -05:00",
+    "run name": "desugared rules",
+    "time": {
+      "secs": 2,
+      "nanos": 920626792
+    },
+    "eqs": [
+      {
+        "lhs": "(Vec ?c ?b ?a 0)",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Vec ?c ?b ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 10,
+    "time generated": "2024-04-20 11:28:01.804448 -05:00",
+    "run name": "desugared rules",
+    "time": {
+      "secs": 2,
+      "nanos": 897799917
+    },
+    "eqs": [
+      {
+        "lhs": "(Vec ?c ?b ?a 0)",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Vec ?c ?b ?a 0)",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c 0 ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec ?c ?b ?a 0) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b 0 ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 10,
+    "time generated": "2024-04-20 20:30:52.656834 -05:00",
+    "run name": "desugared rules",
+    "time": {
+      "secs": 6,
+      "nanos": 507253500
+    },
+    "eqs": [
+      {
+        "lhs": "(Shfl (Vec ?a ?d ?b ?c) (Vec 0 1 3 2))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?a ?d ?b ?c) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?b ?a ?c) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec ?d ?b ?a ?c) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec ?c ?b ?a 0)",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Vec ?c ?b ?a 0)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 8,
+    "time generated": "2024-04-20 22:03:13.464499 -05:00",
+    "run name": "desugared rules",
+    "time": {
+      "secs": 4,
+      "nanos": 70435041
+    },
+    "eqs": [
+      {
+        "lhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?d ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec ?c ?b ?d ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?a ?d ?b ?c) (Vec 0 1 3 2))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?a ?d ?b ?c) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?a ?c ?b) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?d ?a ?c ?b) (Vec 1 2 3 0))",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 8,
+    "time generated": "2024-04-21 00:33:43.106344 -05:00",
+    "run name": "desugared rules",
+    "time": {
+      "secs": 3,
+      "nanos": 814848084
+    },
+    "eqs": [
+      {
+        "lhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?b ?d ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec ?c ?b ?d ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?a ?d ?b ?c) (Vec 0 1 3 2))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?a ?d ?b ?c) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?a ?c ?b) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?d ?a ?c ?b) (Vec 1 2 3 0))",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 10,
+    "time generated": "2024-04-21 00:38:05.989121 -05:00",
+    "run name": "desugared rules",
+    "time": {
+      "secs": 8,
+      "nanos": 526591708
+    },
+    "eqs": [
+      {
+        "lhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 2 1 0 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 2 1 0 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 1 0 2 3))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 2 1 3))",
+        "rhs": "(Shfl (Vec ?b ?d ?c ?a) (Vec 1 0 2 3))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?c ?a ?b ?d) (Vec 3 0 1 2))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 1 3 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 0 1 3 2))",
+        "rhs": "(Shfl (Vec ?c ?a ?b ?d) (Vec 3 0 1 2))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?a ?c ?b) (Vec 1 2 3 0))",
+        "rhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec ?d ?c ?b ?a) (Vec 3 1 2 0))",
+        "rhs": "(Shfl (Vec ?d ?a ?c ?b) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Vec ?c ?b ?a 0)",
+        "rhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 2 3 0))",
+        "bidirectional": false
+      },
+      {
+        "lhs": "(Shfl (Vec 0 ?c ?b ?a) (Vec 1 2 3 0))",
+        "rhs": "(Vec ?c ?b ?a 0)",
+        "bidirectional": false
+      }
+    ]
+  },
+  {
+    "num_rules": 0,
+    "time generated": "2024-04-21 15:38:27.036521 -05:00",
+    "run name": "desugared rules",
+    "time": {
+      "secs": 0,
+      "nanos": 627494834
+    },
+    "eqs": []
   }
 ]
