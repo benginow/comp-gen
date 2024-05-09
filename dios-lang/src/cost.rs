@@ -195,6 +195,17 @@ impl egg::CostFunction<VecLangDesugared> for VecCostFnDesugared {
             VecLangDesugared::VecDiv(..) => self.vec_op,
             VecLangDesugared::VecSum(..) => self.vec_op,
 
+            VecLangDesugared::VecMAC(..) => self.vec_op,
+            VecLangDesugared::VecMULS(..) => self.vec_op,
+            VecLangDesugared::VecDiv(..) => self.vec_op,
+            VecLangDesugared::VecNeg(..) => self.vec_op,
+            VecLangDesugared::VecSqrt(..) => self.vec_op,
+            VecLangDesugared::VecSgn(..) => self.vec_op,
+
+            VecLangDesugared::Sgn(..) => self.op,
+            VecLangDesugared::Neg(..) => self.op,
+            VecLangDesugared::Sqrt(..) => self.op,
+
             VecLangDesugared::Shfl(..) => self.vec_op,
         };
         enode.fold(op_cost, |sum, id| sum + costs(id))

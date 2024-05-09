@@ -568,8 +568,39 @@ pub fn egg_to_z3_desugared<'a>(
 
     let mut buf: Vec<z3::ast::Int> = vec![];
 
+    let sqrt_fun: z3::FuncDecl = z3::FuncDecl::new(
+        &ctx,
+        "sqrt",
+        &[&z3::Sort::int(&ctx)],
+        &z3::Sort::int(&ctx),
+    );
+
     for node in expr.as_ref().iter() {
         match node {
+            desugared_lang::VecLangDesugared::Neg([x]) => {
+                let x_int = &buf[usize::from(*x)];
+                buf.push(-x_int);
+            }
+            desugared_lang::VecLangDesugared::Sgn([x]) => {
+                let x_int = &buf[usize::from(*x)];
+                let zero = z3::ast::Int::from_i64(ctx, 0);
+                let one = z3::ast::Int::from_i64(ctx, 1);
+                let m_one = z3::ast::Int::from_i64(ctx, -1);
+
+                let inner: z3::ast::Int = (x_int.gt(&zero)).ite(&one, &m_one);
+                let sgn = (x_int._eq(&zero)).ite(&zero, &inner);
+
+                buf.push(sgn);
+            }
+            desugared_lang::VecLangDesugared::Sqrt([x]) => {
+                let x_int = &buf[usize::from(*x)];
+                buf.push(
+                    sqrt_fun
+                        .apply(&[x_int])
+                        .as_int()
+                        .expect("z3 Sqrt didn't return an int."),
+                );
+            }
             desugared_lang::VecLangDesugared::Const(desugared_lang::Value::Int(i)) => {
                 buf.push(z3::ast::Int::from_i64(ctx, *i as i64))
             }
@@ -598,6 +629,97 @@ pub fn egg_to_z3_desugared<'a>(
                 // solver.assert(&y_int._eq(&zero).not());
                 buf.push(x_int / y_int);
             }
+            desugared_lang::VecLangDesugared::VecNeg([x]) => {
+                let x_int0 = buf[usize::from(*x)].clone();
+                let x_int1 = buf[usize::from(*x)+1].clone();
+                let x_int2 = buf[usize::from(*x)+2].clone();
+                let x_int3 = buf[usize::from(*x)+3].clone();
+                buf.push(-x_int0);
+                buf.push(-x_int1);
+                buf.push(-x_int2);
+                buf.push(-x_int3);
+            }
+            desugared_lang::VecLangDesugared::VecSgn([x]) => {
+                let x_int0 = buf[usize::from(*x)].clone();
+                let x_int1 = buf[usize::from(*x)+1].clone();
+                let x_int2 = buf[usize::from(*x)+2].clone();
+                let x_int3 = buf[usize::from(*x)+3].clone();
+                let zero = z3::ast::Int::from_i64(ctx, 0);
+                let one = z3::ast::Int::from_i64(ctx, 1);
+                let m_one = z3::ast::Int::from_i64(ctx, -1);
+
+                let inner0: z3::ast::Int = (x_int0.gt(&zero)).ite(&m_one, &one);
+                let sgn0 = (x_int0._eq(&zero)).ite(&zero, &inner0);
+                buf.push(sgn0);
+
+                let inner1: z3::ast::Int = (x_int1.gt(&zero)).ite(&m_one, &one);
+                let sgn1 = (x_int1._eq(&zero)).ite(&zero, &inner1);
+                buf.push(sgn1);
+
+                let inner2: z3::ast::Int = (x_int2.gt(&zero)).ite(&m_one, &one);
+                let sgn2 = (x_int2._eq(&zero)).ite(&zero, &inner2);
+                buf.push(sgn2);
+
+                let inner3: z3::ast::Int = (x_int3.gt(&zero)).ite(&m_one, &one);
+                let sgn3 = (x_int3._eq(&zero)).ite(&zero, &inner3);
+                buf.push(sgn3);
+            }
+            desugared_lang::VecLangDesugared::Sqrt([x]) => {
+                // this doesn't even matter, we don't gen rules for sqrt anyways
+
+                // let x_int0 = buf[usize::from(*x)].clone();
+                // let x_int1 = buf[usize::from(*x)+1].clone();
+                // let x_int2 = buf[usize::from(*x)+2].clone();
+                // let x_int3 = buf[usize::from(*x)+3].clone();
+
+                // buf.push(x_int0);
+                // buf.push(x_int1);
+                // buf.push(x_int2);
+                // buf.push(x_int3);
+                // buf.push(
+                //     sqrt_fun
+                //         .apply(&[x_int0])
+                //         .as_int()
+                //         .expect("z3 Sqrt didn't return an int."),
+                // );
+                // buf.push(
+                //     sqrt_fun
+                //         .apply(&[x_int1])
+                //         .as_int()
+                //         .expect("z3 Sqrt didn't return an int."),
+                // );
+                // buf.push(
+                //     sqrt_fun
+                //         .apply(&[x_int2])
+                //         .as_int()
+                //         .expect("z3 Sqrt didn't return an int."),
+                // );
+                // buf.push(
+                //     sqrt_fun
+                //         .apply(&[x_int3])
+                //         .as_int()
+                //         .expect("z3 Sqrt didn't return an int."),
+                // );
+            }
+            desugared_lang::VecLangDesugared::VecMAC([acc, x, y]) => {
+                // let acc_int = &buf[usize::from(*acc)];
+                // let x_int = &buf[usize::from(*x)];
+                // let y_int = &buf[usize::from(*y)];
+                // buf.push((x_int * y_int) + acc_int);
+            }
+            desugared_lang::VecLangDesugared::VecMULS([acc, x, y]) => {
+                // let acc_int = &buf[usize::from(*acc)];
+                // let x_int = &buf[usize::from(*x)];
+                // let y_int = &buf[usize::from(*y)];
+                // buf.push(acc_int - (x_int * y_int));
+            }
+            desugared_lang::VecLangDesugared::VecSqrt([x]) => {
+                // let acc_int = &buf[usize::from(*acc)];
+                // let x_int = &buf[usize::from(*x)];
+                // let y_int = &buf[usize::from(*y)];
+                // buf.push(acc_int - (x_int * y_int));
+            }
+
             // an attempt to support vector operators.
             // I think I should just be able to map them
             // on to their scalar counter parts.
@@ -799,6 +921,7 @@ pub fn egg_to_z3_desugared<'a>(
                 buf.push(z3::ast::Int::from_i64(ctx, 0));
                 buf.push(z3::ast::Int::from_i64(ctx, 0));
             }
+
             // unsupported operations
             // return early
             desugared_lang::VecLangDesugared::Const(_)

@@ -62,6 +62,9 @@ egg::define_language! {
         "*" = Mul([Id; 2]),
         "-" = Minus([Id; 2]),
         "/" = Div([Id; 2]),
+        "sgn" = Sgn([Id; 1]),
+        "sqrt" = Sqrt([Id; 1]),
+        "neg" = Neg([Id; 1]),
 
         // wec width is 4
         "VecAdd" = VecAdd([Id; 2]),
@@ -71,6 +74,16 @@ egg::define_language! {
 
         
         "VecSum" = VecSum([Id; 1]),
+
+        // Vector operations that take 1 vector of inputs
+        "VecNeg" = VecNeg([Id; 1]),
+        "VecSqrt" = VecSqrt([Id; 1]),
+        "VecSgn" = VecSgn([Id; 1]),
+        // "VecRAdd" = VecRAdd([Id; 1]),
+
+        // MAC takes 3 lists: acc, v1, v2
+        "VecMAC" = VecMAC([Id; 3]),
+        "VecMULS" = VecMULS([Id; 3]),
 
         // Vectors have width elements
         "Vec" = Vec(Box<[Id]>),
@@ -303,7 +316,112 @@ impl SynthLanguage for desugared_lang::VecLangDesugared {
     where
         F: FnMut(&'a Id) -> &'a CVec<Self>,
     {
+        use num::integer::Roots;
         match self {
+            desugared_lang::VecLangDesugared::Sgn([x]) => {
+                map!(get, x => Value::int1(x, |x| Value::Int(util::sgn(x))))
+            }
+            desugared_lang::VecLangDesugared::Sqrt([x]) => get(x)
+                .iter()
+                .map(|a| match a {
+                    Some(Value::Int(a)) => {
+                        if *a >= 0 {
+                            Some(Value::Int(a.sqrt()))
+                        } else {
+                            None
+                        }
+                    }
+                    _ => None,
+                })
+                .collect::<Vec<_>>(),
+            desugared_lang::VecLangDesugared::Neg([x]) => {
+                map!(get, x => Value::int1(x, |x| Value::Int(-x)))
+            }
+            desugared_lang::VecLangDesugared::VecNeg([l]) => map!(get, l => {
+                Value::vec1(l, |l| {
+                    if l.iter().all(|x| matches!(x, Value::Int(_))) {
+                        Some(Value::Vec(
+                            l.iter()
+                                .map(|tup| match tup {
+                                    Value::Int(a) => Value::Int(-a),
+                                    x => panic!("NEG: Ill-formed: {}", x),
+                                })
+                                .collect::<Vec<_>>(),
+                        ))
+                    } else {
+                        None
+                    }
+                })
+            }),
+            desugared_lang::VecLangDesugared::VecSqrt([l]) => map!(get, l => {
+                Value::vec1(l, |l| {
+                    if l.iter().all(|x| {
+                        if let Value::Int(i) = x {
+                            *i >= 0
+                        } else {
+                            false
+                        }
+                    }) {
+                        Some(Value::Vec(
+                            l.iter()
+                                .map(|tup| match tup {
+                                    Value::Int(a) => Value::Int(a.sqrt()),
+                                    x => panic!("SQRT: Ill-formed: {}", x),
+                                })
+                                .collect::<Vec<_>>(),
+                        ))
+                    } else {
+                        None
+                    }
+                })
+            }),
+            #[rustfmt::skip]
+            desugared_lang::VecLangDesugared::VecSgn([l]) => map!(get, l => {
+                Value::vec1(l, |l| {
+                    if l.iter().all(|x| matches!(x, Value::Int(_))) {
+                        Some(Value::Vec(
+                            l.iter()
+                                .map(|tup| match tup {
+                                    Value::Int(a) => Value::Int(util::sgn(*a)),
+                                    x => panic!("SGN: Ill-formed: {}", x),
+                                })
+                                .collect::<Vec<_>>(),
+                        ))
+                    } else {
+                        None
+                    }
+                })
+            }),
+            #[rustfmt::skip]
+            desugared_lang::VecLangDesugared::VecMAC([acc, v1, v2]) => map!(get, v1, v2, acc => {
+                Value::vec3(v1, v2, acc, |v1, v2, acc| {
+                    v1.iter()
+                        .zip(v2.iter())
+                        .zip(acc.iter())
+                        .map(|tup| match tup {
+                            ((Value::Int(v1), Value::Int(v2)), Value::Int(acc))
+                => Some(Value::Int((v1 * v2) + acc)),
+                            _ => None,
+                        })
+                        .collect::<Option<Vec<Value>>>()
+                        .map(Value::Vec)
+                })
+            }),
+            #[rustfmt::skip]
+            desugared_lang::VecLangDesugared::VecMULS([acc, v1, v2]) => map!(get, v1, v2, acc => {
+                Value::vec3(v1, v2, acc, |v1, v2, acc| {
+                    v1.iter()
+                        .zip(v2.iter())
+                        .zip(acc.iter())
+                        .map(|tup| match tup {
+                            ((Value::Int(v1), Value::Int(v2)), Value::Int(acc))
+                => Some(Value::Int(acc - (v1 * v2))),
+                            _ => None,
+                        })
+                        .collect::<Option<Vec<Value>>>()
+                        .map(Value::Vec)
+                })
+            }),
             desugared_lang::VecLangDesugared::Const(i) => vec![Some(i.clone()); cvec_len],
             desugared_lang::VecLangDesugared::Add([l, r]) => map!(get, l, r => {
                 desugared_lang::Value::int2(l, r, |l, r| desugared_lang::Value::Int(l + r))

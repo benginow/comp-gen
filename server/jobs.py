@@ -513,20 +513,20 @@ def fast_overall_performance(
     assert rulesets is not None
 
     mat_mul_sizes = [
-        (2, 2, 2, 2),
-        (2, 3, 3, 3),
-        (3, 3, 3, 3),
-        (4, 4, 4, 4),
-        (8, 8, 8, 8),
+        # (2, 2, 2, 2),
+        # (2, 3, 3, 3),
+        # (3, 3, 3, 3),
+        # (4, 4, 4, 4),
+        # (8, 8, 8, 8),
     ]
     conv_2d_sizes = [
-        (3, 3, 2, 2),
-        (3, 3, 3, 3),
-        (3, 5, 3, 3),
-        (4, 4, 3, 3),
-        (8, 8, 3, 3),
+        # (3, 3, 2, 2),
+        # (3, 3, 3, 3),
+        # (3, 5, 3, 3),
+        # (4, 4, 3, 3),
+        # (8, 8, 3, 3),
     ]
-    qr_decomp_sizes = [3]
+    qr_decomp_sizes = [4]
     ruleset = rulesets["ruleset_timeout86400"]
 
     # create all the jobs

@@ -168,6 +168,32 @@ fn synth(synth_opts: SynthOpts) -> Res<()> {
     Ok(())
 }
 
+fn compile_shfl(prog: egg::RecExpr<desugared_lang::VecLangDesugared>) -> (f64, RecExpr<desugared_lang::VecLangDesugared>) {
+    let mut compiler: comp_gen::Compiler<desugared_lang::VecLangDesugared, (), _> = comp_gen::Compiler::with_cost_fn(cost::VecCostFnDesugared::dios());
+
+    // compiler.add_external_rules(&PathBuf::from("../sum_and_shufl_rules.json"));
+
+    compiler.with_init_node(desugared_lang::VecLangDesugared::Const(desugared_lang::Value::Int(0)));
+
+        // add predesugared rules
+    compiler.add_external_rules(&PathBuf::from("../sum_and_shufl_rules.json"));
+    // add litvec rules
+    compiler
+        .add_rules(
+            handwritten::build_litvec_rule_desugared(4).into_iter(),
+        )
+        .output_rule_distribution("rule_distribution.csv", |x| x);
+
+
+    let config = default_compiler_config();
+    compiler.with_config(&config);
+
+    // compiler.with_explanations();
+    let (cost, prog, mut _eg) = compiler.compile(prog);
+    (cost, prog)
+        
+}
+
 /// Run the entire phased eqsat compilation process on a Dios program.
 ///  - this first calls the existing Dios code to generate an input program
 ///  - once we have an input program, we construct and call a `comp-gen` compiler.
@@ -216,8 +242,6 @@ fn compile(opts: CompileOpts) -> Res<()> {
     // add rules to compiler
     compiler.with_init_node(lang::VecLang::Const(lang::Value::Int(0)));
 
-    compiler.add_external_rules(&PathBuf::from("testing_rulesets/sum_and_shufl_rules.json"));
-
     // add predesugared rules
     if opts.pre_desugared {
         compiler.add_external_rules(&opts.rules);
@@ -243,6 +267,12 @@ fn compile(opts: CompileOpts) -> Res<()> {
     let (cost, prog, mut _eg) = compiler.compile(prog);
     info!("cost: {cost}");
 
+    //vec sum and shufl stuff
+    let string_prog = prog.to_string();
+    let prog: egg::RecExpr<desugared_lang::VecLangDesugared> = string_prog.parse()?;
+
+    let (cost, prog) = compile_shfl(prog);
+
     // write to spec.rkt
     let path = output_dir.join("res.rkt");
     let mut spec_file = fs::File::create(&path)?;
@@ -267,16 +297,18 @@ fn compile(opts: CompileOpts) -> Res<()> {
 }
 
 fn main() -> Res<()> {
-    // let _ = env_logger::builder().try_init();
+    let _ = env_logger::builder().try_init();
 
-    // let args: Cmdline = argh::from_env();
+    let args: Cmdline = argh::from_env();
 
-    // match args.nested {
-    //     Commands::Synth(opts) => synth(opts),
-    //     Commands::Compile(opts) => compile(opts),
-    // }
-    println!("{:#?}", desugared_synthesis::run());
-    Ok(())
+    match args.nested {
+        Commands::Synth(opts) => synth(opts),
+        Commands::Compile(opts) => compile(opts),
+    }
+
+    
+    // println!("{:#?}", desugared_synthesis::run());
+    // Ok(())
 }
 
 
@@ -391,6 +423,8 @@ mod sum_tests {
         // compiler.with_explanations();
         let (cost, prog, mut _eg) = compiler.compile(prog);
         println!("this is the outputted program: {}", prog);
+
+
         println!("cost: {cost}");
     }
 

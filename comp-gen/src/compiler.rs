@@ -88,6 +88,7 @@ where
     where
         F: Fn(egg::Pattern<L>) -> egg::Pattern<L>,
     {
+        println!("filename is: {filename:?}");
         let contents = std::fs::read_to_string(filename).unwrap();
         let data = json::parse(&contents).unwrap();
         
